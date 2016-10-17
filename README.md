@@ -1,3 +1,5 @@
-# OpenDXL Python Client
+# Open DXL Python Client
 
-## Full Documentation
+## Documentation
+
+See the [Wiki](https://github.com/opendxl/opendxl-client-python/wiki) for an overview of the Data Exchange Layer (DXL), the Open DXL Python client, and examples.
