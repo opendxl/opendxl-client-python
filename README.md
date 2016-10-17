@@ -13,6 +13,10 @@ To start using the Open DXL Python client:
 * View the `README.html` file located at the root of the extracted files.
   * The `README` links to additional documentation which includes installation instructions, API details, and samples.
 
+## Bugs and Feedback
+
+For bugs, questions and discussions please use the [Github Issues](https://github.com/opendxl/opendxl-client-python/issues).
+
 ## LICENSE
 
 Copyright 2016 McAfee, Inc.
