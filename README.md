@@ -1,3 +1,3 @@
-OpenDXL Python Client
+# OpenDXL Python Client
 
 ## Full Documentation
