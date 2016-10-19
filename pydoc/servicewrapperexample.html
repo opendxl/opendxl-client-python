@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Service Wrapper Sample &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Threat Intelligence Exchange (TIE) File Reputation Sample" href="tiefilerepexample.html" />
+    <link rel="prev" title="Advanced Service Sample" href="advancedserviceexample.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tiefilerepexample.html" title="Threat Intelligence Exchange (TIE) File Reputation Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advancedserviceexample.html" title="Advanced Service Sample"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="service-wrapper-sample">
+<h1>Service Wrapper Sample<a class="headerlink" href="#service-wrapper-sample" title="Permalink to this headline">¶</a></h1>
+<p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><em>Samples Configuration</em></a>).</p>
+<p>This sample demonstrates how simple it is to wrap an existing service and expose it on the DXL fabric.</p>
+<p>In this particular case, the <a class="reference external" href="http://openweathermap.org">OpenWeatherMap</a> &#8220;current weather&#8221; data is exposed as a DXL service. This service
+wrapper delegates to the <a class="reference external" href="http://openweathermap.org/api">OpenWeatherMap REST API</a>.</p>
+<div class="section" id="openweather-api-key">
+<h2>OpenWeather API key<a class="headerlink" href="#openweather-api-key" title="Permalink to this headline">¶</a></h2>
+<p>Before running this sample you must obtain an &#8220;API key&#8221; from OpenWeatherMap:</p>
+<blockquote>
+<div><a class="reference external" href="http://openweathermap.org/appid">http://openweathermap.org/appid</a></div></blockquote>
+<p>Once you receive the API key, you must replace it in the <code class="docutils literal"><span class="pre">openweather_common.py</span></code> file as shown below:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># The API key for invoking the weather service</span>
+<span class="n">API_KEY</span> <span class="o">=</span> <span class="s2">&quot;01234567890123456789012345678901&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="service-wrapper">
+<h2>Service Wrapper<a class="headerlink" href="#service-wrapper" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to start the &#8220;service wrapper&#8221;. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages from clients that are querying weather information.</p>
+<p>To start the &#8220;service wrapper&#8221;, execute the <code class="docutils literal"><span class="pre">sample\servicewrapper\openweather_service_wrapper.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">servicewrapper</span>\<span class="n">openweather_service_wrapper</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mo">065</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mo">065</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mo">066</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mo">066</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="p">{</span><span class="mi">284</span><span class="n">bca2e</span><span class="o">-</span><span class="mf">79e1</span><span class="o">-</span><span class="mf">11e6</span><span class="o">-</span><span class="mi">159</span><span class="n">d</span><span class="o">-</span><span class="mo">005056</span><span class="mi">812</span><span class="n">aa3</span><span class="p">},</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">200.124</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">315</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="mi">284</span><span class="n">bca2e</span><span class="o">-</span><span class="mf">79e1</span><span class="o">-</span><span class="mf">11e6</span><span class="o">-</span><span class="mi">159</span><span class="n">d</span><span class="o">-</span><span class="mo">005056</span><span class="mi">812</span><span class="n">aa3</span><span class="p">}</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">315</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">316</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">316</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">5</span><span class="n">b18f1cc</span><span class="o">-</span><span class="n">adac</span><span class="o">-</span><span class="mi">4</span><span class="n">f20</span><span class="o">-</span><span class="mi">88</span><span class="n">d9</span><span class="o">-</span><span class="n">c23d9c531ada</span><span class="p">}</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">329</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">5</span><span class="n">b18f1cc</span><span class="o">-</span><span class="n">adac</span><span class="o">-</span><span class="mi">4</span><span class="n">f20</span><span class="o">-</span><span class="mi">88</span><span class="n">d9</span><span class="o">-</span><span class="n">c23d9c531ada</span><span class="p">}</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">12</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="mi">335</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Weather</span> <span class="n">service</span> <span class="ow">is</span> <span class="n">running</span><span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The majority of code for the service wrapper is shown below:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># The OpenWeatherMap &quot;Current Weather&quot; URL (see http://openweathermap.org/current)</span>
+<span class="n">CURRENT_WEATHER_URL</span> <span class="o">=</span> <span class="s2">&quot;http://api.openweathermap.org/data/2.5/weather?{0}&amp;APPID={1}&quot;</span>
+
+<span class="c1"># The &quot;current weather&quot; topic</span>
+<span class="n">SERVICE_CURRENT_WEATHER_TOPIC</span> <span class="o">=</span> <span class="s2">&quot;/openweathermap/service/openweathermap/current&quot;</span>
+
+<span class="c1"># Create the client</span>
+<span class="k">with</span> <span class="n">DxlClient</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+    <span class="c1"># Connect to the fabric</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Register the service</span>
+    <span class="c1">#</span>
+
+    <span class="c1"># Create &quot;Current Weather&quot; incoming request callback</span>
+    <span class="k">class</span> <span class="nc">CurrentWeatherCallback</span><span class="p">(</span><span class="n">RequestCallback</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Extract information from request</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service received request payload: &quot;</span> <span class="o">+</span> <span class="n">query</span><span class="p">)</span>
+
+                <span class="c1"># Send HTTP request to OpenWeatherMap</span>
+                <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span>
+                    <span class="n">CURRENT_WEATHER_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">API_KEY</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span>
+                    <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;text/json&#39;</span><span class="p">})</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+                <span class="n">weather_response</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                <span class="c1"># Create the response message</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+                <span class="c1"># Populate the response payload</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="n">weather_response</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+                <span class="c1"># Send the response</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="c1"># Send error response</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">ErrorResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()))</span>
+
+    <span class="c1"># Create service registration object</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">ServiceRegistrationInfo</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">SERVICE_NAME</span><span class="p">)</span>
+
+    <span class="c1"># Add a topic for the service to respond to</span>
+    <span class="n">info</span><span class="o">.</span><span class="n">add_topic</span><span class="p">(</span><span class="n">SERVICE_CURRENT_WEATHER_TOPIC</span><span class="p">,</span> <span class="n">CurrentWeatherCallback</span><span class="p">())</span>
+
+    <span class="c1"># Register the service with the fabric (wait up to 10 seconds for registration to complete)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">register_service_sync</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Weather service is running...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Wait forever</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The service wrapper registers a <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> that will be invoked when
+&#8220;current weather&#8221; query <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages are received.</p>
+<p>The actual query (which can be weather by zip code, location, city, etc.) is extracted from the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a>
+message&#8217;s <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Message.payload" title="dxlclient.message.Message.payload"><code class="xref py py-attr docutils literal"><span class="pre">dxlclient.message.Message.payload</span></code></a> attribute.</p>
+<p>The <a class="reference external" href="http://openweathermap.org/api">OpenWeatherMap REST API</a> is invoked via HTTP with the query that was received in the DXL request
+message&#8217;s payload.</p>
+<p>A DXL <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message is created with a payload containing the result of invoking the
+<a class="reference external" href="http://openweathermap.org/api">OpenWeatherMap REST API</a> and sent back to the invoking DXL client via
+the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_response" title="dxlclient.client.DxlClient.send_response"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_response()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> instance.</p>
+</div>
+<div class="section" id="service-invoker">
+<h2>Service Invoker<a class="headerlink" href="#service-invoker" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to execute the &#8220;service invoker&#8221;. This script must be executed in a separate command prompt (or shell),
+leaving the &#8220;service wrapper&#8221; running.</p>
+<p>To start the &#8220;service invoker&#8221;, execute the <code class="docutils literal"><span class="pre">sample\servicewrapper\openweather_service_invoker.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">servicewrapper</span>\<span class="n">openweather_service_invoker</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following (query for the current weather for zip code 97140):</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">565</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">566</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">568</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">569</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="p">{</span><span class="mi">284</span><span class="n">bca2e</span><span class="o">-</span><span class="mf">79e1</span><span class="o">-</span><span class="mf">11e6</span><span class="o">-</span><span class="mi">159</span><span class="n">d</span><span class="o">-</span><span class="mo">005056</span><span class="mi">812</span><span class="n">aa3</span><span class="p">},</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">200.124</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">808</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="mi">284</span><span class="n">bca2e</span><span class="o">-</span><span class="mf">79e1</span><span class="o">-</span><span class="mf">11e6</span><span class="o">-</span><span class="mi">159</span><span class="n">d</span><span class="o">-</span><span class="mo">005056</span><span class="mi">812</span><span class="n">aa3</span><span class="p">}</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">808</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">809</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="mi">809</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">383105</span><span class="n">c5</span><span class="o">-</span><span class="mi">17</span><span class="n">f7</span><span class="o">-</span><span class="mi">4</span><span class="n">b40</span><span class="o">-</span><span class="n">bb90</span><span class="o">-</span><span class="mi">7</span><span class="n">ed17bf3f315</span><span class="p">}</span>
+<span class="mi">2016</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">51</span><span class="p">,</span><span class="mi">336</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">383105</span><span class="n">c5</span><span class="o">-</span><span class="mi">17</span><span class="n">f7</span><span class="o">-</span><span class="mi">4</span><span class="n">b40</span><span class="o">-</span><span class="n">bb90</span><span class="o">-</span><span class="mi">7</span><span class="n">ed17bf3f315</span><span class="p">}</span>
+<span class="n">Client</span> <span class="n">received</span> <span class="n">response</span> <span class="n">payload</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s2">&quot;base&quot;</span><span class="p">:</span> <span class="s2">&quot;stations&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;clouds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;cod&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;coord&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="mf">45.36</span><span class="p">,</span>
+        <span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">122.84</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="mi">1476216689</span><span class="p">,</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5751632</span><span class="p">,</span>
+    <span class="s2">&quot;main&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;grnd_level&quot;</span><span class="p">:</span> <span class="mf">1010.59</span><span class="p">,</span>
+        <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="mf">1010.59</span><span class="p">,</span>
+        <span class="s2">&quot;sea_level&quot;</span><span class="p">:</span> <span class="mf">1034.15</span><span class="p">,</span>
+        <span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="mf">287.158</span><span class="p">,</span>
+        <span class="s2">&quot;temp_max&quot;</span><span class="p">:</span> <span class="mf">287.158</span><span class="p">,</span>
+        <span class="s2">&quot;temp_min&quot;</span><span class="p">:</span> <span class="mf">287.158</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Sherwood&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sys&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="mf">0.171</span><span class="p">,</span>
+        <span class="s2">&quot;sunrise&quot;</span><span class="p">:</span> <span class="mi">1476195849</span><span class="p">,</span>
+        <span class="s2">&quot;sunset&quot;</span><span class="p">:</span> <span class="mi">1476235829</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;weather&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;clear sky&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;01d&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span>
+            <span class="s2">&quot;main&quot;</span><span class="p">:</span> <span class="s2">&quot;Clear&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;wind&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;deg&quot;</span><span class="p">:</span> <span class="mf">83.0013</span><span class="p">,</span>
+        <span class="s2">&quot;speed&quot;</span><span class="p">:</span> <span class="mf">3.1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The majority of code for the service invoker is shown below:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># The &quot;current weather&quot; topic</span>
+<span class="n">SERVICE_CURRENT_WEATHER_TOPIC</span> <span class="o">=</span> <span class="s2">&quot;/openweathermap/service/openweathermap/current&quot;</span>
+
+<span class="c1"># Create the &quot;Current Weather&quot; request</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_CURRENT_WEATHER_TOPIC</span><span class="p">)</span>
+<span class="c1"># Populate the request payload</span>
+<span class="c1"># Examples include:</span>
+<span class="c1">#   By ZIP code: zip=97140,us</span>
+<span class="c1">#   By geographic coordinates: lat=35&amp;lon=139</span>
+<span class="c1">#   By city name: q=London,uk</span>
+<span class="n">req</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;zip=97140,us&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1"># Send the request and wait for a response (synchronous)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+
+<span class="c1"># Extract information from the response (if an error did not occur)</span>
+<span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
+    <span class="n">response_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="k">print</span> <span class="s2">&quot;Client received response payload: </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
+      <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_dict</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error: &quot;</span> <span class="o">+</span> <span class="n">res</span><span class="o">.</span><span class="n">error_message</span> <span class="o">+</span> <span class="s2">&quot; (&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">error_code</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>A DXL <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is created and its payload is set to the query (zip code,
+location, city, etc.) to perform against the <a class="reference external" href="http://openweathermap.org/api">OpenWeatherMap REST API</a>.</p>
+<p>A synchronous request is sent to the DXL service via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of
+the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> instance.</p>
+<p>The results of the query are extracted from the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> that was received and displayed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Service Wrapper Sample</a><ul>
+<li><a class="reference internal" href="#openweather-api-key">OpenWeather API key</a></li>
+<li><a class="reference internal" href="#service-wrapper">Service Wrapper</a></li>
+<li><a class="reference internal" href="#service-invoker">Service Invoker</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="advancedserviceexample.html"
+                        title="previous chapter">Advanced Service Sample</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tiefilerepexample.html"
+                        title="next chapter">Threat Intelligence Exchange (TIE) File Reputation Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/servicewrapperexample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tiefilerepexample.html" title="Threat Intelligence Exchange (TIE) File Reputation Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advancedserviceexample.html" title="Advanced Service Sample"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

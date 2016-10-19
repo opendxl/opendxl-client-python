@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Events Sample &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Basic Service Sample" href="basicserviceexample.html" />
+    <link rel="prev" title="Samples Configuration" href="sampleconfig.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basicserviceexample.html" title="Basic Service Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sampleconfig.html" title="Samples Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basic-events-sample">
+<h1>Basic Events Sample<a class="headerlink" href="#basic-events-sample" title="Permalink to this headline">¶</a></h1>
+<p>This sample demonstrates how to register a callback to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages
+from the DXL fabric. Once the the callback is registered, the sample sends a set number of
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages to the fabric and waits for them all to be received by
+the callback.</p>
+<p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><em>Samples Configuration</em></a>).</p>
+<p>To run this sample execute the <code class="docutils literal"><span class="pre">sample\basic\event_example.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">basic</span>\<span class="n">event_example</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">3</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">4</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">5</span>
+
+<span class="o">...</span>
+
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">994</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">995</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">996</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">997</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">998</span>
+<span class="n">Received</span> <span class="n">event</span><span class="p">:</span> <span class="mi">999</span>
+<span class="n">Elapsed</span> <span class="n">time</span> <span class="p">(</span><span class="n">ms</span><span class="p">):</span> <span class="mf">441.999912262</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The code for the sample is broken into two main sections.</p>
+<p>The first section is responsible for registering an <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.EventCallback" title="dxlclient.callbacks.EventCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.EventCallback</span></code></a> for a specific
+topic. The <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a> by default will also
+subscribe (<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the topic.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Register callback and subscribe</span>
+<span class="c1">#</span>
+
+<span class="c1"># Create and add event listener</span>
+<span class="k">class</span> <span class="nc">MyEventCallback</span><span class="p">(</span><span class="n">EventCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">event_count_condition</span><span class="p">:</span>
+            <span class="c1"># Print the payload for the received event</span>
+            <span class="k">print</span> <span class="s2">&quot;Received event: &quot;</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="c1"># Increment the count</span>
+            <span class="n">event_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Notify that the count was increment</span>
+            <span class="n">event_count_condition</span><span class="o">.</span><span class="n">notify_all</span><span class="p">()</span>
+
+<span class="c1"># Register the callback with the client</span>
+<span class="n">client</span><span class="o">.</span><span class="n">add_event_callback</span><span class="p">(</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">MyEventCallback</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The second section sends a set amount of <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages via the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<p>It then waits for all of the events to be received by the <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.EventCallback" title="dxlclient.callbacks.EventCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.EventCallback</span></code></a> that was
+previously registered.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Send events</span>
+<span class="c1">#</span>
+
+<span class="c1"># Record the start time</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c1"># Loop and send the events</span>
+<span class="k">for</span> <span class="n">event_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">TOTAL_EVENTS</span><span class="p">):</span>
+    <span class="c1"># Create the event</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">EVENT_TOPIC</span><span class="p">)</span>
+    <span class="c1"># Set the payload</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">event_id</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="c1"># Send the event</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+<span class="c1"># Wait until all events have been received</span>
+<span class="k">with</span> <span class="n">event_count_condition</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">event_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">TOTAL_EVENTS</span><span class="p">:</span>
+        <span class="n">event_count_condition</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+<span class="c1"># Print the elapsed time</span>
+<span class="k">print</span> <span class="s2">&quot;Elapsed time (ms): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sampleconfig.html"
+                        title="previous chapter">Samples Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="basicserviceexample.html"
+                        title="next chapter">Basic Service Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/basiceventsexample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basicserviceexample.html" title="Basic Service Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sampleconfig.html" title="Samples Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

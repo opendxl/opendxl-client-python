@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Authorize Client to Perform MAR Search &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Authorization Overview" href="topicauthoverview.html" />
+    <link rel="prev" title="McAfee Active Response (MAR) Search Sample" href="marsearchexample.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthoverview.html" title="Authorization Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marsearchexample.html" title="McAfee Active Response (MAR) Search Sample"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="authorize-client-to-perform-mar-search">
+<h1>Authorize Client to Perform MAR Search<a class="headerlink" href="#authorize-client-to-perform-mar-search" title="Permalink to this headline">¶</a></h1>
+<p>By default, McAfee Active Response (MAR) does not allow systems other than the MAR Server to utilize its API over DXL.
+In order to allow the McAfee Active Response (MAR) Search Sample to work the &#8220;Active Response Server API&#8221; authorization
+group&#8217;s send restrictions must be modified to include the Certificate Authority (CA) and/or certificate used by
+the client executing the McAfee Active Response (MAR) Search Sample.</p>
+<p>Please see <a class="reference internal" href="topicauthoverview.html"><em>Authorization Overview</em></a> for more information on DXL Topic Authorization.</p>
+<p>The following steps will walk through the process of allowing a DXL client to send messages on the
+DXL Topic <code class="docutils literal"><span class="pre">/mcafee/mar/service/api/search</span></code> which is associated with the
+DXL Topic Authorization Group <code class="docutils literal"><span class="pre">Active</span> <span class="pre">Response</span> <span class="pre">Server</span> <span class="pre">API</span></code>:</p>
+<ol class="arabic">
+<li><p class="first">Navigate to <strong>Server Settings</strong> and select the <strong>DXL Topic Authorization</strong> setting on the left navigation bar.</p>
+<blockquote>
+<div><img alt="_images/enablemarauth1.png" src="_images/enablemarauth1.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Edit</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/enablemarauth2.png" src="_images/enablemarauth2.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Select the check box next to the DXL Topic Authorization Group <code class="docutils literal"><span class="pre">Active</span> <span class="pre">Response</span> <span class="pre">Server</span> <span class="pre">API</span></code> (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/enablemarauth3.png" src="_images/enablemarauth3.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Actions</strong> button and select <strong>Restrict Send Certificates</strong> to select certificates allowed to send messages to the topics associated with the <code class="docutils literal"><span class="pre">Active</span> <span class="pre">Response</span> <span class="pre">Server</span> <span class="pre">API</span></code> authorization group (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/enablemarauth4.png" src="_images/enablemarauth4.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Select the check box next to any certificate to indicate that only DXL Clients with the selected certs or child certs (or tags separately specified) will be allowed to send DXL messages on topics associated with the <code class="docutils literal"><span class="pre">Active</span> <span class="pre">Response</span> <span class="pre">Server</span> <span class="pre">API</span></code> authorization group</p>
+<blockquote>
+<div><img alt="_images/enablemarauth5.png" src="_images/enablemarauth5.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>OK</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/enablemarauth6.png" src="_images/enablemarauth6.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Save</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/enablemarauth7.png" src="_images/enablemarauth7.png" />
+</div></blockquote>
+</li>
+</ol>
+<p>The DXL Topic Authorization information will propagate to the DXL brokers. This process can take several minutes
+to complete.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="marsearchexample.html"
+                        title="previous chapter">McAfee Active Response (MAR) Search Sample</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topicauthoverview.html"
+                        title="next chapter">Authorization Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/marsendauth.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthoverview.html" title="Authorization Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marsearchexample.html" title="McAfee Active Response (MAR) Search Sample"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

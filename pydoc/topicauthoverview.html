@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Authorization Overview &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Authorization Group Creation" href="topicauthgroupcreation.html" />
+    <link rel="prev" title="Authorize Client to Perform MAR Search" href="marsendauth.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthgroupcreation.html" title="Authorization Group Creation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="marsendauth.html" title="Authorize Client to Perform MAR Search"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="authorization-overview">
+<h1>Authorization Overview<a class="headerlink" href="#authorization-overview" title="Permalink to this headline">¶</a></h1>
+<p>DXL topic authorization is used to restrict which clients can &#8220;send&#8221; and &#8220;receive&#8221; DXL messages on particular topics.</p>
+<p>Examples of using topic authorization include:</p>
+<ul>
+<li><p class="first">Restricting which clients can provide DXL services.</p>
+<blockquote>
+<div><p>When providing a service (McAfee Threat Intelligence Exchange (TIE), etc.) a restriction should be added to ensure that only clients that are providing the service are able to &#8220;receive&#8221; messages on the service-related topics. Without this protection other clients could masquerade as the service.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Restricting which clients can invoke DXL services.</p>
+<blockquote>
+<div><p>This is accomplished by limiting the clients that can &#8220;send&#8221; messages on the service-related topics. For example, the clients that can perform McAfee Active Response (MAR) queries are limited using topic authorization (see section <a class="reference internal" href="marsendauth.html"><em>Authorize Client to Perform MAR Search</em></a>)</p>
+</div></blockquote>
+</li>
+<li><p class="first">Restricting which clients can &#8220;send&#8221; event messages.</p>
+<blockquote>
+<div><p>For example, only authorized clients should be able to inform that fabric that a McAfee Threat Intelligence (TIE) reputation has changed by sending a DXL event.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>Python-based DXL clients are identified by their certificates. Client-specific certificates and/or Certificate
+Authorities (CAs) can be used to limit which clients can send and receive messages on particular topics. A client
+certificate can be used to establish a restriction for a single client whereas a certificate authority can be used
+to establish a restriction for all clients that were signed by that particular authority.</p>
+<p>Please see the <a class="reference internal" href="topicauthgroupcreation.html"><em>Authorization Group Creation</em></a> and <a class="reference internal" href="topicauthgrouprestrictions.html"><em>Managing Authorization Group Restrictions</em></a> sections for information on how to
+utilize DXL topic authorization.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="marsendauth.html"
+                        title="previous chapter">Authorize Client to Perform MAR Search</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topicauthgroupcreation.html"
+                        title="next chapter">Authorization Group Creation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/topicauthoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthgroupcreation.html" title="Authorization Group Creation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="marsendauth.html" title="Authorize Client to Perform MAR Search"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

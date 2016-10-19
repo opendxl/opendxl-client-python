@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Certificate Files Creation (PKI) &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="ePO Certificate Authority (CA) Import" href="epocaimport.html" />
+    <link rel="prev" title="Python SDK Installation" href="installation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="epocaimport.html" title="ePO Certificate Authority (CA) Import"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Python SDK Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="certificate-files-creation-pki">
+<h1>Certificate Files Creation (PKI)<a class="headerlink" href="#certificate-files-creation-pki" title="Permalink to this headline">¶</a></h1>
+<p>The following section walks through the process to create a Certificate Authority (CA) and a key-pair for a DXL client.</p>
+<p>Steps 5 through 7 below should be repeated for each DXL client that is going to connect to the
+DXL fabric.</p>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Download and install Open SSL for Windows</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Download from the following location:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.slproweb.com/products/Win32OpenSSL.html">http://www.slproweb.com/products/Win32OpenSSL.html</a></p>
+</div></blockquote>
+<p>Select the Win32 OpenSSL Light or Win64 OpenSSL Light package, depending on your architecture (32-bit or 64-bit).</p>
+</li>
+<li><p class="first">If a message occurs during setup indicating <code class="docutils literal"><span class="pre">...critical</span> <span class="pre">component</span> <span class="pre">is</span> <span class="pre">missing:</span> <span class="pre">Microsoft</span> <span class="pre">Visual</span> <span class="pre">C++</span> <span class="pre">2008</span>
+<span class="pre">Redistributables</span></code>, cancel the setup and download one of the following packages (based on your architecture)</p>
+<p>Visual C++ 2008 Redistributables (x86), available at:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF">http://www.microsoft.com/downloads/details.aspx?familyid=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF</a></p>
+</div></blockquote>
+<p>Visual C++ 2008 Redistributables (x64), available at:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.microsoft.com/downloads/details.aspx?familyid=bd2a6171-e2d6-4230-b809-9a8d7548c1b6">http://www.microsoft.com/downloads/details.aspx?familyid=bd2a6171-e2d6-4230-b809-9a8d7548c1b6</a></p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Open Command Prompt and set OpenSSL environment variables</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Open a command prompt <strong>(Start &gt; Run &gt; cmd.exe)</strong></p>
+</li>
+<li><p class="first">Set the following environment variables (adjust OpenSSL path based on your install location):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>C:\&gt;set OPENSSL_BIN=c:\OpenSSL-Win32\bin
+
+C:\&gt;set PATH=%OPENSSL_BIN%;%PATH%
+
+C:\&gt;set OPENSSL_CONF=%OPENSSL_BIN%\openssl.cfg
+</pre></div>
+</div>
+<p><em>These environment variables could also be permanently defined in your computer settings.</em></p>
+</li>
+<li><p class="first">The following steps must take place in this command prompt.</p>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>Create and change to directory for output files</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Create directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\&gt;mkdir c:\certificates
+</pre></div>
+</div>
+</li>
+<li><p class="first">Change to output directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\&gt;cd c:\certificates
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li>Create Certificate Authority (CA)</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Create the certificate authority (CA):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl req -new -x509 -days 365 -extensions v3_ca -keyout ca.key -out ca.crt
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fill out the required information:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Generating a 2048 bit RSA private key
+..............................................................+++
+..............................................................+++
+writing new private key to &#39;ca.key&#39;
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &#39;.&#39;, the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:Oregon
+Locality Name (eg, city) []:Hillsboro
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Intel
+Organizational Unit Name (eg, section) []:ISECG-CA
+Common Name (e.g. server FQDN or YOUR name) []:John Doe
+Email Address []:john.doe@intel.com
+</pre></div>
+</div>
+</li>
+<li><p class="first">At this point you have created the Certificate Authority&#8217;s private key <code class="docutils literal"><span class="pre">ca.key</span></code> and certificate
+<code class="docutils literal"><span class="pre">ca.crt</span></code>.</p>
+<ul class="simple">
+<li><em>Remember</em> the PEM pass phrase you entered when creating the private key (this is necessary when signing client
+certificates).</li>
+<li><em>Protect</em> the Certificate Authority private key (<code class="docutils literal"><span class="pre">ca.key</span></code>).</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li>Provision a key-pair for a DXL Client (Python)</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Generate a Private Key for the client:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl genrsa -out client.key 2048
+</pre></div>
+</div>
+</li>
+<li><p class="first">The following should be displayed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Generating RSA private key, 2048 bit long modulus
+.......................+++
+..................................................+++
+e is 65537 (0x10001)
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a Certificate Signing Request (CSR) for the client:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl req -out client.csr -key client.key -new
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fill out the required information</p>
+<p>The &#8220;challenge password&#8221; can be blank (the default)</p>
+<p><strong>NOTE: The &#8220;Organizational Unit Name&#8221; entered must not be the same as the &#8220;Organizational Unit Name&#8221; entered in
+Step #4 (Create Certificate Authority)</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &#39;.&#39;, the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:Oregon
+Locality Name (eg, city) []:Hillsboro
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Intel
+Organizational Unit Name (eg, section) []:ISECG-Client
+Common Name (e.g. server FQDN or YOUR name) []:John Doe
+Email Address []:john.doe@intel.com
+
+Please enter the following &#39;extra&#39; attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li>Sign the Certificate Signing Request (CSR)</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">Have the Certificate Authority (CA) sign the signing request (CSR):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 365
+</pre></div>
+</div>
+</li>
+<li><p class="first">When prompted, enter the CA PEM pass phrase from Step #4, above. You should see output similar to the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Signature ok
+subject=/C=US/ST=Oregon/L=Hillsboro/O=Intel/OU=ISECG-Client/CN=John Doe/emailAddress=john.doe@intel.com
+Getting CA Private Key
+Enter pass phrase for ca.key:
+</pre></div>
+</div>
+</li>
+<li><p class="first">At this point you will have a certificate <code class="docutils literal"><span class="pre">client.crt</span></code> and an associated private key <code class="docutils literal"><span class="pre">client.key</span></code> for
+use with a DXL client.</p>
+</li>
+<li><p class="first">These files are specified as <code class="docutils literal"><span class="pre">cert_file</span></code> and <code class="docutils literal"><span class="pre">private_key</span></code> parameters when constructing a
+<a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig</span></code></a> instance.</p>
+<p>These files can also be specified via a configuration file used to instantiate a
+<a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig</span></code></a> instance.</p>
+<p>See the <a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file" title="dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file()</span></code></a> method for more information.</p>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li>Validate Certificate (Optional)</li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p class="first">The following command can be used to ensure the client certificate is valid for the certificate authority:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl verify -verbose -CAfile ca.crt client.crt
+</pre></div>
+</div>
+</li>
+<li><p class="first">If the certificate is valid, you should see the following output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>client.crt: OK
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+<p>The steps for Linux-based platforms are very similar to those listed for Windows above.</p>
+<p>Installation of OpenSSL for the various Linux platforms is outside the scope of this document.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Certificate Files Creation (PKI)</a><ul>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Python SDK Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="epocaimport.html"
+                        title="next chapter">ePO Certificate Authority (CA) Import</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/certcreation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="epocaimport.html" title="ePO Certificate Authority (CA) Import"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Python SDK Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

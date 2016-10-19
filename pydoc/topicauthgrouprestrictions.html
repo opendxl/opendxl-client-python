@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Managing Authorization Group Restrictions &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="prev" title="Authorization Group Creation" href="topicauthgroupcreation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthgroupcreation.html" title="Authorization Group Creation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="managing-authorization-group-restrictions">
+<h1>Managing Authorization Group Restrictions<a class="headerlink" href="#managing-authorization-group-restrictions" title="Permalink to this headline">¶</a></h1>
+<p>Prior to managing certificate-based topic authorization group restrictions, a Certificate Authority (CA) that is being
+used to sign client certificates or the certificate for a client must be imported into ePO.</p>
+<p>If you have not imported a Certificate Authority (CA) or certificate, please follow the steps outlined in
+the <a class="reference internal" href="epocaimport.html"><em>ePO Certificate Authority (CA) Import</em></a> section. Also if you have not created a topic authorization group, please follow the steps in
+the <a class="reference internal" href="topicauthgroupcreation.html"><em>Authorization Group Creation</em></a> section.</p>
+<p>The following section walks through the steps of limiting which Certificate Authorities (CAs) and/or certificates are
+required to send and receive messages for a topic authorization group:</p>
+<ol class="arabic">
+<li><p class="first">Navigate to <strong>Server Settings</strong> and select the <strong>Topic Authorization</strong> setting on the left navigation bar.</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth1.png" src="_images/addcertbasedauth1.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Edit</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth2.png" src="_images/addcertbasedauth2.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Select the check box next to a Topic Authorization Group (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth3.png" src="_images/addcertbasedauth3.png" />
+</div></blockquote>
+</li>
+</ol>
+<p>#. Click the <strong>Actions</strong> button and select <strong>Restrict Receive Certificates</strong> to select certificates allowed to receive
+messages on the topics associated with the selected Topic Authorization Group  (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth4.png" src="_images/addcertbasedauth4.png" />
+</div></blockquote>
+<p>#. Select the check box next to any certificate to indicate that only clients with the selected certs or child certs
+will be allowed to receive messages on the topics associated with the selected Topic Authorization Group</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth5.png" src="_images/addcertbasedauth5.png" />
+</div></blockquote>
+<ol class="arabic">
+<li><p class="first">Click the <strong>OK</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth6.png" src="_images/addcertbasedauth6.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Select the check box next to a Topic Authorization Group (as shown in the image above)</p>
+</li>
+</ol>
+<p>#. Click the <strong>Actions</strong> button and select <strong>Restrict Send Certificates</strong> to select certificates allowed to send
+messages on the topics associated with the selected Topic Authorization Group</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth7.png" src="_images/addcertbasedauth7.png" />
+</div></blockquote>
+<p>#. Select the check box next to any certificate to indicate that only clients with the selected certs or child certs
+will be allowed to receive messages on the topics associated with the selected Topic Authorization Group</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth8.png" src="_images/addcertbasedauth8.png" />
+</div></blockquote>
+<ol class="arabic">
+<li><p class="first">Click the <strong>OK</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth9.png" src="_images/addcertbasedauth9.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Save</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/addcertbasedauth10.png" src="_images/addcertbasedauth10.png" />
+</div></blockquote>
+</li>
+</ol>
+<p>The Topic Authorization information will propagate to the brokers. This process can take several minutes
+to complete.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="topicauthgroupcreation.html"
+                        title="previous chapter">Authorization Group Creation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/topicauthgrouprestrictions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topicauthgroupcreation.html" title="Authorization Group Creation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

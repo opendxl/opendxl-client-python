@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dxlclient.message module &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="up" title="dxlclient package" href="dxlclient.html" />
+    <link rel="next" title="dxlclient.service module" href="dxlclient.service.html" />
+    <link rel="prev" title="dxlclient.exceptions module" href="dxlclient.exceptions.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.service.html" title="dxlclient.service module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-dxlclient.message">
+<span id="dxlclient-message-module"></span><h1>dxlclient.message module<a class="headerlink" href="#module-dxlclient.message" title="Permalink to this headline">¶</a></h1>
+<p>The messages module contains the different types of messages that are transmitted
+over the Data Exchange Layer (DXL) fabric.</p>
+<ul class="simple">
+<li><a class="reference internal" href="#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a></li>
+<li><a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a></li>
+<li><a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a></li>
+<li><a class="reference internal" href="#dxlclient.message.ErrorResponse" title="dxlclient.message.ErrorResponse"><code class="xref py py-class docutils literal"><span class="pre">ErrorResponse</span></code></a></li>
+</ul>
+<p><a class="reference internal" href="#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a> messages are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method of a client instance.
+Event messages are sent by one publisher and received by one or more recipients that are currently
+subscribed to the <a class="reference internal" href="#dxlclient.message.Message.destination_topic" title="dxlclient.message.Message.destination_topic"><code class="xref py py-attr docutils literal"><span class="pre">Message.destination_topic</span></code></a> associated with the event (otherwise known as one-to-many).</p>
+<p><a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> messages are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> and
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a> methods of a client instance. Request messages are used when
+invoking a method on a remote service. This communication is one-to-one where a client sends a request to a
+service instance and in turn receives a response.</p>
+<p><a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> messages are sent by service instances upon receiving <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> messages. Response messages
+are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_response" title="dxlclient.client.DxlClient.send_response"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_response()</span></code></a> method of a client instance. Clients that are
+invoking the service (sending a request) will receive the response as a return value of the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of a client instance or via the
+<a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.ResponseCallback" title="dxlclient.callbacks.ResponseCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.ResponseCallback</span></code></a> callback when invoking the asynchronous method,
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a>.</p>
+<p><a class="reference internal" href="#dxlclient.message.ErrorResponse" title="dxlclient.message.ErrorResponse"><code class="xref py py-class docutils literal"><span class="pre">ErrorResponse</span></code></a> messages are sent by the DXL fabric itself or service instances upon receiving <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a>
+messages. The error response may indicate the inability to locate a service to handle the request or an internal
+error within the service itself. Error response messages are sent using the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_response" title="dxlclient.client.DxlClient.send_response"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_response()</span></code></a> method of a client instance.</p>
+<p><strong>NOTE:</strong> Some services may chose to not send a <a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> message when receiving a <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a>.
+This typically occurs if the service is being used to simply collect information from remote clients. In this scenario,
+the client should use the asynchronous form for sending requests,
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a></p>
+<dl class="class">
+<dt id="dxlclient.message.ErrorResponse">
+<em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">ErrorResponse</code><span class="sig-paren">(</span><em>request</em>, <em>error_code=0</em>, <em>error_message=''</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.ErrorResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a></p>
+<p><a class="reference internal" href="#dxlclient.message.ErrorResponse" title="dxlclient.message.ErrorResponse"><code class="xref py py-class docutils literal"><span class="pre">ErrorResponse</span></code></a> messages are sent by the DXL fabric itself or service instances upon receiving
+<a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> messages. The error response may indicate the inability to locate a service to handle the
+request or an internal error within the service itself. Error response messages are sent using the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_response" title="dxlclient.client.DxlClient.send_response"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_response()</span></code></a> method of a client instance.</p>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>request</strong> &#8211; The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message that this is a response for</li>
+<li><strong>error_code</strong> &#8211; The numeric error code</li>
+<li><strong>error_message</strong> &#8211; The textual error message</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dxlclient.message.ErrorResponse.error_code">
+<code class="descname">error_code</code><a class="headerlink" href="#dxlclient.message.ErrorResponse.error_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric error code for the error response</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.ErrorResponse.error_message">
+<code class="descname">error_message</code><a class="headerlink" href="#dxlclient.message.ErrorResponse.error_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>The textual error message for the error response</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.ErrorResponse.message_type">
+<code class="descname">message_type</code><a class="headerlink" href="#dxlclient.message.ErrorResponse.message_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type of the message</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dxlclient.message.Event">
+<em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>destination_topic</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.message.Message" title="dxlclient.message.Message"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Message</span></code></a></p>
+<p><a class="reference internal" href="#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a> messages are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method of a client instance.
+Event messages are sent by one publisher and received by one or more recipients that are currently
+subscribed to the <a class="reference internal" href="#dxlclient.message.Message.destination_topic" title="dxlclient.message.Message.destination_topic"><code class="xref py py-attr docutils literal"><span class="pre">Message.destination_topic</span></code></a> associated with the event (otherwise known as one-to-many).</p>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> &#8211; The topic to publish the event to</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dxlclient.message.Event.message_type">
+<code class="descname">message_type</code><a class="headerlink" href="#dxlclient.message.Event.message_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type of the message</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dxlclient.message.Message">
+<em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">Message</code><span class="sig-paren">(</span><em>destination_topic</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.Message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dxlclient._BaseObject</span></code></p>
+<p>The base class for the different Data Exchange Layer (DXL) message types</p>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> &#8211; The topic to publish the message to</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dxlclient.message.Message.MESSAGE_TYPE_ERROR">
+<code class="descname">MESSAGE_TYPE_ERROR</code><em class="property"> = 3</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_TYPE_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type identifier for the <a class="reference internal" href="#dxlclient.message.ErrorResponse" title="dxlclient.message.ErrorResponse"><code class="xref py py-class docutils literal"><span class="pre">ErrorResponse</span></code></a> message type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.MESSAGE_TYPE_EVENT">
+<code class="descname">MESSAGE_TYPE_EVENT</code><em class="property"> = 2</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_TYPE_EVENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type identifier for the <a class="reference internal" href="#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a> message type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.MESSAGE_TYPE_REQUEST">
+<code class="descname">MESSAGE_TYPE_REQUEST</code><em class="property"> = 0</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_TYPE_REQUEST" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type identifier for the <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.MESSAGE_TYPE_RESPONSE">
+<code class="descname">MESSAGE_TYPE_RESPONSE</code><em class="property"> = 1</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_TYPE_RESPONSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type identifier for the <a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> message type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.MESSAGE_VERSION">
+<code class="descname">MESSAGE_VERSION</code><em class="property"> = 0</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.broker_ids">
+<code class="descname">broker_ids</code><a class="headerlink" href="#dxlclient.message.Message.broker_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of broker identifiers that the message is to be routed to. Setting this value will limit
+which brokers the message will be delivered to. This can be used in conjunction with <a class="reference internal" href="#dxlclient.message.Message.client_ids" title="dxlclient.message.Message.client_ids"><code class="xref py py-func docutils literal"><span class="pre">client_ids()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.client_ids">
+<code class="descname">client_ids</code><a class="headerlink" href="#dxlclient.message.Message.client_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of client identifiers that the message is to be routed to. Setting this value will limit
+which clients the message will be delivered to. This can be used in conjunction with <a class="reference internal" href="#dxlclient.message.Message.broker_ids" title="dxlclient.message.Message.broker_ids"><code class="xref py py-func docutils literal"><span class="pre">broker_ids()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.destination_topic">
+<code class="descname">destination_topic</code><a class="headerlink" href="#dxlclient.message.Message.destination_topic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The topic to publish the message to</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.message_id">
+<code class="descname">message_id</code><a class="headerlink" href="#dxlclient.message.Message.message_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique identifier for the message (UUID)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.message_type">
+<code class="descname">message_type</code><a class="headerlink" href="#dxlclient.message.Message.message_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type of the message</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.payload">
+<code class="descname">payload</code><a class="headerlink" href="#dxlclient.message.Message.payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>The application-specific payload of the message (bytes)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.source_broker_id">
+<code class="descname">source_broker_id</code><a class="headerlink" href="#dxlclient.message.Message.source_broker_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The identifier of the DXL broker that the message&#8217;s originating client is connected to
+(set by the initial broker)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.source_client_id">
+<code class="descname">source_client_id</code><a class="headerlink" href="#dxlclient.message.Message.source_client_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The identifier of the DXL client that sent the message (set by the broker that initially receives the message)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.version">
+<code class="descname">version</code><a class="headerlink" href="#dxlclient.message.Message.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>The version of the DXL message (used to determine the features that are available)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dxlclient.message.Request">
+<em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">Request</code><span class="sig-paren">(</span><em>destination_topic</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.Request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.message.Message" title="dxlclient.message.Message"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Message</span></code></a></p>
+<p><a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> messages are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> and
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a> methods of a client instance. Request messages are used when
+invoking a method on a remote service. This communication is one-to-one where a client sends a request to a
+service instance and in turn receives a response.</p>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> &#8211; The topic to publish the request to</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dxlclient.message.Request.message_type">
+<code class="descname">message_type</code><a class="headerlink" href="#dxlclient.message.Request.message_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type of the message</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Request.reply_to_topic">
+<code class="descname">reply_to_topic</code><a class="headerlink" href="#dxlclient.message.Request.reply_to_topic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The topic that the <a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> to this <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> will be sent to</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Request.service_id">
+<code class="descname">service_id</code><a class="headerlink" href="#dxlclient.message.Request.service_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The identifier of the service that this request will be routed to. If an identifier is not specified,
+the initial broker that receives the request will select the service to handle the request (round-robin by
+default).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dxlclient.message.Response">
+<em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">Response</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.message.Message" title="dxlclient.message.Message"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Message</span></code></a></p>
+<p><a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> messages are sent by service instances upon receiving <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> messages. Response messages
+are sent using the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_response" title="dxlclient.client.DxlClient.send_response"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_response()</span></code></a> method of a client instance. Clients that are
+invoking the service (sending a request) will receive the response as a return value of the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of a client instance or via the
+<a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.ResponseCallback" title="dxlclient.callbacks.ResponseCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.ResponseCallback</span></code></a> callback when invoking the asynchronous method,
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a>.</p>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> &#8211; The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message that this is a response for</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dxlclient.message.Response.message_type">
+<code class="descname">message_type</code><a class="headerlink" href="#dxlclient.message.Response.message_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numeric type of the message</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Response.request">
+<code class="descname">request</code><a class="headerlink" href="#dxlclient.message.Response.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message that this is a response for</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Response.request_message_id">
+<code class="descname">request_message_id</code><a class="headerlink" href="#dxlclient.message.Response.request_message_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique identifier (UUID) for the <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message that this message is a
+response for. This is used by the invoking <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> to
+correlate an incoming <a class="reference internal" href="#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">Response</span></code></a> message with the <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> message that
+was initially sent by the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Response.service_id">
+<code class="descname">service_id</code><a class="headerlink" href="#dxlclient.message.Response.service_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The identifier of the service that sent this response (the service that the corresponding
+<a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">Request</span></code></a> was routed to).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dxlclient.exceptions.html"
+                        title="previous chapter">dxlclient.exceptions module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dxlclient.service.html"
+                        title="next chapter">dxlclient.service module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dxlclient.message.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.service.html" title="dxlclient.service module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

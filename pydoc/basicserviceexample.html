@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Service Sample &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Advanced Events Sample" href="advancedeventsexample.html" />
+    <link rel="prev" title="Basic Events Sample" href="basiceventsexample.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedeventsexample.html" title="Advanced Events Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basiceventsexample.html" title="Basic Events Sample"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basic-service-sample">
+<h1>Basic Service Sample<a class="headerlink" href="#basic-service-sample" title="Permalink to this headline">¶</a></h1>
+<p>This sample demonstrates how to register a DXL service to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a>
+messages and send <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> messages back to an invoking
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><em>Samples Configuration</em></a>).</p>
+<p>To run this sample execute the <code class="docutils literal"><span class="pre">sample\basic\service_example.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">basic</span>\<span class="n">service_example</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Service</span> <span class="n">received</span> <span class="n">request</span> <span class="n">payload</span><span class="p">:</span> <span class="n">ping</span>
+<span class="n">Client</span> <span class="n">received</span> <span class="n">response</span> <span class="n">payload</span><span class="p">:</span> <span class="n">pong</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The code for the sample is broken into two main sections.</p>
+<p>The first section is responsible for creating a <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> that will be
+invoked for a specific topic associated with the service. The callback will send back a
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message with a payload of <code class="docutils literal"><span class="pre">pong</span></code> for any
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages that are received.</p>
+<p>It then creates a <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> instance and registers the request
+callback with it via the <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo.add_topic" title="dxlclient.service.ServiceRegistrationInfo.add_topic"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo.add_topic()</span></code></a> method.</p>
+<p>Finally it registers the service with the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.register_service_sync" title="dxlclient.client.DxlClient.register_service_sync"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.register_service_sync()</span></code></a>
+method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Register the service</span>
+<span class="c1">#</span>
+
+<span class="c1"># Create incoming request callback</span>
+<span class="k">class</span> <span class="nc">MyRequestCallback</span><span class="p">(</span><span class="n">RequestCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Extract information from request</span>
+        <span class="k">print</span> <span class="s2">&quot;Service received request payload: &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="c1"># Create the response message</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="c1"># Populate the response payload</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;pong&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="c1"># Send the response</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="c1"># Create service registration object</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">ServiceRegistrationInfo</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;myService&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a topic for the service to respond to</span>
+<span class="n">info</span><span class="o">.</span><span class="n">add_topic</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">,</span> <span class="n">MyRequestCallback</span><span class="p">())</span>
+
+<span class="c1"># Register the service with the fabric (wait up to 10 seconds for registration to complete)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">register_service_sync</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The second section sends a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message to the service
+that contains a payload of <code class="docutils literal"><span class="pre">ping</span></code> via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of
+the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<p>The payloads of the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> and <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> messages
+are printed.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Invoke the service (send a request)</span>
+<span class="c1">#</span>
+
+<span class="c1"># Create the request message</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+
+<span class="c1"># Populate the request payload</span>
+<span class="n">req</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;ping&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1"># Send the request and wait for a response (synchronous)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+
+<span class="c1"># Extract information from the response (if an error did not occur)</span>
+<span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s2">&quot;Client received response payload: &quot;</span> <span class="o">+</span> <span class="n">res</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="basiceventsexample.html"
+                        title="previous chapter">Basic Events Sample</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="advancedeventsexample.html"
+                        title="next chapter">Advanced Events Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/basicserviceexample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedeventsexample.html" title="Advanced Events Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basiceventsexample.html" title="Basic Events Sample"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

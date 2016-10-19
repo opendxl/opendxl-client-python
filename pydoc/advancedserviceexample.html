@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Service Sample &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Service Wrapper Sample" href="servicewrapperexample.html" />
+    <link rel="prev" title="Advanced Events Sample" href="advancedeventsexample.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="servicewrapperexample.html" title="Service Wrapper Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advancedeventsexample.html" title="Advanced Events Sample"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="advanced-service-sample">
+<h1>Advanced Service Sample<a class="headerlink" href="#advanced-service-sample" title="Permalink to this headline">¶</a></h1>
+<p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><em>Samples Configuration</em></a>).</p>
+<p>This sample differs from the <a class="reference internal" href="basicserviceexample.html"><em>Basic Service Sample</em></a> by breaking the &#8220;service provider&#8221; and &#8220;service invoker&#8221;
+functionality into two distinct scripts. When executed, each of these scripts will contain a unique instance of
+a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<div class="section" id="service-provider">
+<h2>Service Provider<a class="headerlink" href="#service-provider" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to start the &#8220;service provider&#8221;. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages from the &#8220;service invoker&#8221;.</p>
+<p>To start the &#8220;service provider&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\service_provider_sample.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">advanced</span>\<span class="n">service_provider_sample</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">168</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Load</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">from</span><span class="p">:</span> <span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>\<span class="n">sample</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">170</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Creating</span> <span class="n">DXL</span> <span class="n">Client</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">187</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Connecting</span> <span class="n">to</span> <span class="n">Broker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">187</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">188</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">190</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">190</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="n">mybroker</span><span class="p">,</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">,</span> <span class="n">IP</span> <span class="n">address</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">221.144</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">457</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="n">mybroker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">459</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">459</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">460</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">1</span><span class="n">b53cd6a</span><span class="o">-</span><span class="mi">5829</span><span class="o">-</span><span class="mi">4</span><span class="n">a76</span><span class="o">-</span><span class="n">a913</span><span class="o">-</span><span class="n">a120dc59ede7</span><span class="p">}</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">461</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Registering</span> <span class="n">service</span><span class="o">.</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mi">463</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">1</span><span class="n">b53cd6a</span><span class="o">-</span><span class="mi">5829</span><span class="o">-</span><span class="mi">4</span><span class="n">a76</span><span class="o">-</span><span class="n">a913</span><span class="o">-</span><span class="n">a120dc59ede7</span><span class="p">}</span>
+   <span class="n">Enter</span> <span class="mi">9</span> <span class="n">to</span> <span class="n">quit</span>
+   <span class="n">Enter</span> <span class="n">value</span><span class="p">:</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The provider will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
+<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages received by the &#8220;service invoker&#8221; will be displayed in the output.</p>
+<p>The code for the provider is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><em>Basic Service Sample</em></a>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses to our Asynchronous Requests</span>
+<span class="k">class</span> <span class="nc">MyRequestCallback</span><span class="p">(</span><span class="n">RequestCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Provider - Request received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+
+        <span class="c1"># Create the Response message</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Publisher - Creating Response for Request ID </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="c1"># Encode string payload as UTF-8</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;Sample Response Payload&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># Publish the Event to the DXL Fabric on the Topic</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Provider - Sending Response to Request ID: </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="c1"># Create DXL Service Registration object</span>
+<span class="n">service_registration_info</span> <span class="o">=</span> <span class="n">ServiceRegistrationInfo</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;/mycompany/myservice&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a topic for the service to respond to</span>
+<span class="n">service_registration_info</span><span class="o">.</span><span class="n">add_topic</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">,</span> <span class="n">MyRequestCallback</span><span class="p">())</span>
+
+<span class="c1"># Register the service with the DXL fabric (with a wait up to 10 seconds for registration to complete)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Registering service.&quot;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">register_service_sync</span><span class="p">(</span><span class="n">service_registration_info</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> is constructed that will be invoked for a specific topic associated
+with the service. The callback will send back a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> for any
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages that are received.</p>
+<p>It then creates a <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> instance and registers the request
+callback with it via the <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo.add_topic" title="dxlclient.service.ServiceRegistrationInfo.add_topic"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo.add_topic()</span></code></a> method.</p>
+<p>Finally it registers the service with the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.register_service_sync" title="dxlclient.client.DxlClient.register_service_sync"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.register_service_sync()</span></code></a>
+method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+</div>
+<div class="section" id="service-invoker">
+<h2>Service Invoker<a class="headerlink" href="#service-invoker" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to start the &#8220;service invoker&#8221;. This script must be executed in a separate command prompt (or shell),
+leaving the &#8220;service provider&#8221; running.</p>
+<p>To start the &#8220;service invoker&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\service_invoker_sample.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">advanced</span>\<span class="n">service_invoker_sample</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">627</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Invoker</span> <span class="o">-</span> <span class="n">Load</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">from</span><span class="p">:</span> <span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>\<span class="n">sample</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">628</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Invoker</span> <span class="o">-</span> <span class="n">Creating</span> <span class="n">DXL</span> <span class="n">Client</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">644</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Invoker</span> <span class="o">-</span> <span class="n">Connecting</span> <span class="n">to</span> <span class="n">Broker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">645</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">645</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">648</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">648</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="n">mybroker</span><span class="p">,</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">,</span> <span class="n">IP</span> <span class="n">address</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">221.144</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">917</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="n">mybroker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">918</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">920</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="mi">920</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
+   <span class="n">Press</span> <span class="mi">1</span> <span class="n">to</span> <span class="n">send</span> <span class="n">a</span> <span class="n">Synchronous</span> <span class="n">Request</span>
+   <span class="n">Press</span> <span class="mi">2</span> <span class="n">to</span> <span class="n">send</span> <span class="n">an</span> <span class="n">Asynchronous</span> <span class="n">Request</span>
+   <span class="n">Press</span> <span class="mi">9</span> <span class="n">to</span> <span class="n">quit</span>
+   <span class="n">Enter</span> <span class="n">value</span><span class="p">:</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>To publish a synchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal"><span class="pre">1</span></code>.</p>
+<p>To publish an asynchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal"><span class="pre">2</span></code>.</p>
+<p>Information similar to the following should appear in the &#8220;service provider&#8221; output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message was properly received and that a corresponding
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message was sent:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">832</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Request</span> <span class="n">received</span><span class="p">:</span>
+   <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">service</span>
+   <span class="n">Request</span> <span class="n">ID</span><span class="p">:</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span>
+   <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Synchronous</span> <span class="n">Request</span> <span class="n">Payload</span> <span class="o">-</span> <span class="n">Request</span> <span class="n">ID</span><span class="p">:</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">834</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Publisher</span> <span class="o">-</span> <span class="n">Creating</span> <span class="n">Response</span> <span class="k">for</span> <span class="n">Request</span> <span class="n">ID</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span> <span class="n">on</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">service</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">835</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Sending</span> <span class="n">Response</span> <span class="n">to</span> <span class="n">Request</span> <span class="n">ID</span><span class="p">:</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span> <span class="n">on</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">service</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Information similar to the following should appear in the &#8220;service invoker&#8221; output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message was properly received:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">838</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">845</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Invoker</span> <span class="o">-</span> <span class="n">Synchronous</span> <span class="n">Response</span> <span class="n">received</span><span class="p">:</span>
+   <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
+   <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Response</span> <span class="n">Payload</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The code for making <em>synchronous requests</em> is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><em>Basic Service Sample</em></a>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Synchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+
+<span class="c1"># Encode string payload as UTF-8</span>
+<span class="n">request</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Synchronous Request Payload - Request ID: &quot;</span> <span class="o">+</span>
+                   <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1"># Send Synchronous Request with default timeout and wait for Response</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Sending Synchronous Request to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+<span class="c1"># Check that the Response is not an Error Response, then extract</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
+    <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Synchronous Response received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Synchronous Error Response received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
+invoked which delivers the request message to the fabric. The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a>
+message is checked to ensure it is not an error, and its payload is displayed.</p>
+<p>The code for making <em>asynchronous requests</em> is listed below:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses from a Service to our Asynchronous Requests</span>
+<span class="k">class</span> <span class="nc">MyResponseCallback</span><span class="p">(</span><span class="n">ResponseCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="c1"># Check that the Response is not an Error Response, then extract</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
+            <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Asynchronous Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
+                        <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Asynchronous Error Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
+                        <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+
+<span class="c1"># Create the Request</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Asynchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+
+<span class="c1"># Encode string payload as UTF-8</span>
+<span class="n">request</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s1">&#39;Sample Asynchronous Request Payload&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1">#Send Asynchronous Request with a timeout of 5 seconds</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Sending Asynchronous Request:</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">async_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">MyResponseCallback</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.ResponseCallback" title="dxlclient.callbacks.ResponseCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.ResponseCallback</span></code></a> is defined that will receive the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a>
+message from the service provider. The callback will display the details of the response message that was
+received (including validating that it is not an error response).</p>
+<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
+invoked which delivers the request message to the fabric. Along with the request, an instance of
+the previously defined response callback is included which will be invoked when a response is received
+from the service provider.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced Service Sample</a><ul>
+<li><a class="reference internal" href="#service-provider">Service Provider</a></li>
+<li><a class="reference internal" href="#service-invoker">Service Invoker</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="advancedeventsexample.html"
+                        title="previous chapter">Advanced Events Sample</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="servicewrapperexample.html"
+                        title="next chapter">Service Wrapper Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/advancedserviceexample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="servicewrapperexample.html" title="Service Wrapper Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advancedeventsexample.html" title="Advanced Events Sample"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

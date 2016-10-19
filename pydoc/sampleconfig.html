@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Samples Configuration &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Basic Events Sample" href="basiceventsexample.html" />
+    <link rel="prev" title="dxlclient.service module" href="dxlclient.service.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basiceventsexample.html" title="Basic Events Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.service.html" title="dxlclient.service module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="samples-configuration">
+<h1>Samples Configuration<a class="headerlink" href="#samples-configuration" title="Permalink to this headline">¶</a></h1>
+<p>Prior to running any of the examples, make sure you have completed the following:</p>
+<ul class="simple">
+<li>Installed the Python SDK (<a class="reference internal" href="installation.html"><em>Python SDK Installation</em></a>)</li>
+<li>Created the Certificate Authority (CA) and Client Certificate Files (<a class="reference internal" href="certcreation.html"><em>Certificate Files Creation (PKI)</em></a>)</li>
+<li>Exported the Broker Certificates (<a class="reference internal" href="epobrokercertsexport.html"><em>ePO Broker Certificates Export</em></a>)</li>
+<li>Exported the list of DXL Brokers (<a class="reference internal" href="epobrokerlistexport.html"><em>ePO Broker List Export</em></a>)</li>
+</ul>
+<p>The final step prior to running the samples is to populate the contents of the <code class="docutils literal"><span class="pre">dxlclient.config</span></code>
+file that is used by the samples.</p>
+<p>The following steps walk through the process of populating this file:</p>
+<ol class="arabic">
+<li><p class="first">Open the <code class="docutils literal"><span class="pre">dxlclient.config</span></code> file located in the <code class="docutils literal"><span class="pre">sample</span></code> sub-directory of the Python DXL SDK.</p>
+<p>The contents should appear as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<span class="n">BrokerCertChain</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">cabundle</span><span class="o">&gt;</span>
+<span class="n">CertFile</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dxlcert</span><span class="o">&gt;</span>
+<span class="n">PrivateKey</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dxlprivatekey</span><span class="o">&gt;</span>
+
+<span class="p">[</span><span class="n">Brokers</span><span class="p">]</span>
+<span class="n">unique_broker_id_1</span><span class="o">=</span><span class="n">broker_id_1</span><span class="p">;</span><span class="n">broker_port_1</span><span class="p">;</span><span class="n">broker_hostname_1</span><span class="p">;</span><span class="n">broker_ip_1</span>
+<span class="n">unique_broker_id_2</span><span class="o">=</span><span class="n">broker_id_2</span><span class="p">;</span><span class="n">broker_port_2</span><span class="p">;</span><span class="n">broker_hostname_2</span><span class="p">;</span><span class="n">broker_ip_2</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Update the <code class="docutils literal"><span class="pre">CertFile</span></code> and <code class="docutils literal"><span class="pre">PrivateKey</span></code> values to point to the certificate file (<code class="docutils literal"><span class="pre">client.crt</span></code>) and
+private key file (<code class="docutils literal"><span class="pre">client.key</span></code>) that were created during the certificate provisioning steps.</p>
+<p>See the <a class="reference internal" href="certcreation.html"><em>Certificate Files Creation (PKI)</em></a> section for more information on the creation of client key-pairs.</p>
+<p>After completing this step the contents of the configuration file should look similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<span class="n">BrokerCertChain</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">cabundle</span><span class="o">&gt;</span>
+<span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">Brokers</span><span class="p">]</span>
+<span class="n">unique_broker_id_1</span><span class="o">=</span><span class="n">broker_id_1</span><span class="p">;</span><span class="n">broker_port_1</span><span class="p">;</span><span class="n">broker_hostname_1</span><span class="p">;</span><span class="n">broker_ip_1</span>
+<span class="n">unique_broker_id_2</span><span class="o">=</span><span class="n">broker_id_2</span><span class="p">;</span><span class="n">broker_port_2</span><span class="p">;</span><span class="n">broker_hostname_2</span><span class="p">;</span><span class="n">broker_ip_2</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Update the <code class="docutils literal"><span class="pre">BrokerCertChain</span></code> value to point to the Broker Certificates file (<code class="docutils literal"><span class="pre">brokercerts.crt</span></code>)
+that was created when exporting the Broker Certificates.</p>
+<p>See the <a class="reference internal" href="epobrokercertsexport.html"><em>ePO Broker Certificates Export</em></a> section for more information on exporting Broker Certificates.</p>
+<p>After completing this step the contents of the configuration file should look similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<span class="n">BrokerCertChain</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">brokercerts</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">Brokers</span><span class="p">]</span>
+<span class="n">unique_broker_id_1</span><span class="o">=</span><span class="n">broker_id_1</span><span class="p">;</span><span class="n">broker_port_1</span><span class="p">;</span><span class="n">broker_hostname_1</span><span class="p">;</span><span class="n">broker_ip_1</span>
+<span class="n">unique_broker_id_2</span><span class="o">=</span><span class="n">broker_id_2</span><span class="p">;</span><span class="n">broker_port_2</span><span class="p">;</span><span class="n">broker_hostname_2</span><span class="p">;</span><span class="n">broker_ip_2</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" start="3">
+<li><p class="first">Update the <code class="docutils literal"><span class="pre">[Brokers]</span></code> section to include the contents of the broker list file (<code class="docutils literal"><span class="pre">brokerlist.properties</span></code>)
+that was created when exporting the Broker List.</p>
+<p>See the <a class="reference internal" href="epobrokerlistexport.html"><em>ePO Broker List Export</em></a> section for more information on exporting the Broker List.</p>
+<p>After completing this step the contents of the configuration file should look similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<span class="n">BrokerCertChain</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">brokercerts</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
+
+<span class="p">[</span><span class="n">Brokers</span><span class="p">]</span>
+<span class="p">{</span><span class="mi">5</span><span class="n">d73b77f</span><span class="o">-</span><span class="mi">8</span><span class="n">c4b</span><span class="o">-</span><span class="mi">4</span><span class="n">ae0</span><span class="o">-</span><span class="n">b437</span><span class="o">-</span><span class="n">febd12facfd4</span><span class="p">}</span><span class="o">=</span><span class="p">{</span><span class="mi">5</span><span class="n">d73b77f</span><span class="o">-</span><span class="mi">8</span><span class="n">c4b</span><span class="o">-</span><span class="mi">4</span><span class="n">ae0</span><span class="o">-</span><span class="n">b437</span><span class="o">-</span><span class="n">febd12facfd4</span><span class="p">};</span><span class="mi">8883</span><span class="p">;</span><span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">;</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.12</span>
+<span class="p">{</span><span class="mf">24397e4</span><span class="n">d</span><span class="o">-</span><span class="mi">645</span><span class="n">f</span><span class="o">-</span><span class="mi">4</span><span class="n">f2f</span><span class="o">-</span><span class="mi">974</span><span class="n">f</span><span class="o">-</span><span class="n">f98c55bdddf7</span><span class="p">}</span><span class="o">=</span><span class="p">{</span><span class="mf">24397e4</span><span class="n">d</span><span class="o">-</span><span class="mi">645</span><span class="n">f</span><span class="o">-</span><span class="mi">4</span><span class="n">f2f</span><span class="o">-</span><span class="mi">974</span><span class="n">f</span><span class="o">-</span><span class="n">f98c55bdddf7</span><span class="p">};</span><span class="mi">8883</span><span class="p">;</span><span class="n">mybroker2</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">;</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.13</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">At this point you can run the samples included with the Python SDK</p>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dxlclient.service.html"
+                        title="previous chapter">dxlclient.service module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="basiceventsexample.html"
+                        title="next chapter">Basic Events Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/sampleconfig.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basiceventsexample.html" title="Basic Events Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.service.html" title="dxlclient.service module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

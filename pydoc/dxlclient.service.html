@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dxlclient.service module &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="up" title="dxlclient package" href="dxlclient.html" />
+    <link rel="next" title="Samples Configuration" href="sampleconfig.html" />
+    <link rel="prev" title="dxlclient.message module" href="dxlclient.message.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sampleconfig.html" title="Samples Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.message.html" title="dxlclient.message module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-dxlclient.service">
+<span id="dxlclient-service-module"></span><h1>dxlclient.service module<a class="headerlink" href="#module-dxlclient.service" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="dxlclient.service.ServiceRegistrationInfo">
+<em class="property">class </em><code class="descclassname">dxlclient.service.</code><code class="descname">ServiceRegistrationInfo</code><span class="sig-paren">(</span><em>client</em>, <em>service_type</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dxlclient._BaseObject</span></code></p>
+<p>Service Registration instances are used to register and expose services onto a DXL fabric.</p>
+<p>DXL Services are exposed to the DXL fabric and are invoked in a fashion similar to RESTful web services.
+Communication between an invoking client and the DXL service is one-to-one (request/response).</p>
+<p>Each service is identified by the &#8220;topics&#8221; it responds to. Each of these &#8220;topics&#8221; can be thought of as
+a method that is being &#8220;invoked&#8221; on the service by the remote client.</p>
+<p>Multiple service &#8220;instances&#8221; can be registered with the DXL fabric that respond to the same &#8220;topics&#8221;. When
+this occurs (unless explicitly overridden by the client) the fabric will select the particular instance
+to route the request to (by default round-robin). Multiple service instances can be used to increase
+scalability and fault-tolerance.</p>
+<p>The following demonstrates registering a service that responds to a single topic with the DXL fabric:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.callbacks</span> <span class="kn">import</span> <span class="n">RequestCallback</span>
+<span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">dxlclient.service</span> <span class="kn">import</span> <span class="n">ServiceRegistrationInfo</span>
+
+<span class="k">class</span> <span class="nc">MyRequestCallback</span><span class="p">(</span><span class="n">RequestCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Extract information from request</span>
+        <span class="k">print</span> <span class="n">request</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+        <span class="c1"># Create the response message</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="c1"># Populate the response payload</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;pong&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="c1"># Send the response</span>
+        <span class="n">dxl_client</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="c1"># Create service registration object</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">ServiceRegistrationInfo</span><span class="p">(</span><span class="n">dxl_client</span><span class="p">,</span> <span class="s2">&quot;/mycompany/myservice&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a topic for the service to respond to</span>
+<span class="n">info</span><span class="o">.</span><span class="n">add_topic</span><span class="p">(</span><span class="s2">&quot;/testservice/testrequesttopic&quot;</span><span class="p">,</span> <span class="n">MyRequestCallback</span><span class="p">())</span>
+
+<span class="c1"># Register the service with the fabric (wait up to 10 seconds for registration to complete)</span>
+<span class="n">dxl_client</span><span class="o">.</span><span class="n">register_service_sync</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE:</strong> A service is only considered &#8220;active&#8221; if there are references to the
+<a class="reference internal" href="#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">ServiceRegistrationInfo</span></code></a> instance. If no references to the info object exist, it will be
+destructed, and the service will be automatically <em>unregistered</em> from the fabric.</p>
+<p>The following demonstrates a client that is invoking the service in the example above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Message</span>
+
+<span class="c1"># Create the request message</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s2">&quot;/testservice/testrequesttopic&quot;</span><span class="p">)</span>
+
+<span class="c1"># Populate the request payload</span>
+<span class="n">req</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;ping&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1"># Send the request and wait for a response (synchronous)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">dxl_client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+
+<span class="c1"># Extract information from the response (if an error did not occur)</span>
+<span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">res</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Constructor parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>client</strong> &#8211; The <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> instance that will expose this service</li>
+<li><strong>service_type</strong> &#8211; A textual name for the service. For example, &#8220;/mycompany/myservice&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dxlclient.service.ServiceRegistrationInfo.add_topic">
+<code class="descname">add_topic</code><span class="sig-paren">(</span><em>topic</em>, <em>callback</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.add_topic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a topic for the service to respond to along with the <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a>
+that will be invoked.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topic</strong> &#8211; The topic for the service to respond to</li>
+<li><strong>callback</strong> &#8211; The <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> that will be invoked when a
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is received</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dxlclient.service.ServiceRegistrationInfo.add_topics">
+<code class="descname">add_topics</code><span class="sig-paren">(</span><em>callbacks_by_topic</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.add_topics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a set of topics for the service to respond to along with their associated
+<a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> instances as a dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>callbacks_by_topic</strong> &#8211; Dictionary containing a set of topics for the service to respond to along with
+their associated <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.service.ServiceRegistrationInfo.metadata">
+<code class="descname">metadata</code><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary of name-value pairs that are sent as part of the service registration. Brokers provide
+a registry service that allows for registered services and their associated meta-information to be inspected.
+The metadata is typically used to include information such as the versions for products that are
+exposing DXL services, etc.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.service.ServiceRegistrationInfo.service_id">
+<code class="descname">service_id</code><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.service_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unique identifier for the service instance (automatically generated when the <a class="reference internal" href="#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">ServiceRegistrationInfo</span></code></a>
+object is constructed)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.service.ServiceRegistrationInfo.service_type">
+<code class="descname">service_type</code><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.service_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A textual name for the service. For example, &#8220;/mycompany/myservice&#8221;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.service.ServiceRegistrationInfo.topics">
+<code class="descname">topics</code><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.topics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple containing the topics that the service responds to</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.service.ServiceRegistrationInfo.ttl">
+<code class="descname">ttl</code><a class="headerlink" href="#dxlclient.service.ServiceRegistrationInfo.ttl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The interval (in minutes) at which the client will automatically re-register the service with the
+DXL fabric (defaults to 60 minutes)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dxlclient.message.html"
+                        title="previous chapter">dxlclient.message module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sampleconfig.html"
+                        title="next chapter">Samples Configuration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dxlclient.service.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sampleconfig.html" title="Samples Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dxlclient.message.html" title="dxlclient.message module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

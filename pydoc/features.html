@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Features &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Integration Types" href="integrationtypes.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="integrationtypes.html" title="Integration Types"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="location-unaware">
+<h2>Location Unaware<a class="headerlink" href="#location-unaware" title="Permalink to this headline">¶</a></h2>
+<p>Communication between clients on the DXL fabric is based on sending &#8220;messages&#8221; to a &#8220;topic&#8221;. Clients are unaware
+of the location of the other DXL clients they are communicating with (its hostname, IP address, etc.).</p>
+<p>For example, if a client wanted to determine the reputation for a file, it could send a request message to the topic
+<code class="docutils literal"><span class="pre">/mcafee/service/tie/file/reputation</span></code>. A service would receive the request and send a response with the appropriate
+reputation information. All of this communication occurs without either party knowing the location of the other
+(they could be in the same building or on the other side of the world).</p>
+</div>
+<div class="section" id="persistent-connection">
+<h2>Persistent Connection<a class="headerlink" href="#persistent-connection" title="Permalink to this headline">¶</a></h2>
+<p>Connections are established from a DXL client to a DXL broker. These connections are persistent and allow for
+bi-directional communication. The benefits to this style of connection include:</p>
+<ul>
+<li><p class="first">Firewall Friendly</p>
+<blockquote>
+<div><p>Clients are responsible for establishing the connection to brokers (never from a
+broker to a client). Therefore, we can communicate with clients that were previously unreachable.
+For example, a mobile client can connect to a broker exposed in a demilitarized zone (DMZ). Since
+the communication is bi-directional, we can now communicate with the client from products
+also connected to the fabric (sending an agent wakeup for cloud ePO, etc.).</p>
+</div></blockquote>
+</li>
+<li><p class="first">Near Real-Time Communication</p>
+<blockquote>
+<div><p>Communication on the DXL fabric is extremely efficient because the
+expense of continually establishing connections is eliminated.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="multiple-communication-models">
+<h2>Multiple communication models<a class="headerlink" href="#multiple-communication-models" title="Permalink to this headline">¶</a></h2>
+<p>DXL Supports two different models of communication. A service-based model with point-to-point (request/response)
+communication and a publish/subscribe event-based model.</p>
+<ul>
+<li><p class="first">Service-based</p>
+<blockquote>
+<div><p>The DXL fabric allows for &#8220;services&#8221; to be registered and exposed that respond to requests
+sent by invoking clients. This communication is point-to-point (one-to-one), meaning the communication is
+solely between an invoking client and the service that is being invoked. It is important to note that in
+this model the client actively invokes the service by sending it requests.</p>
+<p>For example, the Threat Intelligence Exchange service is exposed via DXL allowing for DXL clients to request
+reputations for files and certificates.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Event-based</p>
+<blockquote>
+<div><p>The DXL fabric also allows for event-based communication. This model is typically referred to as
+&#8220;publish/subscribe&#8221; wherein clients register interest by subscribing to a particular topic and publishers
+periodically send events to that topic. The event is delivered by the DXL fabric to all of the currently
+subscribed clients for the topic. Therefore, a single event sent can reach multiple clients (one-to-many).
+It is important to note that in this model the client passively receives events when they are sent by a publisher.</p>
+<p>For example, Advanced Threat Defense (ATD) servers send events to the topic <code class="docutils literal"><span class="pre">/mcafee/event/atd/file/report</span></code> when
+they have successfully determined the reputation for a file. Any clients currently subscribed to this topic will
+receive the report (Threat Intelligence Exchange Server and the Enterprise Security Manager currently subscribe
+to this topic).</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="secure-communication">
+<h2>Secure Communication<a class="headerlink" href="#secure-communication" title="Permalink to this headline">¶</a></h2>
+<p>Communication over the DXL fabric is secured via TLS version 1.2 and PKI mutual authentication.</p>
+<p>The fabric also supports topic-level authorization wherein individual topics can be restricted in terms of
+which clients can publish messages to and which clients can receive messages on a particular topic.</p>
+<p>For example, the DXL clients embedded in the Threat Intelligence Exchange servers are the only ones
+authorized to publish reputation change events to the topic <code class="docutils literal"><span class="pre">/mcafee/event/tie/file/repchange</span></code>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Features</a><ul>
+<li><a class="reference internal" href="#location-unaware">Location Unaware</a></li>
+<li><a class="reference internal" href="#persistent-connection">Persistent Connection</a></li>
+<li><a class="reference internal" href="#multiple-communication-models">Multiple communication models</a></li>
+<li><a class="reference internal" href="#secure-communication">Secure Communication</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="architecture.html"
+                        title="previous chapter">Architecture</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="integrationtypes.html"
+                        title="next chapter">Integration Types</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/features.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="integrationtypes.html" title="Integration Types"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

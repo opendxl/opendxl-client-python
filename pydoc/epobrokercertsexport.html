@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ePO Broker Certificates Export &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="ePO Broker List Export" href="epobrokerlistexport.html" />
+    <link rel="prev" title="ePO Certificate Authority (CA) Import" href="epocaimport.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="epobrokerlistexport.html" title="ePO Broker List Export"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="epocaimport.html" title="ePO Certificate Authority (CA) Import"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="epo-broker-certificates-export">
+<h1>ePO Broker Certificates Export<a class="headerlink" href="#epo-broker-certificates-export" title="Permalink to this headline">¶</a></h1>
+<p>The certificate information for DXL Brokers must be available to DXL clients attempting to connect
+to the fabric. This certificate information allows clients to ensure the Brokers being connected to are valid
+(via mutual authentication).</p>
+<p>The following steps walk through the process to export the DXL Broker certificate information:</p>
+<ol class="arabic">
+<li><p class="first">Navigate to <strong>Server Settings</strong> and select the <strong>DXL Certificates</strong> setting on the left navigation bar.</p>
+<blockquote>
+<div><img alt="_images/serversettings-certs.png" src="_images/serversettings-certs.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Edit</strong> button in the lower right corner (as shown in the image above)</p>
+<blockquote>
+<div><img alt="_images/editdxlcerts-save.png" src="_images/editdxlcerts-save.png" />
+</div></blockquote>
+</li>
+<li><p class="first">Click the <strong>Export All</strong> button in the <strong>Broker Certificates</strong> section (as shown in the image above)</p>
+</li>
+<li><p class="first">The exported file, <code class="docutils literal"><span class="pre">brokercerts.crt</span></code>, will be saved locally.</p>
+<p>This file is specified as the <code class="docutils literal"><span class="pre">broker_ca_bundle</span></code> parameter when constructing a
+<a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig</span></code></a> instance.</p>
+<p>This file can also be specified via a configuration file used to instantiate a
+<a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig</span></code></a> instance.</p>
+<p>See the <a class="reference internal" href="dxlclient.client_config.html#dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file" title="dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file()</span></code></a> method for more information.</p>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="epocaimport.html"
+                        title="previous chapter">ePO Certificate Authority (CA) Import</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="epobrokerlistexport.html"
+                        title="next chapter">ePO Broker List Export</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/epobrokercertsexport.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="epobrokerlistexport.html" title="ePO Broker List Export"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="epocaimport.html" title="ePO Certificate Authority (CA) Import"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

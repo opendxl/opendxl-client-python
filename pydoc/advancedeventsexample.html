@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Events Sample &mdash; DXL Python SDK 3.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="next" title="Advanced Service Sample" href="advancedserviceexample.html" />
+    <link rel="prev" title="Basic Service Sample" href="basicserviceexample.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedserviceexample.html" title="Advanced Service Sample"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basicserviceexample.html" title="Basic Service Sample"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="advanced-events-sample">
+<h1>Advanced Events Sample<a class="headerlink" href="#advanced-events-sample" title="Permalink to this headline">¶</a></h1>
+<p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><em>Samples Configuration</em></a>).</p>
+<p>This sample differs from the <a class="reference internal" href="basiceventsexample.html"><em>Basic Events Sample</em></a> by breaking the &#8220;event subscriber&#8221; and &#8220;event publisher&#8221;
+functionality into two distinct scripts. When executed, each of these scripts will contain a unique instance of
+a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<div class="section" id="event-subscriber">
+<h2>Event Subscriber<a class="headerlink" href="#event-subscriber" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to start the &#8220;event subscriber&#8221;. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages from the &#8220;event publisher&#8221;.</p>
+<p>To start the &#8220;event subscriber&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\event_subscriber_sample.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">advanced</span>\<span class="n">event_subscriber_sample</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">936</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Load</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">from</span><span class="p">:</span> <span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>\<span class="n">sample</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">938</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Creating</span> <span class="n">DXL</span> <span class="n">Client</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">956</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Connecting</span> <span class="n">to</span> <span class="n">Broker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">957</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">957</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">959</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">959</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="n">mybroker</span><span class="p">,</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">,</span> <span class="n">IP</span> <span class="n">address</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">221.144</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">224</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="n">mybroker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">226</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">226</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">226</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">1</span><span class="n">d79d1a9</span><span class="o">-</span><span class="mi">8</span><span class="n">efd</span><span class="o">-</span><span class="mi">41</span><span class="n">f3</span><span class="o">-</span><span class="n">bc2a</span><span class="o">-</span><span class="n">bea5a34b9faa</span><span class="p">}</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">229</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">event</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">08</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">229</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Adding</span> <span class="n">Event</span> <span class="n">callback</span> <span class="n">function</span> <span class="n">to</span> <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">event</span>
+   <span class="n">Enter</span> <span class="mi">9</span> <span class="n">to</span> <span class="n">quit</span>
+   <span class="n">Enter</span> <span class="n">value</span><span class="p">:</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The subscriber will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
+<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages received by the &#8220;event publisher&#8221; will be displayed in the output.</p>
+<p>The code for the subscriber is very similar to what is being used in the <a class="reference internal" href="basiceventsexample.html"><em>Basic Events Sample</em></a>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Event callback class to handle incoming DXL Events</span>
+<span class="k">class</span> <span class="nc">MyEventCallback</span><span class="p">(</span><span class="n">EventCallback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># Extract information from Event payload, in this sample we expect it is UTF-8 encoded</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Subscriber - Event received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">event</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+
+<span class="c1"># Add Event callback to DXL client</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding Event callback function to Topic: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">EVENT_TOPIC</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">add_event_callback</span><span class="p">(</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">MyEventCallback</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.EventCallback" title="dxlclient.callbacks.EventCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.EventCallback</span></code></a> is registered with the client for a specific topic. By default
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a> will also subscribe
+(<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the same topic on the fabric.</p>
+</div>
+<div class="section" id="event-publisher">
+<h2>Event Publisher<a class="headerlink" href="#event-publisher" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to start the &#8220;event publisher&#8221;. This script must be executed in a separate command prompt (or shell),
+leaving the &#8220;event subscriber&#8221; running.</p>
+<p>To start the &#8220;event publisher&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\event_publisher_sample.py</span></code> script as follows:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&gt;</span><span class="n">python</span> <span class="n">sample</span>\<span class="n">advanced</span>\<span class="n">event_publisher_sample</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The output should appear similar to the following:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mo">076</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Publisher</span> <span class="o">-</span> <span class="n">Load</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">from</span><span class="p">:</span> <span class="n">C</span><span class="p">:</span>\<span class="n">dxlclient</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">1</span>\<span class="n">sample</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mo">07</span><span class="mi">8</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Publisher</span> <span class="o">-</span> <span class="n">Creating</span> <span class="n">DXL</span> <span class="n">Client</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">094</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Publisher</span> <span class="o">-</span> <span class="n">Connecting</span> <span class="n">to</span> <span class="n">Broker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">095</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">broker</span> <span class="nb">list</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">095</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Checking</span> <span class="n">brokers</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">096</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">096</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Trying</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">broker</span> <span class="p">{</span><span class="n">Unique</span> <span class="nb">id</span><span class="p">:</span> <span class="n">mybroker</span><span class="p">,</span> <span class="n">Host</span> <span class="n">name</span><span class="p">:</span> <span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">,</span> <span class="n">IP</span> <span class="n">address</span><span class="p">:</span> <span class="mf">10.84</span><span class="o">.</span><span class="mf">221.144</span><span class="p">,</span> <span class="n">Port</span><span class="p">:</span> <span class="mi">8883</span><span class="p">}</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">364</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="n">to</span> <span class="n">broker</span> <span class="n">mybroker</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">365</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Launching</span> <span class="n">event</span> <span class="n">loop</span><span class="o">...</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">365</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Connected</span> <span class="k">with</span> <span class="n">result</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="mi">365</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Subscribing</span> <span class="n">to</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">41</span><span class="n">eae910</span><span class="o">-</span><span class="mi">2409</span><span class="o">-</span><span class="mf">4e4</span><span class="n">b</span><span class="o">-</span><span class="mi">9</span><span class="n">a0f</span><span class="o">-</span><span class="mi">94</span><span class="n">b54290a2cf</span><span class="p">}</span>
+   <span class="n">Enter</span> <span class="mi">1</span> <span class="n">to</span> <span class="n">publish</span> <span class="n">a</span> <span class="n">DXL</span> <span class="n">Event</span>
+   <span class="n">Enter</span> <span class="mi">9</span> <span class="n">to</span> <span class="n">quit</span>
+   <span class="n">Enter</span> <span class="n">value</span><span class="p">:</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>To publish a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> message, enter <code class="docutils literal"><span class="pre">1</span></code>.</p>
+<p>Information similar to the following should appear in the &#8220;event subscriber&#8221; output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> message was properly received:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">03</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">444</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">received</span><span class="p">:</span>
+   <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">event</span>
+   <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Event</span> <span class="n">Payload</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The publisher will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
+<p>The code for the publisher is very similar to what is being used in the <a class="reference internal" href="basiceventsexample.html"><em>Basic Events Sample</em></a>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Create the Event</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Publisher - Creating Event for Topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">EVENT_TOPIC</span><span class="p">)</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">EVENT_TOPIC</span><span class="p">)</span>
+
+<span class="c1"># Encode string payload as UTF-8</span>
+<span class="n">event</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;Sample Event Payload&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="c1"># Publish the Event to the DXL Fabric on the Topic</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Publisher - Publishing Event to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">EVENT_TOPIC</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>An <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> event message is created and a payload is assigned. The event
+is delivered to the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced Events Sample</a><ul>
+<li><a class="reference internal" href="#event-subscriber">Event Subscriber</a></li>
+<li><a class="reference internal" href="#event-publisher">Event Publisher</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="basicserviceexample.html"
+                        title="previous chapter">Basic Service Sample</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="advancedserviceexample.html"
+                        title="next chapter">Advanced Service Sample</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/advancedeventsexample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedserviceexample.html" title="Advanced Service Sample"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basicserviceexample.html" title="Basic Service Sample"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
