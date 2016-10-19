@@ -4,7 +4,7 @@
 
 See the [Wiki](https://github.com/opendxl/opendxl-client-python/wiki) for an overview of the Data Exchange Layer (DXL), the Open DXL Python client, and examples.
 
-See the [Python SDK Documentation](https://opendxl.github.io/opendxl-client-python/pydoc) for the API.
+See the [Python SDK Documentation](https://opendxl.github.io/opendxl-client-python/pydoc) for installation instructions, API documentation, and examples.
 
 ## Installation
 
