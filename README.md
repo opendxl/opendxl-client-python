@@ -1,15 +1,15 @@
-# Open DXL Python Client
+# OpenDXL Python Client
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Documentation
 
-See the [Wiki](https://github.com/opendxl/opendxl-client-python/wiki) for an overview of the Data Exchange Layer (DXL), the Open DXL Python client, and examples.
+See the [Wiki](https://github.com/opendxl/opendxl-client-python/wiki) for an overview of the Data Exchange Layer (DXL), the OpenDXL Python client, and examples.
 
 See the [Python Client SDK Documentation](https://opendxl.github.io/opendxl-client-python/pydoc) for installation instructions, API documentation, and examples.
 
 ## Installation
 
-To start using the Open DXL Python client:
+To start using the OpenDXL Python client:
 
 * Download the [Latest Release](https://github.com/opendxl/opendxl-client-python/releases/latest)
 * Extract the release .zip file
