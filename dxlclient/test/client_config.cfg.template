@@ -1,0 +1,7 @@
+[Certs]
+BrokerCertChain=../../certificates/client/ca-broker.crt
+CertFile=../../certificates/client/client.crt
+PrivateKey=../../certificates/client/client.pem
+
+[Brokers]
+unique_broker_id_1=unique_broker_id_1;@BROKER_PORT@;@BROKER_HOSTNAME@;@BROKER_IP@
