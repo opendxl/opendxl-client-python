@@ -35,15 +35,15 @@ Use ``pip`` to automatically install the module:
 
     .. code-block:: python
 
-        pip install dxlclient-3.0.1.154-py2.7-none-any.whl
+        pip install dxlclient-3.0.1.164-py2.7-none-any.whl
 
 Or with:
 
     .. code-block:: python
 
-        pip install dxlclient-3.0.1.154.zip
+        pip install dxlclient-3.0.1.164.zip
 
-As an alternative (without PIP), unpack the dxlclient-3.0.1.154.zip (located in the lib folder) and run the setup
+As an alternative (without PIP), unpack the dxlclient-3.0.1.164.zip (located in the lib folder) and run the setup
 script:
 
     .. code-block:: python
