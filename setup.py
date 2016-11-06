@@ -20,6 +20,11 @@ dist = setup(
     # Application author details:
     author="McAfee, Inc.",
 
+    # License
+    license="Apache License 2.0",
+
+    keywords=['opendxl', 'dxl', 'mcafee', 'client'],
+
     # Packages
     packages=[
         "dxlclient",
@@ -41,4 +46,13 @@ dist = setup(
 
     description="McAfee Data Exchange Layer Client",
 
+    long_description=open('README').read(),
+
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+    ],
 )

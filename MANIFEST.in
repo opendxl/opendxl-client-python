@@ -1,2 +1,4 @@
+include LICENSE
+
 recursive-include dxlclient/_vendor *
 recursive-exclude dxlclient/test *
