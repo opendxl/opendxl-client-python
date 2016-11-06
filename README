@@ -1,0 +1,23 @@
+OpenDXL Python Client
+=====================
+
+Documentation
+-------------
+
+See the `GitHub Wiki <https://github.com/opendxl/opendxl-client-python/wiki>`_ for an overview of the Data Exchange Layer (DXL), the OpenDXL Python client, and examples.
+
+See the `Python Client SDK Documentation <https://opendxl.github.io/opendxl-client-python/pydoc>`_ for installation instructions, API documentation, and examples.
+
+Bugs and Feedback
+-----------------
+
+For bugs, questions and discussions please use the `GitHub Issues <https://github.com/opendxl/opendxl-client-python/issues>`_.
+
+LICENSE
+-------
+
+Copyright 2016 McAfee, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+`<http://www.apache.org/licenses/LICENSE-2.0>`_
