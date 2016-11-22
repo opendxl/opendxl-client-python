@@ -330,7 +330,7 @@ below:
             # Create the request message
             req = Request(CREATE_SEARCH_TOPIC)
             # Set the payload
-            req.payload = json.dumps(payload_dict).encode()
+            req.payload = json.dumps(payload_dict).encode(encoding="UTF-8")
 
             # Display the request that is going to be sent
             print "Request:\n" + json.dumps(payload_dict, sort_keys=True, indent=4, separators=(',', ': '))
@@ -340,7 +340,7 @@ below:
 
             # Return a dictionary corresponding to the response payload
             if res.message_type != Message.MESSAGE_TYPE_ERROR:
-                resp_dict = json.loads(res.payload.decode())
+                resp_dict = json.loads(res.payload.decode(encoding="UTF-8"))
                 # Display the response
                 print "Response:\n" + json.dumps(resp_dict, sort_keys=True, indent=4, separators=(',', ': '))
                 if "code" in resp_dict:

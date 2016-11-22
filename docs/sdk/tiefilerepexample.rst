@@ -123,7 +123,7 @@ below:
 
             # Return a dictionary corresponding to the response payload
             if res.message_type != Message.MESSAGE_TYPE_ERROR:
-                return json.loads(res.payload.decode())
+                return json.loads(res.payload.decode(encoding="UTF-8"))
             else:
                 raise Exception("Error: " + res.error_message + " (" + str(res.error_code) + ")")
 

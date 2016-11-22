@@ -54,7 +54,7 @@ with DxlClient(config) as client:
 
     # Extract information from the response (if an error did not occur)
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
-        response_dict = json.loads(res.payload.decode())
+        response_dict = json.loads(res.payload.decode(encoding="UTF-8"))
         print "Client received response payload: \n" + \
           json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': '))
     else:

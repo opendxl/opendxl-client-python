@@ -51,7 +51,7 @@ with DxlClient(config) as client:
         def on_request(self, request):
             try:
                 # Extract information from request
-                query = request.payload.decode()
+                query = request.payload.decode(encoding="UTF-8")
                 logger.info("Service received request payload: " + query)
 
                 # Send HTTP request to OpenWeatherMap
@@ -65,14 +65,14 @@ with DxlClient(config) as client:
                 # Create the response message
                 response = Response(request)
                 # Populate the response payload
-                response.payload = weather_response.encode()
+                response.payload = weather_response.encode(encoding="UTF-8")
                 # Send the response
                 client.send_response(response)
 
             except Exception as ex:
                 print str(ex)
                 # Send error response
-                client.send_response(ErrorResponse(request, error_message=str(ex).encode()))
+                client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
 
     # Create service registration object
     info = ServiceRegistrationInfo(client, SERVICE_NAME)
