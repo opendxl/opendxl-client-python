@@ -1,6 +1,10 @@
 # OpenDXL Python Client
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+## Overview
+
+The OpenDXL Python Client enables the development of applications that connect to the [McAfee Data Exchange Layer](http://www.mcafee.com/us/solutions/data-exchange-layer.aspx) messaging fabric for the purposes of sending/receiving events and invoking/providing services.
+
 ## Documentation
 
 See the [Wiki](https://github.com/opendxl/opendxl-client-python/wiki) for an overview of the Data Exchange Layer (DXL), the OpenDXL Python client, and examples.
