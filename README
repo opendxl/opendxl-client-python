@@ -1,6 +1,10 @@
 OpenDXL Python Client
 =====================
 
+Overview
+--------
+The OpenDXL Python Client enables the development of applications that connect to the `McAfee Data Exchange Layer <http://www.mcafee.com/us/solutions/data-exchange-layer.aspx>`_ messaging fabric for the purposes of sending/receiving events and invoking/providing services.
+
 Documentation
 -------------
 
