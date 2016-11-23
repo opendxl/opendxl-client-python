@@ -74,7 +74,7 @@ The majority of code for the service wrapper is shown below:
                 def on_request(self, request):
                     try:
                         # Extract information from request
-                        query = request.payload.decode(encoding="UTF-8")
+                        query = request.payload.decode()
                         logger.info("Service received request payload: " + query)
 
                         # Send HTTP request to OpenWeatherMap
@@ -88,14 +88,14 @@ The majority of code for the service wrapper is shown below:
                         # Create the response message
                         response = Response(request)
                         # Populate the response payload
-                        response.payload = weather_response.encode(encoding="UTF-8")
+                        response.payload = weather_response.encode()
                         # Send the response
                         client.send_response(response)
 
                     except Exception as ex:
                         print str(ex)
                         # Send error response
-                        client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
+                        client.send_response(ErrorResponse(request, error_message=str(ex).encode()))
 
             # Create service registration object
             info = ServiceRegistrationInfo(client, SERVICE_NAME)
@@ -215,7 +215,7 @@ The majority of code for the service invoker is shown below:
 
         # Extract information from the response (if an error did not occur)
         if res.message_type != Message.MESSAGE_TYPE_ERROR:
-            response_dict = json.loads(res.payload.decode(encoding="UTF-8"))
+            response_dict = json.loads(res.payload.decode())
             print "Client received response payload: \n" + \
               json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': '))
         else:
