@@ -57,14 +57,14 @@ The code for the provider is very similar to what is being used in the :doc:`bas
                             request.payload.decode())
 
                 # Create the Response message
-                logger.info("Event Publisher - Creating Response for Request ID %s on %s",
+                logger.info("Service Provider - Creating Response for Request ID %s on %s",
                             request.message_id, request.destination_topic)
                 response = Response(request)
 
                 # Encode string payload as UTF-8
                 response.payload = "Sample Response Payload".encode()
 
-                # Publish the Event to the DXL Fabric on the Topic
+                # Send the Response back
                 logger.info("Service Provider - Sending Response to Request ID: %s on %s",
                             response.request_message_id, request.destination_topic)
                 client.send_response(response)
@@ -135,7 +135,7 @@ Information similar to the following should appear in the "service provider" out
            Topic: /isecg/sample/service
            Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33}
            Payload: Sample Synchronous Request Payload - Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33}
-        2015-12-30 10:44:59,834 __main__ - INFO - Event Publisher - Creating Response for Request ID {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
+        2015-12-30 10:44:59,834 __main__ - INFO - Service Provider - Creating Response for Request ID {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
         2015-12-30 10:44:59,835 __main__ - INFO - Service Provider - Sending Response to Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
 
 Information similar to the following should appear in the "service invoker" output indicating that the
