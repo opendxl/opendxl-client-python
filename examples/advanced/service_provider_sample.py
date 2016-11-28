@@ -49,7 +49,7 @@ try:
                 # Encode string payload as UTF-8
                 response.payload = "Sample Response Payload".encode()
 
-                # Publish the Event to the DXL Fabric on the Topic
+                # Send the Response back
                 logger.info("Service Provider - Sending Response to Request ID: %s on %s",
                             response.request_message_id, request.destination_topic)
                 client.send_response(response)
