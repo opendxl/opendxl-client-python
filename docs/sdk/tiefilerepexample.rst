@@ -2,7 +2,7 @@ Threat Intelligence Exchange (TIE) File Reputation Sample
 =========================================================
 
 This sample demonstrates invoking the McAfee Threat Intelligence Exchange
-(TIE) DXL service to retrieve the the reputation of files (as identified
+(TIE) DXL service to retrieve the reputation of files (as identified
 by their hashes).
 
 Prerequisites
