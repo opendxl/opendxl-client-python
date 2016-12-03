@@ -1,5 +1,5 @@
 # This sample demonstrates how to register a callback to receive Event messages
-# from the DXL fabric. Once the the callback is registered, the sample sends a
+# from the DXL fabric. Once the callback is registered, the sample sends a
 # set number of Event messages to the fabric and waits for them all to be
 # received by the callback.
 
