@@ -32,7 +32,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'DXL Python SDK'
-copyright = u'2016, McAfee Inc.'
+copyright = u'2017, McAfee Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

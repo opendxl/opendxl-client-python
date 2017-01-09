@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-# Copyright (c) 2016 McAfee Inc. - All Rights Reserved.
+# Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
 # In order to bundle our own version of some libraries, we use the _vendor
