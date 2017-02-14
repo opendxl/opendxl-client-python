@@ -53,6 +53,11 @@ copy_tree(os.path.join(DIST_PY_FILE_LOCATION, "docs", "sdk"), DIST_DOCTMP_DIR)
 print("\nCalling sphinx-build\n")
 subprocess.check_call(["sphinx-build", "-b", "html", DIST_DOCTMP_DIR, os.path.join(DIST_DIRECTORY, "doc")])
 
+# Delete .doctrees
+remove_tree(os.path.join(os.path.join( DIST_DIRECTORY, "doc"), ".doctrees"), verbose=1)
+# Delete .buildinfo
+os.remove(os.path.join(os.path.join( DIST_DIRECTORY, "doc"), ".buildinfo"))
+
 # Move README.html to root of dist directory
 print("\nMoving README.html\n")
 move_file(os.path.join(DIST_DOCTMP_DIR, "README.html"), DIST_DIRECTORY)
