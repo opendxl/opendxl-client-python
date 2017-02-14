@@ -30,9 +30,9 @@ The first step is to start the "service wrapper". This script will remain runnin
 
 To start the "service wrapper", execute the ``sample\servicewrapper\openweather_service_wrapper.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\servicewrapper\openweather_service_wrapper.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\servicewrapper\\openweather_service_wrapper.py
 
 The output should appear similar to the following:
 
@@ -133,9 +133,9 @@ leaving the "service wrapper" running.
 
 To start the "service invoker", execute the ``sample\servicewrapper\openweather_service_invoker.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\servicewrapper\openweather_service_invoker.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\servicewrapper\\openweather_service_invoker.py
 
 The output should appear similar to the following (query for the current weather for zip code 97140):
 

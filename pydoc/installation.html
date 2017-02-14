@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python SDK Installation &mdash; DXL Python SDK 3.0.1 documentation</title>
+    <title>Python SDK Installation &#8212; DXL Python SDK 3.0.1.203 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.1.203',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="DXL Python SDK 3.0.1.203 documentation" href="index.html" />
     <link rel="next" title="Certificate Files Creation (PKI)" href="certcreation.html" />
     <link rel="prev" title="Integration Types" href="integrationtypes.html" /> 
   </head>
@@ -43,7 +45,7 @@
         <li class="right" >
           <a href="integrationtypes.html" title="Integration Types"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -69,18 +71,18 @@ but is not required (<code class="docutils literal"><span class="pre">setup.py</
 <li><p class="first">An OpenSSL version used by Python that supports TLSv1.2 (Version 1.0.1 or greater)</p>
 <ul>
 <li><p class="first">To check the version of OpenSSL used by Python, open a Python shell:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">python</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Type the following statements:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ssl</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ssl</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ssl</span><span class="o">.</span><span class="n">OPENSSL_VERSION</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">The output should appear similar to the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="s1">&#39;OpenSSL 1.0.2a 19 Mar 2015&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s1">&#39;OpenSSL 1.0.2a 19 Mar 2015&#39;</span>
 </pre></div>
 </div>
 </li>
@@ -96,17 +98,17 @@ party package manager (such as <a class="reference external" href="http://brew.s
 <h2>Python SDK Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>Use <code class="docutils literal"><span class="pre">pip</span></code> to automatically install the module:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">dxlclient</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mf">1.181</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="nb">any</span><span class="o">.</span><span class="n">whl</span>
-</pre></div>
-</div>
+<div><pre class="literal-block">
+pip install dxlclient-3.0.1.203-py2.7-none-any.whl
+</pre>
 </div></blockquote>
 <p>Or with:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">dxlclient</span><span class="o">-</span><span class="mf">3.0</span><span class="o">.</span><span class="mf">1.181</span><span class="o">.</span><span class="n">zip</span>
-</pre></div>
-</div>
+<div><pre class="literal-block">
+pip install dxlclient-3.0.1.203.zip
+</pre>
 </div></blockquote>
-<p>As an alternative (without PIP), unpack the dxlclient-3.0.1.181.zip (located in the lib folder) and run the setup
+<p>As an alternative (without PIP), unpack the dxlclient-3.0.1.203.zip (located in the lib folder) and run the setup
 script:</p>
 <blockquote>
 <div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
@@ -147,14 +149,11 @@ script:</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -176,12 +175,12 @@ script:</p>
         <li class="right" >
           <a href="integrationtypes.html" title="Integration Types"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>

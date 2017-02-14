@@ -33,17 +33,17 @@ Python SDK Installation
 
 Use ``pip`` to automatically install the module:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        pip install dxlclient-3.0.1.181-py2.7-none-any.whl
+        pip install dxlclient-\ |version|\-py2.7-none-any.whl
 
 Or with:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        pip install dxlclient-3.0.1.181.zip
+        pip install dxlclient-\ |version|\.zip
 
-As an alternative (without PIP), unpack the dxlclient-3.0.1.181.zip (located in the lib folder) and run the setup
+As an alternative (without PIP), unpack the dxlclient-\ |version|\.zip (located in the lib folder) and run the setup
 script:
 
     .. code-block:: python

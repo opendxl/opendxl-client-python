@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Certificate Files Creation (PKI) &mdash; DXL Python SDK 3.0.1 documentation</title>
+    <title>Certificate Files Creation (PKI) &#8212; DXL Python SDK 3.0.1.203 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.1.203',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DXL Python SDK 3.0.1 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="DXL Python SDK 3.0.1.203 documentation" href="index.html" />
     <link rel="next" title="ePO Certificate Authority (CA) Import" href="epocaimport.html" />
     <link rel="prev" title="Python SDK Installation" href="installation.html" /> 
   </head>
@@ -43,7 +45,7 @@
         <li class="right" >
           <a href="installation.html" title="Python SDK Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -91,11 +93,11 @@ DXL fabric.</p>
 <li><p class="first">Open a command prompt <strong>(Start &gt; Run &gt; cmd.exe)</strong></p>
 </li>
 <li><p class="first">Set the following environment variables (adjust OpenSSL path based on your install location):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>C:\&gt;set OPENSSL_BIN=c:\OpenSSL-Win32\bin
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="o">&gt;</span><span class="nb">set</span> <span class="n">OPENSSL_BIN</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\<span class="n">OpenSSL</span><span class="o">-</span><span class="n">Win32</span>\<span class="nb">bin</span>
 
-C:\&gt;set PATH=%OPENSSL_BIN%;%PATH%
+<span class="n">C</span><span class="p">:</span>\<span class="o">&gt;</span><span class="nb">set</span> <span class="n">PATH</span><span class="o">=%</span><span class="n">OPENSSL_BIN</span><span class="o">%</span><span class="p">;</span><span class="o">%</span><span class="n">PATH</span><span class="o">%</span>
 
-C:\&gt;set OPENSSL_CONF=%OPENSSL_BIN%\openssl.cfg
+<span class="n">C</span><span class="p">:</span>\<span class="o">&gt;</span><span class="nb">set</span> <span class="n">OPENSSL_CONF</span><span class="o">=%</span><span class="n">OPENSSL_BIN</span><span class="o">%</span>\<span class="n">openssl</span><span class="o">.</span><span class="n">cfg</span>
 </pre></div>
 </div>
 <p><em>These environment variables could also be permanently defined in your computer settings.</em></p>
@@ -110,12 +112,12 @@ C:\&gt;set OPENSSL_CONF=%OPENSSL_BIN%\openssl.cfg
 <blockquote>
 <div><ul>
 <li><p class="first">Create directory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\&gt;mkdir c:\certificates
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="o">&gt;</span><span class="n">mkdir</span> <span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Change to output directory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\&gt;cd c:\certificates
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="o">&gt;</span><span class="n">cd</span> <span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span>
 </pre></div>
 </div>
 </li>
@@ -127,32 +129,32 @@ C:\&gt;set OPENSSL_CONF=%OPENSSL_BIN%\openssl.cfg
 <blockquote>
 <div><ul>
 <li><p class="first">Create the certificate authority (CA):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl req -new -x509 -days 365 -extensions v3_ca -keyout ca.key -out ca.crt
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span><span class="o">&gt;</span><span class="n">openssl</span> <span class="n">req</span> <span class="o">-</span><span class="n">new</span> <span class="o">-</span><span class="n">x509</span> <span class="o">-</span><span class="n">days</span> <span class="mi">365</span> <span class="o">-</span><span class="n">extensions</span> <span class="n">v3_ca</span> <span class="o">-</span><span class="n">keyout</span> <span class="n">ca</span><span class="o">.</span><span class="n">key</span> <span class="o">-</span><span class="n">out</span> <span class="n">ca</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Fill out the required information:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>Generating a 2048 bit RSA private key
-..............................................................+++
-..............................................................+++
-writing new private key to &#39;ca.key&#39;
-Enter PEM pass phrase:
-Verifying - Enter PEM pass phrase:
------
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter &#39;.&#39;, the field will be left blank.
------
-Country Name (2 letter code) [AU]:US
-State or Province Name (full name) [Some-State]:Oregon
-Locality Name (eg, city) []:Hillsboro
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Intel
-Organizational Unit Name (eg, section) []:ISECG-CA
-Common Name (e.g. server FQDN or YOUR name) []:John Doe
-Email Address []:john.doe@intel.com
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Generating</span> <span class="n">a</span> <span class="mi">2048</span> <span class="n">bit</span> <span class="n">RSA</span> <span class="n">private</span> <span class="n">key</span>
+<span class="o">..............................................................+++</span>
+<span class="o">..............................................................+++</span>
+<span class="n">writing</span> <span class="n">new</span> <span class="n">private</span> <span class="n">key</span> <span class="n">to</span> <span class="s1">&#39;ca.key&#39;</span>
+<span class="n">Enter</span> <span class="n">PEM</span> <span class="k">pass</span> <span class="n">phrase</span><span class="p">:</span>
+<span class="n">Verifying</span> <span class="o">-</span> <span class="n">Enter</span> <span class="n">PEM</span> <span class="k">pass</span> <span class="n">phrase</span><span class="p">:</span>
+<span class="o">-----</span>
+<span class="n">You</span> <span class="n">are</span> <span class="n">about</span> <span class="n">to</span> <span class="n">be</span> <span class="n">asked</span> <span class="n">to</span> <span class="n">enter</span> <span class="n">information</span> <span class="n">that</span> <span class="n">will</span> <span class="n">be</span> <span class="n">incorporated</span>
+<span class="n">into</span> <span class="n">your</span> <span class="n">certificate</span> <span class="n">request</span><span class="o">.</span>
+<span class="n">What</span> <span class="n">you</span> <span class="n">are</span> <span class="n">about</span> <span class="n">to</span> <span class="n">enter</span> <span class="ow">is</span> <span class="n">what</span> <span class="ow">is</span> <span class="n">called</span> <span class="n">a</span> <span class="n">Distinguished</span> <span class="n">Name</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">DN</span><span class="o">.</span>
+<span class="n">There</span> <span class="n">are</span> <span class="n">quite</span> <span class="n">a</span> <span class="n">few</span> <span class="n">fields</span> <span class="n">but</span> <span class="n">you</span> <span class="n">can</span> <span class="n">leave</span> <span class="n">some</span> <span class="n">blank</span>
+<span class="n">For</span> <span class="n">some</span> <span class="n">fields</span> <span class="n">there</span> <span class="n">will</span> <span class="n">be</span> <span class="n">a</span> <span class="n">default</span> <span class="n">value</span><span class="p">,</span>
+<span class="n">If</span> <span class="n">you</span> <span class="n">enter</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">the</span> <span class="n">field</span> <span class="n">will</span> <span class="n">be</span> <span class="n">left</span> <span class="n">blank</span><span class="o">.</span>
+<span class="o">-----</span>
+<span class="n">Country</span> <span class="n">Name</span> <span class="p">(</span><span class="mi">2</span> <span class="n">letter</span> <span class="n">code</span><span class="p">)</span> <span class="p">[</span><span class="n">AU</span><span class="p">]:</span><span class="n">US</span>
+<span class="n">State</span> <span class="ow">or</span> <span class="n">Province</span> <span class="n">Name</span> <span class="p">(</span><span class="n">full</span> <span class="n">name</span><span class="p">)</span> <span class="p">[</span><span class="n">Some</span><span class="o">-</span><span class="n">State</span><span class="p">]:</span><span class="n">Oregon</span>
+<span class="n">Locality</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span> <span class="p">[]:</span><span class="n">Hillsboro</span>
+<span class="n">Organization</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">company</span><span class="p">)</span> <span class="p">[</span><span class="n">Internet</span> <span class="n">Widgits</span> <span class="n">Pty</span> <span class="n">Ltd</span><span class="p">]:</span><span class="n">Intel</span>
+<span class="n">Organizational</span> <span class="n">Unit</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span> <span class="p">[]:</span><span class="n">ISECG</span><span class="o">-</span><span class="n">CA</span>
+<span class="n">Common</span> <span class="n">Name</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">server</span> <span class="n">FQDN</span> <span class="ow">or</span> <span class="n">YOUR</span> <span class="n">name</span><span class="p">)</span> <span class="p">[]:</span><span class="n">John</span> <span class="n">Doe</span>
+<span class="n">Email</span> <span class="n">Address</span> <span class="p">[]:</span><span class="n">john</span><span class="o">.</span><span class="n">doe</span><span class="nd">@intel</span><span class="o">.</span><span class="n">com</span>
 </pre></div>
 </div>
 </li>
@@ -172,20 +174,20 @@ certificates).</li>
 <blockquote>
 <div><ul>
 <li><p class="first">Generate a Private Key for the client:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl genrsa -out client.key 2048
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span><span class="o">&gt;</span><span class="n">openssl</span> <span class="n">genrsa</span> <span class="o">-</span><span class="n">out</span> <span class="n">client</span><span class="o">.</span><span class="n">key</span> <span class="mi">2048</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">The following should be displayed:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>Generating RSA private key, 2048 bit long modulus
-.......................+++
-..................................................+++
-e is 65537 (0x10001)
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Generating</span> <span class="n">RSA</span> <span class="n">private</span> <span class="n">key</span><span class="p">,</span> <span class="mi">2048</span> <span class="n">bit</span> <span class="n">long</span> <span class="n">modulus</span>
+<span class="o">.......................+++</span>
+<span class="o">..................................................+++</span>
+<span class="n">e</span> <span class="ow">is</span> <span class="mi">65537</span> <span class="p">(</span><span class="mh">0x10001</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Create a Certificate Signing Request (CSR) for the client:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl req -out client.csr -key client.key -new
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span><span class="o">&gt;</span><span class="n">openssl</span> <span class="n">req</span> <span class="o">-</span><span class="n">out</span> <span class="n">client</span><span class="o">.</span><span class="n">csr</span> <span class="o">-</span><span class="n">key</span> <span class="n">client</span><span class="o">.</span><span class="n">key</span> <span class="o">-</span><span class="n">new</span>
 </pre></div>
 </div>
 </li>
@@ -193,25 +195,25 @@ e is 65537 (0x10001)
 <p>The &#8220;challenge password&#8221; can be blank (the default)</p>
 <p><strong>NOTE: The &#8220;Organizational Unit Name&#8221; entered must not be the same as the &#8220;Organizational Unit Name&#8221; entered in
 Step #4 (Create Certificate Authority)</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter &#39;.&#39;, the field will be left blank.
------
-Country Name (2 letter code) [AU]:US
-State or Province Name (full name) [Some-State]:Oregon
-Locality Name (eg, city) []:Hillsboro
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Intel
-Organizational Unit Name (eg, section) []:ISECG-Client
-Common Name (e.g. server FQDN or YOUR name) []:John Doe
-Email Address []:john.doe@intel.com
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">You</span> <span class="n">are</span> <span class="n">about</span> <span class="n">to</span> <span class="n">be</span> <span class="n">asked</span> <span class="n">to</span> <span class="n">enter</span> <span class="n">information</span> <span class="n">that</span> <span class="n">will</span> <span class="n">be</span> <span class="n">incorporated</span>
+<span class="n">into</span> <span class="n">your</span> <span class="n">certificate</span> <span class="n">request</span><span class="o">.</span>
+<span class="n">What</span> <span class="n">you</span> <span class="n">are</span> <span class="n">about</span> <span class="n">to</span> <span class="n">enter</span> <span class="ow">is</span> <span class="n">what</span> <span class="ow">is</span> <span class="n">called</span> <span class="n">a</span> <span class="n">Distinguished</span> <span class="n">Name</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">DN</span><span class="o">.</span>
+<span class="n">There</span> <span class="n">are</span> <span class="n">quite</span> <span class="n">a</span> <span class="n">few</span> <span class="n">fields</span> <span class="n">but</span> <span class="n">you</span> <span class="n">can</span> <span class="n">leave</span> <span class="n">some</span> <span class="n">blank</span>
+<span class="n">For</span> <span class="n">some</span> <span class="n">fields</span> <span class="n">there</span> <span class="n">will</span> <span class="n">be</span> <span class="n">a</span> <span class="n">default</span> <span class="n">value</span><span class="p">,</span>
+<span class="n">If</span> <span class="n">you</span> <span class="n">enter</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">the</span> <span class="n">field</span> <span class="n">will</span> <span class="n">be</span> <span class="n">left</span> <span class="n">blank</span><span class="o">.</span>
+<span class="o">-----</span>
+<span class="n">Country</span> <span class="n">Name</span> <span class="p">(</span><span class="mi">2</span> <span class="n">letter</span> <span class="n">code</span><span class="p">)</span> <span class="p">[</span><span class="n">AU</span><span class="p">]:</span><span class="n">US</span>
+<span class="n">State</span> <span class="ow">or</span> <span class="n">Province</span> <span class="n">Name</span> <span class="p">(</span><span class="n">full</span> <span class="n">name</span><span class="p">)</span> <span class="p">[</span><span class="n">Some</span><span class="o">-</span><span class="n">State</span><span class="p">]:</span><span class="n">Oregon</span>
+<span class="n">Locality</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span> <span class="p">[]:</span><span class="n">Hillsboro</span>
+<span class="n">Organization</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">company</span><span class="p">)</span> <span class="p">[</span><span class="n">Internet</span> <span class="n">Widgits</span> <span class="n">Pty</span> <span class="n">Ltd</span><span class="p">]:</span><span class="n">Intel</span>
+<span class="n">Organizational</span> <span class="n">Unit</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span> <span class="p">[]:</span><span class="n">ISECG</span><span class="o">-</span><span class="n">Client</span>
+<span class="n">Common</span> <span class="n">Name</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">server</span> <span class="n">FQDN</span> <span class="ow">or</span> <span class="n">YOUR</span> <span class="n">name</span><span class="p">)</span> <span class="p">[]:</span><span class="n">John</span> <span class="n">Doe</span>
+<span class="n">Email</span> <span class="n">Address</span> <span class="p">[]:</span><span class="n">john</span><span class="o">.</span><span class="n">doe</span><span class="nd">@intel</span><span class="o">.</span><span class="n">com</span>
 
-Please enter the following &#39;extra&#39; attributes
-to be sent with your certificate request
-A challenge password []:
-An optional company name []:
+<span class="n">Please</span> <span class="n">enter</span> <span class="n">the</span> <span class="n">following</span> <span class="s1">&#39;extra&#39;</span> <span class="n">attributes</span>
+<span class="n">to</span> <span class="n">be</span> <span class="n">sent</span> <span class="k">with</span> <span class="n">your</span> <span class="n">certificate</span> <span class="n">request</span>
+<span class="n">A</span> <span class="n">challenge</span> <span class="n">password</span> <span class="p">[]:</span>
+<span class="n">An</span> <span class="n">optional</span> <span class="n">company</span> <span class="n">name</span> <span class="p">[]:</span>
 </pre></div>
 </div>
 </li>
@@ -223,15 +225,15 @@ An optional company name []:
 <blockquote>
 <div><ul>
 <li><p class="first">Have the Certificate Authority (CA) sign the signing request (CSR):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 365
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span><span class="o">&gt;</span><span class="n">openssl</span> <span class="n">x509</span> <span class="o">-</span><span class="n">req</span> <span class="o">-</span><span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">csr</span> <span class="o">-</span><span class="n">CA</span> <span class="n">ca</span><span class="o">.</span><span class="n">crt</span> <span class="o">-</span><span class="n">CAkey</span> <span class="n">ca</span><span class="o">.</span><span class="n">key</span> <span class="o">-</span><span class="n">CAcreateserial</span> <span class="o">-</span><span class="n">out</span> <span class="n">client</span><span class="o">.</span><span class="n">crt</span> <span class="o">-</span><span class="n">days</span> <span class="mi">365</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">When prompted, enter the CA PEM pass phrase from Step #4, above. You should see output similar to the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>Signature ok
-subject=/C=US/ST=Oregon/L=Hillsboro/O=Intel/OU=ISECG-Client/CN=John Doe/emailAddress=john.doe@intel.com
-Getting CA Private Key
-Enter pass phrase for ca.key:
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Signature</span> <span class="n">ok</span>
+<span class="n">subject</span><span class="o">=/</span><span class="n">C</span><span class="o">=</span><span class="n">US</span><span class="o">/</span><span class="n">ST</span><span class="o">=</span><span class="n">Oregon</span><span class="o">/</span><span class="n">L</span><span class="o">=</span><span class="n">Hillsboro</span><span class="o">/</span><span class="n">O</span><span class="o">=</span><span class="n">Intel</span><span class="o">/</span><span class="n">OU</span><span class="o">=</span><span class="n">ISECG</span><span class="o">-</span><span class="n">Client</span><span class="o">/</span><span class="n">CN</span><span class="o">=</span><span class="n">John</span> <span class="n">Doe</span><span class="o">/</span><span class="n">emailAddress</span><span class="o">=</span><span class="n">john</span><span class="o">.</span><span class="n">doe</span><span class="nd">@intel</span><span class="o">.</span><span class="n">com</span>
+<span class="n">Getting</span> <span class="n">CA</span> <span class="n">Private</span> <span class="n">Key</span>
+<span class="n">Enter</span> <span class="k">pass</span> <span class="n">phrase</span> <span class="k">for</span> <span class="n">ca</span><span class="o">.</span><span class="n">key</span><span class="p">:</span>
 </pre></div>
 </div>
 </li>
@@ -252,12 +254,12 @@ use with a DXL client.</p>
 <blockquote>
 <div><ul>
 <li><p class="first">The following command can be used to ensure the client certificate is valid for the certificate authority:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>c:\certificates&gt;openssl verify -verbose -CAfile ca.crt client.crt
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span>\<span class="n">certificates</span><span class="o">&gt;</span><span class="n">openssl</span> <span class="n">verify</span> <span class="o">-</span><span class="n">verbose</span> <span class="o">-</span><span class="n">CAfile</span> <span class="n">ca</span><span class="o">.</span><span class="n">crt</span> <span class="n">client</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">If the certificate is valid, you should see the following output:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>client.crt: OK
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">crt</span><span class="p">:</span> <span class="n">OK</span>
 </pre></div>
 </div>
 </li>
@@ -302,14 +304,11 @@ use with a DXL client.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -331,12 +330,12 @@ use with a DXL client.</p>
         <li class="right" >
           <a href="installation.html" title="Python SDK Installation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>

@@ -15,15 +15,15 @@ The first step is to start the "service provider". This script will remain runni
 
 To start the "service provider", execute the ``sample\advanced\service_provider_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\service_provider_sample.py
+        c:\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_provider_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 10:25:32,170 __main__ - INFO - Service Provider - Creating DXL Client
         2015-12-30 10:25:32,187 __main__ - INFO - Service Provider - Connecting to Broker
         2015-12-30 10:25:32,187 dxlclient.client - INFO - Waiting for broker list...
@@ -57,14 +57,14 @@ The code for the provider is very similar to what is being used in the :doc:`bas
                             request.payload.decode())
 
                 # Create the Response message
-                logger.info("Event Publisher - Creating Response for Request ID %s on %s",
+                logger.info("Service Provider - Creating Response for Request ID %s on %s",
                             request.message_id, request.destination_topic)
                 response = Response(request)
 
                 # Encode string payload as UTF-8
                 response.payload = "Sample Response Payload".encode()
 
-                # Publish the Event to the DXL Fabric on the Topic
+                # Send the Response back
                 logger.info("Service Provider - Sending Response to Request ID: %s on %s",
                             response.request_message_id, request.destination_topic)
                 client.send_response(response)
@@ -97,15 +97,15 @@ leaving the "service provider" running.
 
 To start the "service invoker", execute the ``sample\advanced\service_invoker_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\service_invoker_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_invoker_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 10:43:33,628 __main__ - INFO - Service Invoker - Creating DXL Client
         2015-12-30 10:43:33,644 __main__ - INFO - Service Invoker - Connecting to Broker
         2015-12-30 10:43:33,645 dxlclient.client - INFO - Waiting for broker list...
@@ -135,7 +135,7 @@ Information similar to the following should appear in the "service provider" out
            Topic: /isecg/sample/service
            Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33}
            Payload: Sample Synchronous Request Payload - Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33}
-        2015-12-30 10:44:59,834 __main__ - INFO - Event Publisher - Creating Response for Request ID {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
+        2015-12-30 10:44:59,834 __main__ - INFO - Service Provider - Creating Response for Request ID {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
         2015-12-30 10:44:59,835 __main__ - INFO - Service Provider - Sending Response to Request ID: {0e7c1994-b610-4436-ae3b-e2eec9ebdf33} on /isecg/sample/service
 
 Information similar to the following should appear in the "service invoker" output indicating that the

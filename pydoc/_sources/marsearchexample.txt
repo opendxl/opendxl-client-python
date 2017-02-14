@@ -12,9 +12,9 @@ Prerequisites
 
 To run this sample execute the ``sample\mar\search_example.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\mar\search_example.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\mar\\search_example.py
 
 To perform an Active Response query via DXL the following steps must be performed:
 

@@ -2,7 +2,7 @@ Basic Events Sample
 ===================
 
 This sample demonstrates how to register a callback to receive :class:`dxlclient.message.Event` messages
-from the DXL fabric. Once the the callback is registered, the sample sends a set number of
+from the DXL fabric. Once the callback is registered, the sample sends a set number of
 :class:`dxlclient.message.Event` messages to the fabric and waits for them all to be received by
 the callback.
 
@@ -10,9 +10,9 @@ Prior to running this sample make sure you have completed the samples configurat
 
 To run this sample execute the ``sample\basic\event_example.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\basic\event_example.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\basic\\event_example.py
 
 The output should appear similar to the following:
 

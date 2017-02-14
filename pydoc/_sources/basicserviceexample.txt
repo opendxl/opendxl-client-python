@@ -9,9 +9,9 @@ Prior to running this sample make sure you have completed the samples configurat
 
 To run this sample execute the ``sample\basic\service_example.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\basic\service_example.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\basic\\service_example.py
 
 The output should appear similar to the following:
 
