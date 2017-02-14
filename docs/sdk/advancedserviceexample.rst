@@ -15,15 +15,15 @@ The first step is to start the "service provider". This script will remain runni
 
 To start the "service provider", execute the ``sample\advanced\service_provider_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\service_provider_sample.py
+        c:\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_provider_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 10:25:32,170 __main__ - INFO - Service Provider - Creating DXL Client
         2015-12-30 10:25:32,187 __main__ - INFO - Service Provider - Connecting to Broker
         2015-12-30 10:25:32,187 dxlclient.client - INFO - Waiting for broker list...
@@ -97,15 +97,15 @@ leaving the "service provider" running.
 
 To start the "service invoker", execute the ``sample\advanced\service_invoker_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\service_invoker_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_invoker_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 10:43:33,628 __main__ - INFO - Service Invoker - Creating DXL Client
         2015-12-30 10:43:33,644 __main__ - INFO - Service Invoker - Connecting to Broker
         2015-12-30 10:43:33,645 dxlclient.client - INFO - Waiting for broker list...

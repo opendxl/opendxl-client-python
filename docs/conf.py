@@ -10,7 +10,7 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-sys.path.insert(0, os.path.abspath('..\\'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- General configuration ------------------------------------------------
 
@@ -38,10 +38,11 @@ copyright = u'2017, McAfee Inc.'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
+VERSION = __import__('dxlclient').get_product_version()
 # The short X.Y version.
-version = '3.0.1'
+version = VERSION
 # The full version, including alpha/beta/rc tags.
-release = '3.0.1'
+release = VERSION
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

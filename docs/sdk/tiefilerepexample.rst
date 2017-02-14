@@ -12,9 +12,9 @@ Prerequisites
 
 To run this sample execute the ``sample\tie\file_rep_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\tie\file_rep_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\tie\\file_rep_sample.py
 
 The output should appear similar to the following:
 

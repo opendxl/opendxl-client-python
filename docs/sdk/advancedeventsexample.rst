@@ -15,15 +15,15 @@ The first step is to start the "event subscriber". This script will remain runni
 
 To start the "event subscriber", execute the ``sample\advanced\event_subscriber_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\event_subscriber_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\event_subscriber_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 08:55:44,936 __main__ - INFO - Event Subscriber - Load DXL config from: c:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 08:55:44,936 __main__ - INFO - Event Subscriber - Load DXL config from: c:\\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 08:55:44,938 __main__ - INFO - Event Subscriber - Creating DXL Client
         2015-12-30 08:55:44,956 __main__ - INFO - Event Subscriber - Connecting to Broker
         2015-12-30 08:55:44,957 dxlclient.client - INFO - Waiting for broker list...
@@ -70,15 +70,15 @@ leaving the "event subscriber" running.
 
 To start the "event publisher", execute the ``sample\advanced\event_publisher_sample.py`` script as follows:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        c:\dxlclient-python-sdk-3.0.1>python sample\advanced\event_publisher_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\event_publisher_sample.py
 
 The output should appear similar to the following:
 
-    .. code-block:: python
+    .. parsed-literal::
 
-        2015-12-30 09:00:38,076 __main__ - INFO - Event Publisher - Load DXL config from: C:\dxlclient-python-sdk-3.0.1\sample/dxlclient.config
+        2015-12-30 09:00:38,076 __main__ - INFO - Event Publisher - Load DXL config from: C:\\dxlclient-python-sdk-\ |version|\\sample/dxlclient.config
         2015-12-30 09:00:38,078 __main__ - INFO - Event Publisher - Creating DXL Client
         2015-12-30 09:00:38,094 __main__ - INFO - Event Publisher - Connecting to Broker
         2015-12-30 09:00:38,095 dxlclient.client - INFO - Waiting for broker list...

@@ -897,9 +897,9 @@ class DxlClient(_BaseObject):
         :param request_callback: The :class:`dxlclient.callbacks.RequestCallback` to be invoked when a
             :class:`dxlclient.message.Request` message is received on the specified topic
         """
-        self._request_callbacks.add_callback(topic, request_callback)
+        self._request_callbacks.add_callback(("" if topic is None else topic), request_callback)
 
-    def remove_request_callback(self, channel, request_callback):
+    def remove_request_callback(self, topic, request_callback):
         """
         Removes a :class:`dxlclient.callbacks.RequestCallback` from the client for the specified topic. This method
         must be invoked with the same arguments as when the callback was originally registered via
@@ -908,7 +908,7 @@ class DxlClient(_BaseObject):
         :param topic: The topic to remove the callback for
         :param request_callback: The :class:`dxlclient.callbacks.RequestCallback` to be removed for the specified topic
         """
-        self._request_callbacks.remove_callback(channel, request_callback)
+        self._request_callbacks.remove_callback(("" if topic is None else topic), request_callback)
 
     def add_response_callback(self, topic, response_callback):
         """
@@ -926,9 +926,9 @@ class DxlClient(_BaseObject):
         :param request_callback: The :class:`dxlclient.callbacks.RequestCallback` to be invoked when a
             :class:`dxlclient.message.Request` message is received on the specified topic
         """
-        self._response_callbacks.add_callback(topic, response_callback)
+        self._response_callbacks.add_callback(("" if topic is None else topic), response_callback)
 
-    def remove_response_callback(self, channel, response_callback):
+    def remove_response_callback(self, topic, response_callback):
         """
         Removes a :class:`dxlclient.callbacks.ResponseCallback` from the client for the specified topic. This method
         must be invoked with the same arguments as when the callback was originally registered via
@@ -937,7 +937,7 @@ class DxlClient(_BaseObject):
         :param topic: The topic to remove the callback for
         :param response_callback: The :class:`dxlclient.callbacks.ResponseCallback` to be removed for the specified topic
         """
-        self._response_callbacks.remove_callback(channel, response_callback)
+        self._response_callbacks.remove_callback(("" if topic is None else topic), response_callback)
 
     def add_event_callback(self, topic, event_callback, subscribe_to_topic=True):
         """
@@ -954,8 +954,8 @@ class DxlClient(_BaseObject):
             (:func:`dxlclient.client.DxlClient.subscribe`) to the topic.
             By default the client will subscribe to the topic. Specify ``False`` to prevent subscribing to the topic.
         """
-        self._event_callbacks.add_callback(topic, event_callback)
-        if subscribe_to_topic is True:
+        self._event_callbacks.add_callback(("" if topic is None else topic), event_callback)
+        if subscribe_to_topic is True and topic is not None:
             self.subscribe(topic)
 
     def remove_event_callback(self, topic, event_callback, unsubscribe_from_topic=True):
@@ -970,8 +970,8 @@ class DxlClient(_BaseObject):
             (:func:`dxlclient.client.DxlClient.unsubscribe`) from the topic. By default the client will unsubscribe
             from the topic. Specify ``False`` to prevent unsubscribing to the topic.
         """
-        self._event_callbacks.remove_callback(topic, event_callback)
-        if unsubscribe_from_topic is True:
+        self._event_callbacks.remove_callback(("" if topic is None else topic), event_callback)
+        if unsubscribe_from_topic is True and topic is not None:
             self.unsubscribe(topic)
 
     def _fire_request(self, request):

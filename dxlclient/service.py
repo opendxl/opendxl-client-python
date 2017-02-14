@@ -508,7 +508,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def json_register_service(self):  # instanceId or service guid?
         return json.dumps({
             'serviceType': self.service_type,
-            'metadata': self.metadata,
+            'metaData': self.metadata,
             'requestChannels': list(self.channels),
             'ttlMins': self.ttl,
             'serviceGuid': self.instance_id
@@ -590,7 +590,7 @@ class _ServiceManager(RequestCallback):
         :param instanceId: The instance ID of the service to remove.
         :return: None.
         """
-        if not isinstance(service_id, (type, str)):
+        if not isinstance(service_id, (type, basestring)):
             raise ValueError("Expected service id")
 
         if not service_id:

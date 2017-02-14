@@ -49,7 +49,6 @@ dist = setup(
     long_description=open('README').read(),
 
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
