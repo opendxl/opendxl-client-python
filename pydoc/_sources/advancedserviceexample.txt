@@ -17,7 +17,7 @@ To start the "service provider", execute the ``sample\advanced\service_provider_
 
     .. parsed-literal::
 
-        c:\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_provider_sample.py
+        c:\\dxlclient-python-sdk-\ |version|\>python sample\\advanced\\service_provider_sample.py
 
 The output should appear similar to the following:
 
