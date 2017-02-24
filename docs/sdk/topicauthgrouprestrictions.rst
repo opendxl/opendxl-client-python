@@ -25,12 +25,12 @@ required to send and receive messages for a topic authorization group::
     .. image:: addcertbasedauth3.png
 
 #. Click the **Actions** button and select **Restrict Receive Certificates** to select certificates allowed to receive
-messages on the topics associated with the selected Topic Authorization Group  (as shown in the image above)
+   messages on the topics associated with the selected Topic Authorization Group  (as shown in the image above)
 
     .. image:: addcertbasedauth4.png
 
 #. Select the check box next to any certificate to indicate that only clients with the selected certs or child certs
-will be allowed to receive messages on the topics associated with the selected Topic Authorization Group
+   will be allowed to receive messages on the topics associated with the selected Topic Authorization Group
 
     .. image:: addcertbasedauth5.png
 
@@ -41,12 +41,12 @@ will be allowed to receive messages on the topics associated with the selected T
 #. Select the check box next to a Topic Authorization Group (as shown in the image above)
 
 #. Click the **Actions** button and select **Restrict Send Certificates** to select certificates allowed to send
-messages on the topics associated with the selected Topic Authorization Group
+   messages on the topics associated with the selected Topic Authorization Group
 
     .. image:: addcertbasedauth7.png
 
 #. Select the check box next to any certificate to indicate that only clients with the selected certs or child certs
-will be allowed to receive messages on the topics associated with the selected Topic Authorization Group
+   will be allowed to receive messages on the topics associated with the selected Topic Authorization Group
 
     .. image:: addcertbasedauth8.png
 
