@@ -5,6 +5,7 @@ Prior to running any of the examples, make sure you have completed the following
 
 * Installed the Python SDK (:doc:`installation`)
 * Created the Certificate Authority (CA) and Client Certificate Files (:doc:`certcreation`)
+* Imported the Certificate Authority (CA) into ePO (:doc:`epocaimport`)
 * Exported the Broker Certificates (:doc:`epobrokercertsexport`)
 * Exported the list of DXL Brokers (:doc:`epobrokerlistexport`)
 

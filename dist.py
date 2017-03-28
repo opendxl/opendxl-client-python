@@ -10,6 +10,21 @@ from distutils.dir_util import copy_tree, remove_tree
 from distutils.file_util import copy_file, move_file
 from distutils.core import run_setup
 from distutils.archive_util import make_archive
+from tempfile import mkstemp
+from shutil import move
+
+def replace(file_path, pattern, subst):
+    # Create temp file
+    fh, abs_path = mkstemp()
+    with open(abs_path,'w') as new_file:
+        with open(file_path) as old_file:
+            for line in old_file:
+                new_file.write(line.replace(pattern, subst))
+    os.close(fh)
+    # Remove original file
+    os.remove(file_path)
+    # Move new file
+    move(abs_path, file_path)
 
 VERSION = __import__('dxlclient').get_product_version()
 RELEASE_NAME = "dxlclient-python-sdk-" + str(VERSION)
@@ -52,6 +67,8 @@ copy_tree(os.path.join(DIST_PY_FILE_LOCATION, "docs", "sdk"), DIST_DOCTMP_DIR)
 # Call Sphinx build
 print("\nCalling sphinx-build\n")
 subprocess.check_call(["sphinx-build", "-b", "html", DIST_DOCTMP_DIR, os.path.join(DIST_DIRECTORY, "doc")])
+
+replace(os.path.join(DIST_DIRECTORY, "doc", "_static", "classic.css"), "text-align: justify", "text-align: none")
 
 # Delete .doctrees
 remove_tree(os.path.join(os.path.join( DIST_DIRECTORY, "doc"), ".doctrees"), verbose=1)
