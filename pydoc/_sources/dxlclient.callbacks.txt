@@ -1,7 +1,0 @@
-dxlclient.callbacks module
-==========================
-
-.. automodule:: dxlclient.callbacks
-    :members:
-    :undoc-members:
-    :show-inheritance:

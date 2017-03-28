@@ -1,7 +1,0 @@
-dxlclient.message module
-========================
-
-.. automodule:: dxlclient.message
-    :members:
-    :undoc-members:
-    :show-inheritance:

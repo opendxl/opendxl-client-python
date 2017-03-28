@@ -1,7 +1,0 @@
-dxlclient.client_config module
-==============================
-
-.. automodule:: dxlclient.client_config
-    :members:
-    :undoc-members:
-    :show-inheritance:

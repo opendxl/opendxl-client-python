@@ -1,7 +1,0 @@
-dxlclient.exceptions module
-===========================
-
-.. automodule:: dxlclient.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
