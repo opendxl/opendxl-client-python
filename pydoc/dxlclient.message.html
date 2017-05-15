@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dxlclient.message module &#8212; DXL Python SDK 3.0.1.203 documentation</title>
+    <title>dxlclient.message module &#8212; DXL Python SDK 3.1.0.585 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1.203',
+        VERSION:     '3.1.0.585',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.1.0.585 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -192,7 +192,7 @@ subscribed to the <a class="reference internal" href="#dxlclient.message.Message
 
 <dl class="attribute">
 <dt id="dxlclient.message.Message.MESSAGE_VERSION">
-<code class="descname">MESSAGE_VERSION</code><em class="property"> = 0</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_VERSION" title="Permalink to this definition">¶</a></dt>
+<code class="descname">MESSAGE_VERSION</code><em class="property"> = 2</em><a class="headerlink" href="#dxlclient.message.Message.MESSAGE_VERSION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -207,6 +207,14 @@ which brokers the message will be delivered to. This can be used in conjunction 
 <code class="descname">client_ids</code><a class="headerlink" href="#dxlclient.message.Message.client_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>The set of client identifiers that the message is to be routed to. Setting this value will limit
 which clients the message will be delivered to. This can be used in conjunction with <a class="reference internal" href="#dxlclient.message.Message.broker_ids" title="dxlclient.message.Message.broker_ids"><code class="xref py py-func docutils literal"><span class="pre">broker_ids()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.destination_tenant_guids">
+<code class="descname">destination_tenant_guids</code><a class="headerlink" href="#dxlclient.message.Message.destination_tenant_guids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of tenant identifiers that the message is to be routed to. Setting this value will limit
+which clients the message will be delivered to. This can be used in conjunction with <a class="reference internal" href="#dxlclient.message.Message.broker_ids" title="dxlclient.message.Message.broker_ids"><code class="xref py py-func docutils literal"><span class="pre">broker_ids()</span></code></a>
+and <a class="reference internal" href="#dxlclient.message.Message.client_ids" title="dxlclient.message.Message.client_ids"><code class="xref py py-func docutils literal"><span class="pre">client_ids()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -228,6 +236,14 @@ which clients the message will be delivered to. This can be used in conjunction 
 </dd></dl>
 
 <dl class="attribute">
+<dt id="dxlclient.message.Message.other_fields">
+<code class="descname">other_fields</code><a class="headerlink" href="#dxlclient.message.Message.other_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="docutils literal"><span class="pre">dict</span></code> (dictionary) containing the set of additional fields associated
+with the message. These fields can be used to add &#8220;header&#8221; like values to the
+message without requiring modifications to be made to the payload.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="dxlclient.message.Message.payload">
 <code class="descname">payload</code><a class="headerlink" href="#dxlclient.message.Message.payload" title="Permalink to this definition">¶</a></dt>
 <dd><p>The application-specific payload of the message (bytes)</p>
@@ -244,6 +260,13 @@ which clients the message will be delivered to. This can be used in conjunction 
 <dt id="dxlclient.message.Message.source_client_id">
 <code class="descname">source_client_id</code><a class="headerlink" href="#dxlclient.message.Message.source_client_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>The identifier of the DXL client that sent the message (set by the broker that initially receives the message)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.message.Message.source_tenant_guid">
+<code class="descname">source_tenant_guid</code><a class="headerlink" href="#dxlclient.message.Message.source_tenant_guid" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tenant identifier of the DXL client that sent the message
+(set by the broker that initially receives the message)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -392,7 +415,7 @@ was initially sent by the client.</p>
         <li class="right" >
           <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.0.1.203 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.1.0.585 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
