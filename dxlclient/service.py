@@ -705,7 +705,6 @@ class _ServiceManager(RequestCallback):
         
         :return: None.
         """
-        print "on disconnect"
         with self.lock:
 
             for handler in self.services:
