@@ -63,17 +63,17 @@ def _on_connect(client, userdata, rc): # pylint: disable=invalid-name
     with self._connected_lock:
         self._connected = True
 
-        logger.info("Connected with result code %s", str(rc))
+        logger.debug("Connected with result code %s", str(rc))
 
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         with self._subscriptions_lock:
             for subscription in self._subscriptions:
                 try:
-                    logger.info("Subscribing to %s", subscription)
+                    logger.debug("Subscribing to %s", subscription)
                     client.subscribe(subscription)
                 except Exception as ex:
-                    logger.error("Error during subscribe: %s", ex.message)
+                    logger.error("Error during subscribe: %s", str(ex))
                     logger.debug(traceback.format_exc())
 
         if self._service_manager:
@@ -106,7 +106,7 @@ def _on_disconnect(client, userdata, rc): # pylint: disable=invalid-name
     self._reset_current_broker()
 
     if rc == 0:
-        logger.info("Disconnected with result code %s", str(rc))
+        logger.debug("Disconnected with result code %s", str(rc))
     else:
         logger.error("Unexpected disconnect with result code %s", str(rc))
         # Disconnect the client without stopping the event loop
@@ -133,7 +133,7 @@ def _on_message(client, userdata, msg): # pylint: disable=invalid-name
         raise ValueError("Client reference not specified")
     self = userdata
 
-    logger.info("Message received for topic %s", msg.topic)
+    logger.debug("Message received for topic %s", msg.topic)
 
     # TODO: The behavior is one thread per message, but the individual callbacks are handled sequential.
     # TODO: self is the same as in the Java client, but is not ideal.  One plugin could block the whole
@@ -142,8 +142,7 @@ def _on_message(client, userdata, msg): # pylint: disable=invalid-name
     try:
         self._thread_pool.add_task(self._handle_message, channel=msg.topic, payload=msg.payload)
     except Exception as ex:  # pylint: disable=broad-except
-        logger.error("Error handling message: %s", ex.message)
-        logger.debug(traceback.format_exc())
+        logger.exception("Error handling message")
 
 
 def _on_log(client, userdata, level, buf):
@@ -492,37 +491,37 @@ class DxlClient(_BaseObject):
         if self._service_manager:
             self._service_manager.on_disconnect()
 
-        logger.info("Waiting for thread pool completion...")
+        logger.debug("Waiting for thread pool completion...")
         self._thread_pool.wait_completion()
 
         for subscription in self._subscriptions:
             if self.connected:
                 try:
-                    logger.info("Unsubscribing from %s", subscription)
+                    logger.debug("Unsubscribing from %s", subscription)
                     self._client.unsubscribe(subscription)
                 except Exception as ex:  # pylint: disable=broad-except
-                    logger.error("Error during unsubscribe: %s", ex.message)
+                    logger.error("Error during unsubscribe: %s", str(ex))
                     logger.debug(traceback.format_exc())
 
         # In case of a reconnect after connection loss, the event loop will
         # not be stopped and the client will not be forcefully disconnected.
         if stop_event_loop:
-            logger.info("Stopping event loop...")
+            logger.debug("Stopping event loop...")
             self._client.loop_stop()
-            logger.info("Trying to disconnect client...")
+            logger.debug("Trying to disconnect client...")
             self._client.disconnect()
-            logger.info("Disconnected.")
+            logger.debug("Disconnected.")
 
         # Make sure the connection loop is done
         if self._thread is not None:
-            logger.info("Waiting for the thread to terminate...")
+            logger.debug("Waiting for the thread to terminate...")
             self._thread_terminate = True
             with self._connect_wait_lock:
                 self._connect_wait_condition.notifyAll()
             while self._thread.isAlive():
                 self._thread.join(1)
             self._thread = None
-            logger.info("Thread terminated.")
+            logger.debug("Thread terminated.")
 
     def _connect_thread_main(self, start_loop, connect_retries):
         """
@@ -557,7 +556,7 @@ class DxlClient(_BaseObject):
                 except Exception as ex:  # pylint: disable=broad-except
                     logger.error("Failed to connect to broker %s: %s",
                                  broker.to_string(),
-                                 ex.message)
+                                 str(ex))
                     logger.debug(traceback.format_exc())
                     latest_ex = ex
 
@@ -621,7 +620,7 @@ class DxlClient(_BaseObject):
             logger.debug("Stopping...")
             return DXL_ERR_INTERRUPT
 
-        logger.info("Checking brokers...")
+        logger.debug("Checking brokers...")
         brokers = self._config._get_sorted_broker_list()
 
         logger.info("Trying to connect...")
@@ -670,7 +669,7 @@ class DxlClient(_BaseObject):
             if latest_ex_traceback:
                 logger.debug(latest_ex_traceback)
 
-        logger.info("Launching event loop...")
+        logger.debug("Launching event loop...")
 
         if start_loop:
             self._client.loop_start()
@@ -737,10 +736,6 @@ class DxlClient(_BaseObject):
                 self._subscriptions.add(topic)
                 if self.connected:
                     self._client.subscribe(topic)
-        except Exception as ex:
-            logger.error("Error during subscribe: %s", ex.message)
-            logger.debug(traceback.format_exc())
-            raise DxlException("Error during subscribe" + str(ex))
         finally:
             logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
@@ -759,10 +754,6 @@ class DxlClient(_BaseObject):
             if topic in self._subscriptions:
                 if self.connected:
                     self._client.unsubscribe(topic)
-        except Exception as ex:
-            logger.error("Error during unsubscribe: %s", ex.message)
-            logger.debug(traceback.format_exc())
-            raise DxlException("Error during unsubscribe")
         finally:
             self._subscriptions.remove(topic)
             logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
@@ -833,12 +824,7 @@ class DxlClient(_BaseObject):
         :param payload: The message content
         :param qos: The quality of service (QOS)
         """
-        try:
-            self._client.publish(topic=channel, payload=payload, qos=qos)
-        except Exception as ex:  # pylint: disable=broad-except
-            logger.error("Error publishing message: %s", ex.message)
-            logger.debug(traceback.format_exc())
-            _raise_wrapped_exception("Error publishing message", ex)
+        self._client.publish(topic=channel, payload=payload, qos=qos)
 
     def _send_request(self, request):
         """

@@ -64,5 +64,5 @@ try:
         # End Prompt Loop
 
 except Exception as e:
-    logger.info("Event Publisher - Exception: %s", e.message)
+    logger.exception("Event Publisher - Exception")
     exit(1)

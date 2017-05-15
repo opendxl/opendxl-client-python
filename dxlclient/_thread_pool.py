@@ -48,8 +48,7 @@ class ThreadPoolWorker(Thread):
                 else:
                     func(*args, **kargs)  # pylint: disable=star-args
             except Exception as ex:  # pylint: disable=broad-except
-                logger.error("Error in worker thread: %s", ex.message)
-                logger.debug(traceback.format_exc())
+                logger.exception("Error in worker thread")
             del func
             self.tasks.task_done()
 
@@ -84,7 +83,7 @@ class ThreadPool(_BaseObject):
 
     def shutdown(self):
         """Shuts down the thread pool"""
-        logger.info("Shutting down thread pool...")
+        logger.debug("Shutting down thread pool...")
         self.wait_completion()
 
         # Add task to stop the thread

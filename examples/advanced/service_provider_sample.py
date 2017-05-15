@@ -83,5 +83,5 @@ try:
                 logger.info("Service Provider - Invalid input: %s", option)
 
 except Exception as e:
-    logger.info("Service Provider - Exception: %s", e.message)
+    logger.exception("Service Provider - Exception")
     exit(1)

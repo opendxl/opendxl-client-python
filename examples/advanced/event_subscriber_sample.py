@@ -60,5 +60,5 @@ try:
                 logger.info("Event Subscriber - Invalid input: %s", option)
 
 except Exception as e:
-    logger.info("Event Subscriber - Exception: %s", e.message)
+    logger.exception("Event Subscriber - Exception")
     exit(1)

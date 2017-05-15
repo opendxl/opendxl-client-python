@@ -55,7 +55,7 @@ class Message(_BaseObject):
     __metaclass__ = ABCMeta
 
     # The message version
-    MESSAGE_VERSION = 0
+    MESSAGE_VERSION = 2
 
     MESSAGE_TYPE_REQUEST = 0
     """The numeric type identifier for the :class:`Request` message type"""
@@ -74,6 +74,9 @@ class Message(_BaseObject):
         """
         super(Message, self).__init__()
 
+        ###########
+        # Version 0
+        ###########
         # The version of the message
         self._version = self.MESSAGE_VERSION
         # The unique identifier for the message
@@ -90,6 +93,20 @@ class Message(_BaseObject):
         self._broker_ids = []
         # The set of client GUIDs to deliver the message to
         self._client_ids = []
+
+        ###########
+        # Version 1
+        ###########
+        # Other fields: way to add fields to message types
+        self._other_fields = {}
+
+        ###########
+        # Version 2
+        ###########
+        # The GUID for the tenant that is the source of the message
+        self._source_tenant_guid = ""
+        # The set of tenant GUIDs to deliver the message to
+        self._destination_tenant_guids = []
 
     def __del__(self):
         """destructor"""
@@ -210,6 +227,92 @@ class Message(_BaseObject):
         self._client_ids = unpacker.next()
         self._payload = unpacker.next()
 
+    @property
+    def other_fields(self):
+        """
+        Returns a ``dict`` (dictionary) containing the set of additional fields associated
+        with the message. These fields can be used to add "header" like values to the
+        message without requiring modifications to be made to the payload.
+        """
+        return self._other_fields
+
+    @other_fields.setter
+    def other_fields(self, other_fields=None):
+        if other_fields is None:
+            other_fields = {}
+        self._other_fields = other_fields
+
+    @property
+    def source_tenant_guid(self):
+        """
+        The tenant identifier of the DXL client that sent the message
+        (set by the broker that initially receives the message)
+        """
+        return self._source_tenant_guid
+
+    @source_tenant_guid.setter
+    def source_tenant_guid(self, source_tenant_guid=None):
+        if source_tenant_guid is None:
+            source_tenant_guid = ''
+        self._source_tenant_guid = source_tenant_guid
+
+    @property
+    def destination_tenant_guids(self):
+        """
+        The set of tenant identifiers that the message is to be routed to. Setting this value will limit
+        which clients the message will be delivered to. This can be used in conjunction with :func:`broker_ids`
+        and :func:`client_ids`.
+        """
+        return self._destination_tenant_guids
+
+    @destination_tenant_guids.setter
+    def destination_tenant_guids(self, tenant_guids=None):
+        if tenant_guids is None:
+            tenant_guids = []
+        self._destination_tenant_guids = tenant_guids
+
+    def _pack_message_v1(self, packer, buf):
+        """
+        Packs the v1 message members to the `buffer`
+
+        :param packer: The packer
+        :param buf: Object to which the bytes will be written
+        """
+        # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
+        array = []
+        for key, value in self._other_fields.iteritems():
+            array.extend((key, value))
+        buf.write(packer.pack(array))
+
+    def _unpack_message_v1(self, unpacker):
+        """
+        Unpacks the v1 members of the message from `unpacker`.
+
+        :param unpacker: The unpacker
+        """
+        # The "otherFields" member is unpacked as a list format, and then it is converted to a dictionary.
+        array = unpacker.next()
+        self._other_fields = dict(array[i:i+2] for i in range(0, len(array), 2))
+
+    def _pack_message_v2(self, packer, buf):
+        """
+        Packs the v2 message members to the `buffer`
+
+        :param packer: The packer
+        :param buf: Object to which the bytes will be written
+        """
+        buf.write(packer.pack(self._source_tenant_guid))
+        buf.write(packer.pack(self._destination_tenant_guids))
+
+    def _unpack_message_v2(self, unpacker):
+        """
+        Unpacks the v2 members of the message from `unpacker`.
+
+        :param unpacker: The unpacker
+        """
+        self._source_tenant_guid = unpacker.next()
+        self._destination_tenant_guids = unpacker.next()
+
     def _to_bytes(self):
         """
         Converts the message to an array of bytes and returns it.
@@ -220,7 +323,14 @@ class Message(_BaseObject):
         packer = msgpack.Packer()
         buf.write(packer.pack(self.version))
         buf.write(packer.pack(self.message_type))
+        # Version 0 
         self._pack_message(packer, buf)
+        # Version 1
+        if self._version > 0:
+            self._pack_message_v1(packer, buf)
+        # Version 2
+        if self._version > 1:
+            self._pack_message_v2(packer, buf)
         return buf.getvalue()
 
     @staticmethod
@@ -250,7 +360,14 @@ class Message(_BaseObject):
 
         if message is not None:
             message._version = version
+            # Version 0
             message._unpack_message(unpacker)
+            # Version 1
+            if message._version > 0:
+                message._unpack_message_v1(unpacker)
+            # Version 2
+            if message._version > 1:
+                message._unpack_message_v2(unpacker)            
             return message
 
         raise DxlException("Unknown message type: " + message_type)

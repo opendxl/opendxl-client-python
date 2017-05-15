@@ -105,5 +105,5 @@ try:
                 logger.info("fdsaService Invoker - Invalid input: %s", option)
 
 except Exception as e:
-    logger.info("Service Invoker - Exception: %s", e.message)
+    logger.exception("Service Invoker - Exception")
     exit(1)

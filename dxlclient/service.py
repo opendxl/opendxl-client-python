@@ -113,6 +113,8 @@ class ServiceRegistrationInfo(_BaseObject):
         self._callbacks_by_topic = {}
         #The map of meta data associated with this service (name-value pairs)
         self._metadata = {}
+        # List of destination tenants
+        self._destination_tenant_guids = []
 
         # The Time-To-Live (TTL) of the service registration (default: 60 minutes)
         self._ttl = 60  # minutes
@@ -237,6 +239,20 @@ class ServiceRegistrationInfo(_BaseObject):
             raise ValueError("Undefined channel")
         for channel, callback in callbacks_by_topic.iteritems():
             self.add_topic(channel, callback)
+
+    @property
+    def destination_tenant_guids(self):
+        """
+        The set of tenant identifiers that the service will be available to. Setting this value will limit
+        which tenants can invoke the service.
+        """
+        return self._destination_tenant_guids
+
+    @destination_tenant_guids.setter
+    def destination_tenant_guids(self, tenant_guids=None):
+        if tenant_guids is None:
+            tenant_guids = []
+        self._destination_tenant_guids = tenant_guids
 
     def _wait_for_registration_notification(self, wait_time, is_register):
         """
@@ -394,8 +410,8 @@ class _ServiceRegistrationHandler(_BaseObject):
             raise DxlException("Client not defined")
         req = Request(destination_topic=_ServiceManager.DXL_SERVICE_REGISTER_REQUEST_CHANNEL)
         req.payload = bytes(self.json_register_service())
+        req.destination_tenant_guids = self.get_service().destination_tenant_guids
         response = self.client.sync_request(req, timeout=10)
-
         if response.message_type != Message.MESSAGE_TYPE_ERROR:
             self.update_register_time()
             info = self.get_service()

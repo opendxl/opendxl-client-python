@@ -101,11 +101,8 @@ class RequestManager(ResponseCallback):
             try:
                 # Add to set of current requests
                 self.add_current_request(request.message_id)
-                try:
-                    self.client._send_request(request)
-                    response = self.wait_for_response(request, wait)
-                except Exception as ex:
-                    _raise_wrapped_exception("Error during synchronous request", ex)
+                self.client._send_request(request)
+                response = self.wait_for_response(request, wait)
             finally:
                 # Remove from set of current requests
                 self.remove_current_request(request.message_id)
@@ -134,7 +131,7 @@ class RequestManager(ResponseCallback):
                     self.unregister_async_callback(destination)
             finally:
                 self.remove_current_request(request.message_id)
-            _raise_wrapped_exception("Error during asynchronous request", ex)
+            raise
 
     def register_wait_for_response(self, request):
         """
