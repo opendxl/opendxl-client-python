@@ -92,6 +92,20 @@ def _on_disconnect(client, userdata, rc): # pylint: disable=invalid-name
     :param rc: The result code
     :return: None
     """
+    t = threading.Thread(target=_on_disconnect_run, args=[client, userdata, rc])
+    t.daemon = True
+    t.start()
+
+
+def _on_disconnect_run(client, userdata, rc):  # pylint: disable=invalid-name
+    """
+    Worker method that is invoked when the client disconnects from the broker.
+
+    :param client: The Paho MQTT client reference
+    :param userdata: The user data object provided
+    :param rc: The result code
+    :return: None
+    """
     # Remove unused parameter
     del client
     # Check userdata; this needs to be an instance of the DxlClient
@@ -109,12 +123,12 @@ def _on_disconnect(client, userdata, rc): # pylint: disable=invalid-name
         logger.debug("Disconnected with result code %s", str(rc))
     else:
         logger.error("Unexpected disconnect with result code %s", str(rc))
-        # Disconnect the client without stopping the event loop
-        self._disconnect(stop_event_loop=False)
-        # Connect the client without starting a new event loop
-        # Start the connect thread
+        # Disconnect the client
+        self._disconnect()
+        # Connect the client
         if self.config.reconnect_when_disconnected:
-            self._start_connect_thread(start_event_loop=False)
+            self._start_connect_thread()
+
 
 def _on_message(client, userdata, msg): # pylint: disable=invalid-name
     """
@@ -432,8 +446,8 @@ class DxlClient(_BaseObject):
         if not self.connected:
             raise DxlException("Failed to establish connection")
 
-    def _start_connect_thread(self, start_event_loop=True, connect_retries=-1):
-        self._thread = threading.Thread(target=self._connect_thread_main, args=[start_event_loop, connect_retries])
+    def _start_connect_thread(self, connect_retries=-1):
+        self._thread = threading.Thread(target=self._connect_thread_main, args=[connect_retries])
         self._thread.daemon = True
         self._thread.start()
 
@@ -482,11 +496,11 @@ class DxlClient(_BaseObject):
         Attempts to disconnect the client from the DXL fabric.
         """
         if self._connected:
-            self._disconnect(stop_event_loop=True)
+            self._disconnect()
         else:
             logger.warning("Trying to disconnect a disconnected client.")
 
-    def _disconnect(self, stop_event_loop=False):
+    def _disconnect(self):
 
         if self._service_manager:
             self._service_manager.on_disconnect()
@@ -505,12 +519,11 @@ class DxlClient(_BaseObject):
 
         # In case of a reconnect after connection loss, the event loop will
         # not be stopped and the client will not be forcefully disconnected.
-        if stop_event_loop:
-            logger.debug("Stopping event loop...")
-            self._client.loop_stop()
-            logger.debug("Trying to disconnect client...")
-            self._client.disconnect()
-            logger.debug("Disconnected.")
+        logger.debug("Stopping event loop...")
+        self._client.loop_stop()
+        logger.debug("Trying to disconnect client...")
+        self._client.disconnect()
+        logger.debug("Disconnected.")
 
         # Make sure the connection loop is done
         if self._thread is not None:
@@ -523,12 +536,12 @@ class DxlClient(_BaseObject):
             self._thread = None
             logger.debug("Thread terminated.")
 
-    def _connect_thread_main(self, start_loop, connect_retries):
+    def _connect_thread_main(self, connect_retries):
         """
         The connection thread main function
         """
         self._thread_terminate = False
-        self._loop_until_connected(start_loop, connect_retries)
+        self._loop_until_connected(connect_retries)
 
     def _connect(self, brokers):
         """
@@ -599,7 +612,7 @@ class DxlClient(_BaseObject):
             if latest_ex is not None:
                 raise latest_ex  # pylint: disable=raising-bad-type
 
-    def _loop_until_connected(self, start_loop, connect_retries):
+    def _loop_until_connected(self, connect_retries):
 
         # The client is already connected
         if self.connected:
@@ -671,8 +684,7 @@ class DxlClient(_BaseObject):
 
         logger.debug("Launching event loop...")
 
-        if start_loop:
-            self._client.loop_start()
+        self._client.loop_start()
 
         return DXL_ERR_SUCCESS
 
