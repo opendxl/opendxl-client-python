@@ -57,13 +57,13 @@ class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
         dxl_client.send_event(evt)
     """
 
-def on_event(self, event):
-    """
-    Invoked when an :class:`dxlclient.message.Event` has been received.
+    def on_event(self, event):
+        """
+        Invoked when an :class:`dxlclient.message.Event` has been received.
 
-    :param event: The :class:`dxlclient.message.Event` message that was received
-    """
-    raise NotImplementedError("Must be implemented in a child class.")
+        :param event: The :class:`dxlclient.message.Event` message that was received
+        """
+        raise NotImplementedError("Must be implemented in a child class.")
 
 
 class RequestCallback(MessageCallback):  # pylint: disable=too-few-public-methods
