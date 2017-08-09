@@ -7,7 +7,7 @@ DXL client certificates must be imported into ePO.
 If you have not created the Certificate Authority (CA), please follow the steps outlined in
 the :doc:`certcreation` section.
 
-The steps to import the CA certificate into ePO are listed below::
+The steps to import the CA certificate into ePO are listed below:
 
 1. Navigate to **Server Settings** and select the **DXL Certificates** setting on the left navigation bar.
 

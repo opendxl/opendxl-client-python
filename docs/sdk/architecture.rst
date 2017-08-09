@@ -1,5 +1,5 @@
 Architecture
-========
+============
 
 The Data Exchange Layer (DXL) architecture is a publish/subscribe-based middleware that allows DXL clients
 to communicate with each over the message bus in near-real time.

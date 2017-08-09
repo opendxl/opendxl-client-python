@@ -1,8 +1,8 @@
 Features
-=====================================
+========
 
 Location Unaware
------------------
+----------------
 
 Communication between clients on the DXL fabric is based on sending "messages" to a "topic". Clients are unaware
 of the location of the other DXL clients they are communicating with (its hostname, IP address, etc.).
@@ -13,7 +13,7 @@ reputation information. All of this communication occurs without either party kn
 (they could be in the same building or on the other side of the world).
 
 Persistent Connection
------------------
+---------------------
 
 Connections are established from a DXL client to a DXL broker. These connections are persistent and allow for
 bi-directional communication. The benefits to this style of connection include:
@@ -32,7 +32,7 @@ bi-directional communication. The benefits to this style of connection include:
     expense of continually establishing connections is eliminated.
 
 Multiple communication models
------------------
+-----------------------------
 
 DXL Supports two different models of communication. A service-based model with point-to-point (request/response)
 communication and a publish/subscribe event-based model.
@@ -61,7 +61,7 @@ communication and a publish/subscribe event-based model.
     to this topic).
 
 Secure Communication
----------------------
+--------------------
 
 Communication over the DXL fabric is secured via TLS version 1.2 and PKI mutual authentication.
 

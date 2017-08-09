@@ -46,15 +46,11 @@ Samples
 Configuration
 
 .. toctree::
-	:maxdepth: 1
-
     sampleconfig
 
 Basic
 
 .. toctree::
-	:maxdepth: 1
-
     basiceventsexample
     basicserviceexample
 
