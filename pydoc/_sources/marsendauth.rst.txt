@@ -10,7 +10,7 @@ Please see :doc:`topicauthoverview` for more information on DXL Topic Authorizat
 
 The following steps will walk through the process of allowing a DXL client to send messages on the
 DXL Topic ``/mcafee/mar/service/api/search`` which is associated with the
-DXL Topic Authorization Group ``Active Response Server API``::
+DXL Topic Authorization Group ``Active Response Server API``:
 
 1. Navigate to **Server Settings** and select the **DXL Topic Authorization** setting on the left navigation bar.
 

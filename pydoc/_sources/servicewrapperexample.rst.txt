@@ -9,7 +9,7 @@ In this particular case, the `OpenWeatherMap <http://openweathermap.org>`_ "curr
 wrapper delegates to the `OpenWeatherMap REST API <http://openweathermap.org/api>`_.
 
 OpenWeather API key
-****************
+*******************
 
 Before running this sample you must obtain an "API key" from OpenWeatherMap:
 
@@ -23,7 +23,7 @@ Once you receive the API key, you must replace it in the ``openweather_common.py
         API_KEY = "01234567890123456789012345678901"
 
 Service Wrapper
-****************
+***************
 
 The first step is to start the "service wrapper". This script will remain running and receive
 :class:`dxlclient.message.Request` messages from clients that are querying weather information.

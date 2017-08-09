@@ -10,6 +10,7 @@ Windows
 #######
 
 1. Download and install Open SSL for Windows
+
   * Download from the following location:
 
         http://www.slproweb.com/products/Win32OpenSSL.html
