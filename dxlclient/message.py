@@ -281,7 +281,7 @@ class Message(_BaseObject):
         # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
         array = []
         for key, value in self._other_fields.iteritems():
-            array.extend((key, value))
+            array.extend((key.encode('utf8'), value.encode('utf8')))
         buf.write(packer.pack(array))
 
     def _unpack_message_v1(self, unpacker):
@@ -292,7 +292,14 @@ class Message(_BaseObject):
         """
         # The "otherFields" member is unpacked as a list format, and then it is converted to a dictionary.
         array = unpacker.next()
-        self._other_fields = dict(array[i:i+2] for i in range(0, len(array), 2))
+        key = None
+        self._other_fields = {}
+        for curr in array:
+            if key:
+                self._other_fields[key] = curr.decode('utf8')
+                key = None
+            else:
+                key = curr.decode('utf8')
 
     def _pack_message_v2(self, packer, buf):
         """
@@ -630,7 +637,7 @@ class ErrorResponse(Response):
         """
         super(ErrorResponse, self)._pack_message(packer, buf)
         buf.write(packer.pack(self._error_code))
-        buf.write(packer.pack(self._error_message))
+        buf.write(packer.pack(self._error_message.encode('utf8')))
 
     def _unpack_message(self, unpacker):
         """
@@ -640,4 +647,4 @@ class ErrorResponse(Response):
         """
         super(ErrorResponse, self)._unpack_message(unpacker)
         self._error_code = unpacker.next()
-        self._error_message = unpacker.next()
+        self._error_message = unpacker.next().decode('utf8')

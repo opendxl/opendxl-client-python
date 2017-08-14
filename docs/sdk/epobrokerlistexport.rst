@@ -3,8 +3,7 @@ ePO Broker List Export
 
 DXL clients need to have a list of Brokers on the fabric to connect to.
 
-The following steps walk through the process to export the list of all DXL brokers on the fabric
-for use by DXL clients::
+The following steps walk through the process to export the list of all DXL brokers on the fabric for use by DXL clients:
 
 1. Navigate to **Server Settings** and select the **DXL Certificates** setting on the left navigation bar.
 

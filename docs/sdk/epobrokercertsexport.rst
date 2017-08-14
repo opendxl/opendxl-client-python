@@ -5,7 +5,7 @@ The certificate information for DXL Brokers must be available to DXL clients att
 to the fabric. This certificate information allows clients to ensure the Brokers being connected to are valid
 (via mutual authentication).
 
-The following steps walk through the process to export the DXL Broker certificate information::
+The following steps walk through the process to export the DXL Broker certificate information:
 
 1. Navigate to **Server Settings** and select the **DXL Certificates** setting on the left navigation bar.
 

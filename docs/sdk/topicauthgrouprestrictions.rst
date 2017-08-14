@@ -9,8 +9,7 @@ the :doc:`epocaimport` section. Also if you have not created a topic authorizati
 the :doc:`topicauthgroupcreation` section.
 
 The following section walks through the steps of limiting which Certificate Authorities (CAs) and/or certificates are
-required to send and receive messages for a topic authorization group::
-
+required to send and receive messages for a topic authorization group:
 
 1. Navigate to **Server Settings** and select the **Topic Authorization** setting on the left navigation bar.
 
