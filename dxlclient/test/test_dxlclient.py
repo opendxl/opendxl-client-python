@@ -8,10 +8,11 @@
 import unittest
 import time
 import threading
+
 from base_test import BaseClientTest
 import io
 from nose.plugins.attrib import attr
-from nose_parameterized import parameterized
+from parameterized import parameterized
 from mock import Mock, patch
 from textwrap import dedent
 import __builtin__
@@ -29,55 +30,54 @@ from dxlclient import EventCallback
 from dxlclient import RequestCallback
 from dxlclient import ResponseCallback
 from dxlclient import DxlException
-from dxlclient import BrokerListError
 from dxlclient._global_settings import *
 
 CONFIG_DATA_NO_CERTS_SECTION = """
 [no_certs]
-BrokerCertChain: certchain.pem
-CertFile: certfile.pem
-PrivateKey: privatekey.pk
+BrokerCertChain=certchain.pem
+CertFile=certfile.pem
+PrivateKey=privatekey.pk
 
 [Brokers]
-22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
 """
 CONFIG_DATA_NO_CA_OPTION = """
 [Certs]
-CertFile: certfile.pem
-PrivateKey: privatekey.pk
+CertFile=certfile.pem
+PrivateKey=privatekey.pk
 
 [Brokers]
-22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
 """
 CONFIG_DATA_NO_CERT_OPTION = """
 [Certs]
-BrokerCertChain: certchain.pem
-PrivateKey: privatekey.pk
+BrokerCertChain=certchain.pem
+PrivateKey=privatekey.pk
 
 [Brokers]
-22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
 """
 CONFIG_DATA_NO_PK_OPTION = """
 [Certs]
-BrokerCertChain: certchain.pem
-CertFile: certfile.pem
+BrokerCertChain=certchain.pem
+CertFile=certfile.pem
 
 [Brokers]
-22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
 """
 CONFIG_DATA_NO_BROKERS_SECTION = """
 [Certs]
-BrokerCertChain: certchain.pem
-CertFile: certfile.pem
-PrivateKey: privatekey.pk
+BrokerCertChain=certchain.pem
+CertFile=certfile.pem
+PrivateKey=privatekey.pk
 
-22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
 """
 CONFIG_DATA_NO_BROKERS_OPTION = """
 [Certs]
-BrokerCertChain: certchain.pem
-CertFile: certfile.pem
-PrivateKey: privatekey.pk
+BrokerCertChain=certchain.pem
+CertFile=certfile.pem
+PrivateKey=privatekey.pk
 
 [Brokers]
 """
@@ -156,29 +156,20 @@ class DxlClientConfigTest(unittest.TestCase):
         self.assertTrue(b1 in l)
         self.assertTrue(b2 in l)
 
-    @parameterized.expand([
-        ({"BrokersList": "Actually not a brokers list"},)
-    ])
-    def test_get_brokers_raises_exception_from_invalid_json(self, policy):
-        config = DxlClientConfig(broker_ca_bundle=get_ca_bundle_pem(),
-                                 cert_file=get_cert_file_pem(),
-                                 private_key=get_dxl_private_key(),
-                                 brokers=[])
-        with self.assertRaises(BrokerListError):
-            config._set_brokers_from_json(policy)
-
     def test_set_config_from_file_generates_dxl_config(self):
         read_data = """
         [Certs]
-        BrokerCertChain: certchain.pem
-        CertFile: certfile.pem
-        PrivateKey: privatekey.pk
+        BrokerCertChain=certchain.pem
+        CertFile=certfile.pem
+        PrivateKey=privatekey.pk
 
         [Brokers]
-        22cdcace-6e8f-11e5-29c0-005056aa56de: 22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
+        22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
         """
 
-        with patch.object(__builtin__, 'open', return_value=io.BytesIO(dedent(read_data))):
+        with patch.object(__builtin__, 'open',
+                          return_value=io.BytesIO(dedent(read_data))) as mock_open, \
+                patch.object(os.path, 'isfile', return_value=True):
             client_config = DxlClientConfig.create_dxl_config_from_file("mock_file")
             self.assertEqual(client_config.cert_file, "certfile.pem")
             self.assertEqual(client_config.broker_ca_bundle, "certchain.pem")
@@ -188,6 +179,7 @@ class DxlClientConfigTest(unittest.TestCase):
             self.assertEqual(broker.ip_address, "10.218.73.206")
             self.assertEqual(broker.port, 8883)
             self.assertEqual(broker.unique_id, "22cdcace-6e8f-11e5-29c0-005056aa56de")
+        mock_open.assert_called_with("mock_file", "rb")
 
     def test_set_config_wrong_file_raises_exception(self):
         with self.assertRaises(Exception):
@@ -200,7 +192,9 @@ class DxlClientConfigTest(unittest.TestCase):
         (CONFIG_DATA_NO_PK_OPTION,),
     ])
     def test_missing_certs_raises_exception(self, read_data):
-        with patch.object(__builtin__, 'open', return_value=io.BytesIO(dedent(read_data))):
+        with patch.object(__builtin__, 'open',
+                          return_value=io.BytesIO(dedent(read_data))), \
+             patch.object(os.path, 'isfile', return_value=True):
             with self.assertRaises(ValueError):
                 DxlClientConfig.create_dxl_config_from_file("mock_file.cfg")
 
@@ -209,9 +203,93 @@ class DxlClientConfigTest(unittest.TestCase):
         (CONFIG_DATA_NO_BROKERS_OPTION,),
     ])
     def test_missing_brokers_doesnt_raise_exceptions(self, read_data):
-        with patch.object(__builtin__, 'open', return_value=io.BytesIO(dedent(read_data))):
-            client_config = DxlClientConfig.create_dxl_config_from_file("mock_file.cfg")
+        with patch.object(__builtin__, 'open',
+                          return_value=io.BytesIO(dedent(read_data))), \
+             patch.object(os.path, 'isfile', return_value=True):
+            client_config = DxlClientConfig.create_dxl_config_from_file(
+                "mock_file.cfg")
             self.assertEqual(len(client_config.brokers), 0)
+
+    class CapturedBytesIO(io.BytesIO):
+        def __init__(self):
+            super(DxlClientConfigTest.CapturedBytesIO, self).__init__()
+            self._bytes_captured = None
+
+        @property
+        def bytes_captured(self):
+            return self._bytes_captured
+
+        def write(self, bytes_to_write):
+            self._bytes_captured = bytes_to_write
+
+    def test_write_in_memory_config(self):
+        expected_data = os.linesep.join([
+            "[Certs]",
+            "BrokerCertChain = mycabundle.pem",
+            "CertFile = mycertfile.pem",
+            "PrivateKey = myprivatekey.pem",
+            "{}[Brokers]".format(os.linesep),
+            "myid1 = myid1;8001;myhost1;10.10.100.1",
+            "myid2 = myid2;8002;myhost2;10.10.100.2{}".format(os.linesep)])
+        byte_stream = self.CapturedBytesIO()
+        with patch.object(__builtin__, 'open',
+                          return_value=byte_stream) as mock_open:
+            config = DxlClientConfig(
+                "mycabundle.pem",
+                "mycertfile.pem",
+                "myprivatekey.pem",
+                [Broker("myhost1", "myid1", "10.10.100.1",
+                        8001),
+                 Broker("myhost2", "myid2", "10.10.100.2",
+                        8002)])
+            config.write("myfile.txt")
+        self.assertEqual(expected_data, byte_stream.bytes_captured)
+        mock_open.assert_called_with("myfile.txt", "wb")
+
+    def test_write_modified_config(self):
+        initial_data = os.linesep.join([
+            "# mycerts",
+            "[Certs]",
+            "BrokerCertChain = abundle.crt",
+            "CertFile = acertfile.crt",
+            "# pk file",
+            "PrivateKey = akey.key",
+            "{}[Brokers]".format(os.linesep),
+            "# broker 7",
+            "myid7 = myid7;8007;myhost7;10.10.100.7",
+            "# broker 8",
+            "myid8 = myid8;8008;myhost8;10.10.100.8{}".format(os.linesep)])
+
+        expected_data_after_mods = os.linesep.join([
+            "# mycerts",
+            "[Certs]",
+            "BrokerCertChain = newbundle.pem",
+            "CertFile = acertfile.crt",
+            "# pk file",
+            "PrivateKey = newkey.pem",
+            "{}[Brokers]".format(os.linesep),
+            "# broker 8",
+            "myid8 = myid8;8008;myhost8;10.10.100.8",
+            "myid9 = myid9;8009;myhost9;10.10.100.9{}".format(os.linesep)])
+
+        with patch.object(__builtin__, 'open',
+                          return_value=io.BytesIO(initial_data)), \
+                patch.object(os.path, 'isfile', return_value=True):
+            config = DxlClientConfig.create_dxl_config_from_file(
+                "mock_file.cfg")
+        del config.brokers[0]
+        config.broker_ca_bundle = "newbundle.pem"
+        config.private_key = "newkey.pem"
+        config.brokers.append(Broker("myhost9",
+                                     "myid9",
+                                     "10.10.100.9",
+                                     8009))
+        byte_stream = self.CapturedBytesIO()
+        with patch.object(__builtin__, 'open',
+                          return_value=byte_stream) as mock_open:
+            config.write("newfile.txt")
+        self.assertEqual(expected_data_after_mods, byte_stream.bytes_captured)
+        mock_open.assert_called_with("newfile.txt", "wb")
 
 
 class DxlClientTest(unittest.TestCase):

@@ -1,3 +1,4 @@
+import os
 from setuptools import setup
 import distutils.command.sdist
 
@@ -8,14 +9,17 @@ import setuptools.command.sdist
 # Patch setuptools' sdist behaviour with distutils' sdist behaviour
 setuptools.command.sdist.sdist.run = distutils.command.sdist.sdist.run
 
-VERSION = __import__('dxlclient').get_product_version()
+product_props = {}
+cwd=os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(cwd, "dxlclient", "_product_props.py")) as f:
+    exec(f.read(), product_props)
 
 dist = setup(
     # Application name:
     name="dxlclient",
 
     # Version number:
-    version=VERSION,
+    version=product_props["__version__"],
 
     # Application author details:
     author="McAfee, Inc.",
@@ -40,6 +44,19 @@ dist = setup(
             "_vendor/paho/mqtt/*.*",
         ],
     },
+
+    install_requires=[
+        "configobj"
+    ],
+
+    tests_require=[
+        "futures",
+        "mock",
+        "nose",
+        "parameterized"
+    ],
+
+    test_suite = "nose.collector",
 
     # Details
     url="http://www.mcafee.com/",
