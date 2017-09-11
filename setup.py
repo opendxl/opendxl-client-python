@@ -32,6 +32,7 @@ dist = setup(
     # Packages
     packages=[
         "dxlclient",
+        "dxlclient._cli"
     ],
 
     # Include additional files into the package
@@ -46,14 +47,19 @@ dist = setup(
     },
 
     install_requires=[
-        "configobj"
+        "asn1crypto",
+        "configobj",
+        "oscrypto",
+        "requests",
+        "six"
     ],
 
     tests_require=[
         "futures",
         "mock",
         "nose",
-        "parameterized"
+        "parameterized",
+        "requests-mock"
     ],
 
     test_suite = "nose.collector",
