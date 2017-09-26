@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-################################################################################
+###############################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
-################################################################################
+###############################################################################
+import errno
+import os
+
 from dxlclient import _BaseObject
+
 
 class DxlUtils(object):
     """
@@ -82,6 +86,43 @@ class DxlUtils(object):
 
         for wildcard in topic_wildcards:
             wildcard_callback.on_next_wildcard(wildcard)
+
+    @staticmethod
+    def makedirs(dir_path, mode=0o755):
+        """
+        Create a directory (or directory tree) per the `dir_path` argument.
+        This is basically the same as :func:`os.makedirs` except that if the
+        directory already exists when this is called, no exception is raised.
+        Also, the default permissions mode is 0o755 instead of what
+        :func:`os.makedirs` uses as a default, 0o777.
+
+        :param str dir_path: directory path to create
+        :param int mode: permissions mode to use for each directory which is
+            created
+        """
+        if dir_path:
+            try:
+                os.makedirs(dir_path, mode)
+            except OSError as ex:
+                if ex.errno != errno.EEXIST:
+                    raise
+
+    @staticmethod
+    def save_to_file(filename, data, mode=0o644):
+        """
+        Save a data string to a file. If any directories in the file path do
+        not exist, the directories are created (using a permission mode of
+        0o755. If the file already exists, its contents are replaced with the
+        contents of `data`.
+
+        :param str filename: name of the file to save
+        :param str data: data to be saved
+        :param int mode: permissions mode to use for the file
+        """
+        DxlUtils.makedirs(os.path.dirname(filename))
+        with os.fdopen(os.open(filename,
+                               os.O_WRONLY | os.O_CREAT, mode), 'w') as handle:
+            handle.write(data)
 
 
 class WildcardCallback(_BaseObject):

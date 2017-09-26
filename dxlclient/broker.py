@@ -206,6 +206,25 @@ class Broker(_BaseObject):
         # Sets broker attributes from the dictionary generated.
         self._set_attributes(attrs)
 
+    def _to_broker_string(self):
+        """
+        Dumps the content of the current Broker instance into a broker string
+        in the format {[UniqueID];}[Port};[HostName]{;[IpAddress]}. Note that
+        the UniqueId and/or IpAddress fields will be absent from the string
+        output when not set on the Broker instance.
+
+        :return: the broker string
+        :rtype: str
+        """
+        return "{}{}{}{}{}".format(
+            "{}{}".format(self.unique_id, self._FIELD_SEPARATOR)
+            if self.unique_id else "",
+            self._port,
+            self._FIELD_SEPARATOR,
+            self._host_name,
+            "{}{}".format(self._FIELD_SEPARATOR, self._ip_address)
+            if self.ip_address else "")
+
     def _connect_to_broker(self):
         """
         Attempts to connect to a broker.
