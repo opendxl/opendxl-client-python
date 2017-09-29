@@ -16,7 +16,7 @@ from dxlclient.exceptions import MalformedBrokerUriException
 
 class BrokerTest(unittest.TestCase):
     def setUp(self):
-        self.socket_mock = patch('socket.socket', autospec=True).start()
+        self.socket_mock = patch('socket.socket').start()
         self.connection_mock = patch('socket.create_connection').start()
         self.connection_mock.return_value = self.socket_mock
         self.broker = Broker(host_name='localhost')
