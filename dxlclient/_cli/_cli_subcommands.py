@@ -180,8 +180,7 @@ def _get_config_argparser():
     :rtype: argparse.ArgumentParser
     """
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("-c", "--config-dir", metavar="PATH",
-                        default="",
+    parser.add_argument("config_dir", metavar="CONFIG_DIR",
                         help="path to the config directory")
     return parser
 

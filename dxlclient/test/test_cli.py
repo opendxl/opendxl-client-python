@@ -6,6 +6,7 @@
 # Run with nosetests dxlclient.test.test_cli
 
 import base64
+import datetime
 import io
 import json
 import os
@@ -14,7 +15,7 @@ import tempfile
 import unittest
 import uuid
 
-from asn1crypto import csr, pem, x509
+from asn1crypto import csr, pem, x509, algos
 from mock import patch
 from parameterized import parameterized
 from oscrypto import asymmetric
@@ -60,8 +61,8 @@ class _CertificateRequest(object):
 
         attributes = self.request["certification_request_info"]["attributes"]
         extension_request = next((attribute for attribute in attributes
-                                 if attribute["type"].native ==
-                                 "extension_request"), None)
+                                  if attribute["type"].native ==
+                                  "extension_request"), None)
         if extension_request:
             san_extension = None
             for extensions in extension_request["values"]:
@@ -87,6 +88,50 @@ class _PrivateKey(object):
     @property
     def algorithm(self):
         return self.private_key.algorithm
+
+
+def get_fake_public_key_asn1():
+    fake_public_key, _ = asymmetric.generate_pair("rsa", 1024)
+    return fake_public_key.asn1
+
+
+_SIGNATURE_ALGORITHM = algos.SignedDigestAlgorithm({
+    "algorithm": u"sha256_rsa"})
+_FAKE_SUBJECT = x509.Name.build({u"common_name": u"fake"})
+
+FAKE_CERTIFICATE = \
+    pem.armor(u"CERTIFICATE",
+              x509.Certificate({
+                  "tbs_certificate": x509.TbsCertificate({
+                      "version": 1,
+                      "serial_number": 1,
+                      "signature": _SIGNATURE_ALGORITHM,
+                      "issuer": _FAKE_SUBJECT,
+                      "validity": {
+                          "not_before": x509.Time(
+                              name="utc_time",
+                              value=datetime.datetime(2000, 1, 1)),
+                          "not_after": x509.Time(
+                              name="utc_time",
+                              value=datetime.datetime(2049, 12, 31))},
+                      "subject": _FAKE_SUBJECT,
+                      "subject_public_key_info":
+                          get_fake_public_key_asn1()}),
+                  "signature_algorithm": algos.SignedDigestAlgorithm({
+                      "algorithm": u"sha256_rsa"}),
+                  "signature_value": "fake"}).dump())
+
+FAKE_CSR = \
+    pem.armor(
+        u"CERTIFICATE REQUEST",
+        csr.CertificationRequest({
+            "certification_request_info":
+                csr.CertificationRequestInfo({
+                    "version": 1,
+                    "subject": _FAKE_SUBJECT,
+                    "subject_pk_info": get_fake_public_key_asn1()}),
+            "signature_algorithm": _SIGNATURE_ALGORITHM,
+            "signature": "fake"}).dump())
 
 
 class CliTest(unittest.TestCase):
@@ -139,9 +184,8 @@ class CliTest(unittest.TestCase):
             client_args = [value]
 
         with _TempDir("gencsr_basic") as temp_dir, \
-                patch("sys.argv", command_args(["generatecsr"]
-                                               + client_args
-                                               + ["-c", temp_dir])):
+                patch("sys.argv", command_args(["generatecsr", temp_dir]
+                                               + client_args)):
             cli_run()
 
             # Validate csr was created properly
@@ -160,14 +204,14 @@ class CliTest(unittest.TestCase):
     def test_generatecsr_with_full_subject(self):
         with _TempDir("gencsr_fs") as temp_dir, \
                 patch("sys.argv", command_args(["generatecsr",
+                                                temp_dir,
                                                 "myclient",
                                                 "--country", "US",
                                                 "--state-or-province", "OR",
                                                 "--locality", "Hillsboro",
                                                 "--organization", "McAfee",
                                                 "--organizational-unit",
-                                                "DXL Team",
-                                                "-c", temp_dir])):
+                                                "DXL Team"])):
             cli_run()
 
             csr_file = os.path.join(temp_dir, "client.csr")
@@ -183,10 +227,11 @@ class CliTest(unittest.TestCase):
 
     def test_generatecsr_with_subject_alt_names(self):
         with _TempDir("gencsr_sans") as temp_dir, \
-                patch("sys.argv", command_args(["generatecsr",
-                                                "myclient",
-                                                "-s", "host1.com", "host2.com",
-                                                "-c", temp_dir])):
+                patch("sys.argv", command_args([
+                    "generatecsr",
+                    temp_dir,
+                    "myclient",
+                    "-s", "host1.com", "host2.com"])):
             cli_run()
 
             csr_file = os.path.join(temp_dir, "client.csr")
@@ -198,9 +243,9 @@ class CliTest(unittest.TestCase):
     def test_generatecsr_with_encrypted_private_key(self):
         with _TempDir("gencsr_enc_pk") as temp_dir, \
                 patch("sys.argv", command_args(["generatecsr",
+                                                temp_dir,
                                                 "myclient",
-                                                "-P", "itsasecret",
-                                                "-c", temp_dir])):
+                                                "-P", "itsasecret"])):
             cli_run()
 
             private_key_file = os.path.join(temp_dir, "client.key")
@@ -232,14 +277,14 @@ class CliTest(unittest.TestCase):
 
         with _TempDir("provconfig_basic") as temp_dir, \
                 patch("sys.argv", command_args(["provisionconfig",
+                                                temp_dir,
                                                 "myhost"]
                                                + client_args
                                                + ["-u", "myuser",
-                                                  "-p", "mypass",
-                                                  "-c", temp_dir])),\
+                                                  "-p", "mypass"])),\
                 requests_mock.mock(case_sensitive=True) as req_mock:
             ca_bundle_for_response = make_fake_ca_bundle()
-            client_cert_for_response = make_fake_certificate()
+            client_cert_for_response = FAKE_CERTIFICATE
             brokers_for_response = make_broker_lines()
             req_mock.get(get_server_provision_url("myhost"),
                          text=get_mock_provision_response_func(
@@ -305,16 +350,16 @@ class CliTest(unittest.TestCase):
         csr_file = "myclient.csr"
         with _TempDir("provconfig_csr") as temp_dir, \
                 patch("sys.argv", command_args(["provisionconfig",
+                                                temp_dir,
                                                 "myhost",
                                                 os.path.join(temp_dir,
                                                              csr_file),
                                                 "-u", "myuser",
                                                 "-p", "mypass",
-                                                "-c", temp_dir,
                                                 "-r"])), \
                 requests_mock.mock(case_sensitive=True) as req_mock:
-            client_cert_for_response = make_fake_certificate()
-            csr_to_test = make_fake_csr()
+            client_cert_for_response = FAKE_CERTIFICATE
+            csr_to_test = FAKE_CSR
             full_csr_file_path = os.path.join(temp_dir, csr_file)
             DxlUtils.save_to_file(full_csr_file_path, csr_to_test)
             req_mock.get(get_server_provision_url("myhost"),
@@ -343,12 +388,12 @@ class CliTest(unittest.TestCase):
     def test_provisionconfig_with_trusted_ca_cert_and_port(self):
         with _TempDir("provconfig_ca_port") as temp_dir, \
                 patch("sys.argv", command_args(["provisionconfig",
+                                                temp_dir,
                                                 "myhost",
                                                 "myclient",
                                                 "-t", "58443",
                                                 "-u", "myuser",
                                                 "-p", "mypass",
-                                                "-c", temp_dir,
                                                 "-e", "mytruststore.pem"])), \
                 requests_mock.mock(case_sensitive=True) as req_mock:
             req_mock.get(get_server_provision_url("myhost", 58443),
@@ -364,10 +409,10 @@ class CliTest(unittest.TestCase):
     def test_updateconfig_basic(self):
         with _TempDir("updateconfig_basic") as temp_dir, \
                 patch("sys.argv", command_args(["updateconfig",
+                                                temp_dir,
                                                 "myhost",
                                                 "-u", "myuser",
-                                                "-p", "mypass",
-                                                "-c", temp_dir])), \
+                                                "-p", "mypass"])), \
                 requests_mock.mock(case_sensitive=True) as req_mock:
             base_broker_lines = broker_lines_for_config_file(
                 make_broker_lines(2), add_comments=True)
@@ -430,11 +475,11 @@ class CliTest(unittest.TestCase):
     def test_updateconfig_with_trusted_ca_cert_and_port(self):
         with _TempDir("updateconfig_ca_port") as temp_dir, \
                 patch("sys.argv", command_args(["updateconfig",
+                                                temp_dir,
                                                 "myhost",
                                                 "-t", "58443",
                                                 "-u", "myuser",
                                                 "-p", "mypass",
-                                                "-c", temp_dir,
                                                 "-e", "mytruststore.pem"])), \
                 requests_mock.mock(case_sensitive=True) as req_mock:
             ca_bundle_file = os.path.join(temp_dir, "ca-bundle.crt")
@@ -572,18 +617,8 @@ def broker_lines_for_config_file(broker_lines, add_comments=False):
                                                 add_comments))
 
 
-def make_fake_certificate():
-    return pem.armor(u"CERTIFICATE",
-                     x509.Certificate({"signature_value": "fake"}).dump())
-
-
-def make_fake_csr():
-    return pem.armor(u"CERTIFICATE REQUEST",
-                     csr.CertificationRequest({"signature": "fake"}).dump())
-
-
 def make_fake_ca_bundle(ca_certs=3):
-    return "".join([make_fake_certificate() for _ in range(ca_certs)])
+    return "".join([FAKE_CERTIFICATE for _ in range(ca_certs)])
 
 
 def make_ok_response(message, request):
@@ -598,7 +633,7 @@ def get_mock_provision_response_func(ca_bundle=None,
     if not ca_bundle:
         ca_bundle = make_fake_ca_bundle()
     if not client_cert:
-        client_cert = make_fake_certificate()
+        client_cert = FAKE_CERTIFICATE
     if not brokers:
         brokers = broker_lines_for_server_response(make_broker_lines())
 
