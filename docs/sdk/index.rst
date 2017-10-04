@@ -3,7 +3,7 @@ Data Exchange Layer (DXL) Python SDK Documentation
 ==================================================
 
 Introduction
--------------------
+------------
 
 .. toctree::
 	:maxdepth: 1
@@ -27,18 +27,19 @@ Provisioning
 .. toctree::
 	:maxdepth: 1
 
-	certcreation
-  	epocaimport
-	epobrokercertsexport
-	epobrokerlistexport
+	provisioningoverview
+	cliprovisioning
+	openconsoleprovisioning
+	epoexternalcertissuance
+	updatingconfigfromcli
 
 Python API
 ----------
 
 .. toctree::
-    :titlesonly:
+	:titlesonly:
 
-    dxlclient
+	dxlclient
 
 Samples
 -------
@@ -46,13 +47,17 @@ Samples
 Configuration
 
 .. toctree::
-    sampleconfig
+	:maxdepth: 1
+
+	sampleconfig
 
 Basic
 
 .. toctree::
-    basiceventsexample
-    basicserviceexample
+	:maxdepth: 1
+
+	basiceventsexample
+	basicserviceexample
 
 Advanced
 
@@ -85,7 +90,7 @@ McAfee Active Response (MAR)
 	marsendauth
 
 Authorization
--------------------
+-------------
 
 .. toctree::
 	:maxdepth: 1
