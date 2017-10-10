@@ -1,16 +1,48 @@
 Samples Configuration
 =====================
 
-Prior to running any of the examples, make sure you have completed the following:
+Prior to running any of the examples, make sure you have completed the
+following:
 
 * Installed the Python SDK (:doc:`installation`)
-* Created the Certificate Authority (CA) and Client Certificate Files (:doc:`certcreation`)
-* Import Certificate Authority (CA) into ePO (:doc:`epocaimport`)
-* Exported the Broker Certificates (:doc:`epobrokercertsexport`)
-* Exported the list of DXL Brokers (:doc:`epobrokerlistexport`)
+* Provisioned a private key, certificates, and configuration for the client (:doc:`provisioningoverview`)
 
-The final step prior to running the samples is to populate the contents of the ``dxlclient.config``
-file that is used by the samples.
+Using Files from Command Line or OpenDXL Broker Console Provisioning
+********************************************************************
+
+If you used either the :doc:`cliprovisioning` or :doc:`openconsoleprovisioning`
+approach for client provisioning, you should just need to copy the following
+files created during the provisioning process to the ``sample`` sub-directory
+of the Python DXL SDK:
+
+1. ``dxlclient.config`` file
+2. File referenced by the ``BrokerCertChain`` setting in the ``[Certs]`` section
+   from the ``dxlclient.config`` file - for example, ``ca-bundle.crt`` or
+   ``ca-broker.crt``.
+3. File referenced by the ``CertFile`` setting in the ``[Certs]`` section
+   from the ``dxlclient.config`` file - for example, ``client.crt``.
+4. File referenced by the ``PrivateKey`` setting in the ``[Certs]`` section
+   from the ``dxlclient.config`` file - for example, ``client.key``.
+
+Note that rather than copying all of these files into the ``sample``
+sub-directory, you could instead copy just the ``dxlclient.config`` file and
+modify the corresponding settings in the file to reflect the appropriate
+locations of the certificate and key files.  For example:
+
+    .. code-block:: ini
+
+        [Certs]
+        BrokerCertChain=c:\\certificates\\ca-bundle.crt
+        CertFile=c:\\certificates\\client.crt
+        PrivateKey=c:\\certificates\\client.key
+        ...
+
+Using Files from ePO / External Certificate Provisioning
+********************************************************
+
+If you used the :doc:`epoexternalcertissuance` approach for client
+provisioning, the final step prior to running the samples is to populate the
+contents of the ``dxlclient.config`` file that is used by the samples.
 
 The following steps walk through the process of populating this file:
 
@@ -18,7 +50,7 @@ The following steps walk through the process of populating this file:
 
    The contents should appear as follows:
 
-   .. code-block:: python
+   .. code-block:: ini
 
        [Certs]
        BrokerCertChain=<path-to-cabundle>
@@ -36,7 +68,7 @@ The following steps walk through the process of populating this file:
 
    After completing this step the contents of the configuration file should look similar to:
 
-   .. code-block:: python
+   .. code-block:: ini
 
        [Certs]
        BrokerCertChain=<path-to-cabundle>
@@ -54,7 +86,7 @@ The following steps walk through the process of populating this file:
 
    After completing this step the contents of the configuration file should look similar to:
 
-   .. code-block:: python
+   .. code-block:: ini
 
        [Certs]
        BrokerCertChain=c:\\certificates\\brokercerts.crt
@@ -72,7 +104,7 @@ The following steps walk through the process of populating this file:
 
    After completing this step the contents of the configuration file should look similar to:
 
-   .. code-block:: python
+   .. code-block:: ini
 
        [Certs]
        BrokerCertChain=c:\\certificates\\brokercerts.crt
@@ -82,5 +114,3 @@ The following steps walk through the process of populating this file:
        [Brokers]
        {5d73b77f-8c4b-4ae0-b437-febd12facfd4}={5d73b77f-8c4b-4ae0-b437-febd12facfd4};8883;mybroker.mcafee.com;192.168.1.12
        {24397e4d-645f-4f2f-974f-f98c55bdddf7}={24397e4d-645f-4f2f-974f-f98c55bdddf7};8883;mybroker2.mcafee.com;192.168.1.13
-
-4. At this point you can run the samples included with the Python SDK
