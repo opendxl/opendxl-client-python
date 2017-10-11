@@ -28,7 +28,8 @@ Provisioning
 	:maxdepth: 1
 
 	provisioningoverview
-	cliprovisioning
+	basiccliprovisioning
+	advancedcliprovisioning
 	openconsoleprovisioning
 	epoexternalcertissuance
 	updatingconfigfromcli

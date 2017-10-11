@@ -1,48 +1,59 @@
 Samples Configuration
 =====================
 
-Prior to running any of the examples, make sure you have completed the
+Prior to running any of the examples, you will need to have completed the
 following:
 
 * Installed the Python SDK (:doc:`installation`)
 * Provisioned a private key, certificates, and configuration for the client (:doc:`provisioningoverview`)
 
-Using Files from Command Line or OpenDXL Broker Console Provisioning
-********************************************************************
+If you are using either the :doc:`basiccliprovisioning` or
+:doc:`openconsoleprovisioning` approach for client provisioning, see the
+:ref:`cli_or_opendxl_broker_provisioning_config` section below for information
+on completing the configuration process.
 
-If you used either the :doc:`cliprovisioning` or :doc:`openconsoleprovisioning`
-approach for client provisioning, you should just need to copy the following
-files created during the provisioning process to the ``sample`` sub-directory
-of the Python DXL SDK:
+If you are using the :doc:`epoexternalcertissuance` approach for client
+provisioning, see the :ref:`epo_external_cert_provisioning_config` section
+below for information on completing the configuration process.
 
-1. ``dxlclient.config`` file
-2. File referenced by the ``BrokerCertChain`` setting in the ``[Certs]`` section
-   from the ``dxlclient.config`` file - for example, ``ca-bundle.crt`` or
-   ``ca-broker.crt``.
-3. File referenced by the ``CertFile`` setting in the ``[Certs]`` section
-   from the ``dxlclient.config`` file - for example, ``client.crt``.
-4. File referenced by the ``PrivateKey`` setting in the ``[Certs]`` section
-   from the ``dxlclient.config`` file - for example, ``client.key``.
+.. _cli_or_opendxl_broker_provisioning_config:
 
-Note that rather than copying all of these files into the ``sample``
-sub-directory, you could instead copy just the ``dxlclient.config`` file and
-modify the corresponding settings in the file to reflect the appropriate
-locations of the certificate and key files.  For example:
+Configuration for Command Line or OpenDXL Broker Console Provisioning
+*********************************************************************
 
-    .. code-block:: ini
+To setup the key, certificate, and client configuration from the command-line,
+run the following command::
 
-        [Certs]
-        BrokerCertChain=c:\\certificates\\ca-bundle.crt
-        CertFile=c:\\certificates\\client.crt
-        PrivateKey=c:\\certificates\\client.key
-        ...
+    python -m dxlclient provisionconfig sample <my_server_name_or_ip_address> client1
 
-Using Files from ePO / External Certificate Provisioning
-********************************************************
+Substitute the host name or IP address of the management server -- ePO or an
+OpenDXL broker -- in place of the ``<my_server_name_or_ip_address>`` parameter.
 
-If you used the :doc:`epoexternalcertissuance` approach for client
-provisioning, the final step prior to running the samples is to populate the
-contents of the ``dxlclient.config`` file that is used by the samples.
+The tool should prompt for server credentials. Enter credentials for a
+valid administrator on the server::
+
+    Enter server username:
+    Enter server password:
+
+On success, you should see lines like the following in the tool output::
+
+    INFO: Saving csr file to sample/client.csr
+    INFO: Saving private key file to sample/client.key
+    INFO: Saving DXL config file to sample/dxlclient.config
+    INFO: Saving ca bundle file to sample/ca-bundle.crt
+    INFO: Saving client certificate file to sample/client.crt
+
+For more information on the ``provisionconfig`` tool, see the
+:doc:`basiccliprovisioning` section.
+
+.. _epo_external_cert_provisioning_config:
+
+Configuration for ePO / External Certificate Provisioning
+*********************************************************
+
+The final step to complete after the steps in the
+:doc:`epoexternalcertissuance` section is to populate the contents of the
+``dxlclient.config`` file that is used by the samples.
 
 The following steps walk through the process of populating this file:
 

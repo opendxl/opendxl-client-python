@@ -14,7 +14,7 @@ configuration content:
 
 1. To generate certificate and configuration files from the command line -- for
    either an OpenDXL-based or ePO-managed broker -- see the
-   :doc:`cliprovisioning` section. Note that with this approach, the
+   :doc:`basiccliprovisioning` section. Note that with this approach, the
    certificate and key used by the Certificate Authority is managed entirely by
    the server. Note that the provisioning command line tool is only available
    in version 4.0 and later of the Python DXL client.
