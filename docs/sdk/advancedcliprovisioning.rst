@@ -1,61 +1,9 @@
-Provisioning from the Command Line
-==================================
+Advanced Provisioning from the Command Line
+===========================================
 
-You can use the ``provisionconfig`` command line tool to provision the
-configuration data needed for a client to connect to the DXL fabric. For this
-tool to be available, you need to complete the steps in the :doc:`installation`
-section if you have not already.
-
-Note that the command line tool is only available in version 4.0 and later
-of the Python DXL client.
-
-The ``provisionconfig`` tool does the following:
-
-1) Creates a private key and Certificate Signing Request (CSR).
-2) Sends the CSR to a management server -- an ePO server or an OpenDXL-based
-   broker -- for signing.
-3) Stores the client certificate and CA certificate bundle received from the
-   management server to disk.
-4) Creates a ``dxlclient.config`` file which references the certificate
-   artifacts and information for brokers currently available on the DXL fabric.
-
-Basic Example
-*************
-
-Here is an example::
-
-    python -m dxlclient provisionconfig config myeposerver client1
-
-For this example:
-
-* ``config`` is the name of the directory in which the ``dxlclient.config`` and
-  certificate-related artifacts should be stored.
-* ``myeposerver`` is the hostname of a management server.
-* ``client1`` is the value for the Common Name (CN) attribute stored in the
-  subject of the client's CSR and certificate.
-
-The tool supplies a username and password to the server for authentication.
-For ePO or the OpenDXL Broker Console, this would be the same username and
-password that you would use to login to the web interface.
-
-With the options in the command above, the tool prompts for the username
-and password on the command line::
-
-    Enter server username:
-    Enter server password:
-
-On success, you should see lines like the following in the tool output::
-
-    INFO: Saving csr file to config/client.csr
-    INFO: Saving private key file to config/client.key
-    INFO: Saving DXL config file to config/dxlclient.config
-    INFO: Saving ca bundle file to config/ca-bundle.crt
-    INFO: Saving client certificate file to config/client.crt
-
-To avoid the username and password prompts, you can supply command line
-options for them instead, like this::
-
-    python -m dxlclient provisionconfig config myeposerver client1 -u myuser -p mypass
+The following subsections have more advanced information on the use of the
+``provisionconfig`` tool. For an overview of provisioning from the command
+line, refer to the :doc:`basiccliprovisioning` section.
 
 .. _subject-attributes-label:
 
@@ -65,13 +13,13 @@ Including Additional Data in the Certificate Signing Request
 Attributes other than the Common Name (CN) may also optionally be provided for
 the CSR subject. For example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 --country US --state-or-province Oregon --locality Hillsboro --organization Engineering --organizational-unit "DXL Team" --email-address dxl@mcafee.com
+    python -m dxlclient provisionconfig config myserver client1 --country US --state-or-province Oregon --locality Hillsboro --organization Engineering --organizational-unit "DXL Team" --email-address dxl@mcafee.com
 
 By default, the CSR does not include any Subject Alternative Names. To include
 one or more entries of type ``DNS Name``, you can use the ``-s`` option. For
 example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 -s client1.myorg.com client1.myorg.net
+    python -m dxlclient provisionconfig config myserver client1 -s client1.myorg.com client1.myorg.net
 
 .. _encrypting-private-key-label:
 
@@ -81,7 +29,7 @@ Encrypting the Client's Private Key
 The private key file which the ``provisionconfig`` command generates can
 optionally be encrypted with a passphrase. For example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 --passphrase
+    python -m dxlclient provisionconfig config myserver client1 --passphrase
 
 If the passphrase is specified with no trailing option (as above), the tool
 prompts for the passphrase to be used::
@@ -92,7 +40,7 @@ The passphrase can alternatively be specified as an additional argument
 following the ``--passpharse`` argument, in which case no prompt is displayed.
 For example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 --passphrase itsasecret
+    python -m dxlclient provisionconfig config myserver client1 --passphrase itsasecret
 
 Note that if the private key is encrypted, the passphrase used to encrypt it
 will need to be entered as the client tries to use it to connect to the DXL
@@ -108,14 +56,14 @@ The tool assumes that the default webserver port is 8443, the default port
 under which the ePO web interface is hosted. You can configure the tool to use
 a custom port by using the ``-t`` option. For example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 -t 443
+    python -m dxlclient provisionconfig config myserver client1 -t 443
 
 The tool stores each of the certificate artifacts -- the private key, CSR,
 certificate, etc. -- with a base name of ``client`` by default. To use an
 alternative base name for the stored files, use the ``-f`` option. For
 example::
 
-    python -m dxlclient provisionconfig config myeposerver client1 -f theclient
+    python -m dxlclient provisionconfig config myserver client1 -f theclient
 
 For the command line above, lines similar to the following should appear in the
 output::
@@ -133,7 +81,7 @@ certificate against that truststore during TLS session negotiation by supplying
 the ``-e`` option. The name of the truststore file should be supplied along
 with the option, like this::
 
-    python -m dxlclient config myeposerver -e config/ca-bundle.crt
+    python -m dxlclient config myserver -e config/ca-bundle.crt
 
 Generating the CSR Separately from Signing the Certificate
 **********************************************************
@@ -166,7 +114,7 @@ If the ``provisionconfig`` command includes a ``-r`` option, the
 CSR file to load from disk rather than the Common Name to insert into a new
 CSR file. For example::
 
-    python -m dxlclient provisionconfig config myeposerver -r config/client.csr
+    python -m dxlclient provisionconfig config myserver -r config/client.csr
 
 In this case, the command line output shows that the certificate and
 configuration-related files received from the server are stored but that no
