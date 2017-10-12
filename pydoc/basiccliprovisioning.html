@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Command Line Provisioning (Basic) &#8212; DXL Python SDK 4.0.0.416 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.0.416',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command Line Provisioning (Advanced)" href="advancedcliprovisioning.html" />
+    <link rel="prev" title="Provisioning Overview" href="provisioningoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedcliprovisioning.html" title="Command Line Provisioning (Advanced)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="provisioningoverview.html" title="Provisioning Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="command-line-provisioning-basic">
+<h1>Command Line Provisioning (Basic)<a class="headerlink" href="#command-line-provisioning-basic" title="Permalink to this headline">¶</a></h1>
+<p id="basiccliprovisioning">The OpenDXL Python Client&#8217;s command line interface supports the
+<code class="docutils literal"><span class="pre">provisionconfig</span></code> operation which generates the information necessary for
+a client to connect to a DXL fabric (certificates, keys, and broker
+information).</p>
+<p>As part of the provisioning process, a remote call will be made to a
+provisioning server (ePO or OpenDXL Broker) which contains the
+Certificate Authority (CA) that will sign the client&#8217;s certificate.</p>
+<p><cite>NOTE: ePO-managed environments must have 4.0 (or newer) versions of
+DXL ePO extensions installed.</cite></p>
+<p>Here is an example usage of <code class="docutils literal"><span class="pre">provisionconfig</span></code> operatoin:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span>
+</pre></div>
+</div>
+<p>The parameters are as follows:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">config</span></code> is the directory to contain the results of the provisioning
+operation.</li>
+<li><code class="docutils literal"><span class="pre">myserver</span></code> is the host name or IP address of the server (ePO or OpenDXL
+Broker) that will be used to provision the client.</li>
+<li><code class="docutils literal"><span class="pre">client1</span></code> is the value for the Common Name (CN) attribute stored in the
+subject of the client&#8217;s certificate.</li>
+</ul>
+<p><cite>NOTE:</cite> If a non-standard port (not 8443) is being used for ePO or the
+management interface of the OpenDXL Broker, an additional &#8220;port&#8221; argument
+must be specified. For example <code class="docutils literal"><span class="pre">-t</span> <span class="pre">443</span></code> could be specified as part of the
+provision operation to connect to the server on port 443.</p>
+<p>When prompted, provide credentials for the OpenDXL Broker Management Console
+or ePO (the ePO user must be an administrator):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Enter</span> <span class="n">server</span> <span class="n">username</span><span class="p">:</span>
+<span class="n">Enter</span> <span class="n">server</span> <span class="n">password</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>On success, output similar to the following should be displayed:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">csr</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">csr</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">private</span> <span class="n">key</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">key</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">ca</span> <span class="n">bundle</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">client</span> <span class="n">certificate</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+<p>As an alternative to prompting, the username and password values can be
+specified via command line options:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">-</span><span class="n">u</span> <span class="n">myuser</span> <span class="o">-</span><span class="n">p</span> <span class="n">mypass</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="advancedcliprovisioning.html"><span class="doc">Command Line Provisioning (Advanced)</span></a> section for advanced
+<code class="docutils literal"><span class="pre">provisionconfig</span></code> operation options.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="provisioningoverview.html"
+                        title="previous chapter">Provisioning Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="advancedcliprovisioning.html"
+                        title="next chapter">Command Line Provisioning (Advanced)</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/basiccliprovisioning.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advancedcliprovisioning.html" title="Command Line Provisioning (Advanced)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="provisioningoverview.html" title="Provisioning Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

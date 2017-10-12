@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Client Configuration Update via Command Line &#8212; DXL Python SDK 4.0.0.416 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.0.416',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenDXL Broker Management Console Provisioning" href="openconsoleprovisioning.html" />
+    <link rel="prev" title="Command Line Provisioning (Advanced)" href="advancedcliprovisioning.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="openconsoleprovisioning.html" title="OpenDXL Broker Management Console Provisioning"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advancedcliprovisioning.html" title="Command Line Provisioning (Advanced)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="client-configuration-update-via-command-line">
+<h1>Client Configuration Update via Command Line<a class="headerlink" href="#client-configuration-update-via-command-line" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">updateconfig</span></code> command line operation can be used to update a previously
+provisioned client with the latest information from a management server
+(ePO or OpenDXL Broker).</p>
+<p><cite>NOTE: ePO-managed environments must have 4.0 (or newer) versions of
+DXL ePO extensions installed.</cite></p>
+<p>The <code class="docutils literal"><span class="pre">updateconfig</span></code> operation performs the following:</p>
+<ul class="simple">
+<li>Retrieves the latest CA certificate bundle from the server and stores it
+at the file referenced by the <code class="docutils literal"><span class="pre">BrokerCertChain</span></code> setting in the <code class="docutils literal"><span class="pre">[Certs]</span></code>
+section of the <code class="docutils literal"><span class="pre">dxlclient.config</span></code> file.</li>
+<li>Retrieves the latest broker information and updates the <code class="docutils literal"><span class="pre">[Brokers]</span></code>
+section of the <code class="docutils literal"><span class="pre">dxlclient.config</span></code> file with that information.</li>
+</ul>
+<div class="section" id="basic-example">
+<h2>Basic Example<a class="headerlink" href="#basic-example" title="Permalink to this headline">¶</a></h2>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">updateconfig</span> <span class="n">config</span> <span class="n">myserver</span>
+</pre></div>
+</div>
+<p>For this example, <code class="docutils literal"><span class="pre">config</span></code> is the name of the directory in which the
+<code class="docutils literal"><span class="pre">dxlclient.config</span></code> file resides and <code class="docutils literal"><span class="pre">myserver</span></code> is the hostname or
+IP address of ePO or an OpenDXL Broker.</p>
+<p>When prompted, provide credentials for the OpenDXL Broker Management Console
+or ePO (the ePO user must be an administrator):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Enter</span> <span class="n">server</span> <span class="n">username</span><span class="p">:</span>
+<span class="n">Enter</span> <span class="n">server</span> <span class="n">password</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>If the operation is successful, output similar to the following
+should be displayed:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span> <span class="n">Updating</span> <span class="n">certs</span> <span class="ow">in</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Updating</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">file</span> <span class="n">at</span> <span class="n">config</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>To avoid the username and password prompts, supply the appropriate
+command line options (<code class="docutils literal"><span class="pre">-u</span></code> and <code class="docutils literal"><span class="pre">-p</span></code>):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">updateconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="o">-</span><span class="n">u</span> <span class="n">myuser</span> <span class="o">-</span><span class="n">p</span> <span class="n">mypass</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="additional-options">
+<h2>Additional Options<a class="headerlink" href="#additional-options" title="Permalink to this headline">¶</a></h2>
+<p>The update operation assumes that the default web server port is 8443,
+the default port under which the ePO web interface and OpenDXL Broker Management
+Console is hosted.</p>
+<p>A custom port can be specified via the <code class="docutils literal"><span class="pre">-t</span></code> option.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">updateconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="o">-</span><span class="n">t</span> <span class="mi">443</span>
+</pre></div>
+</div>
+<p>If the management server&#8217;s CA certificate is stored in a local CA truststore
+file &#8211; one or more PEM-formatted certificates concatenated together into a
+single file &#8211; the update operation can be configured to validate
+the management server&#8217;s certificate against that truststore during TLS session
+negotiation by supplying the <code class="docutils literal"><span class="pre">-e</span></code> option.</p>
+<p>The name of the truststore file should be supplied along with the option:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">updateconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="o">-</span><span class="n">e</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Client Configuration Update via Command Line</a><ul>
+<li><a class="reference internal" href="#basic-example">Basic Example</a></li>
+<li><a class="reference internal" href="#additional-options">Additional Options</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="advancedcliprovisioning.html"
+                        title="previous chapter">Command Line Provisioning (Advanced)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="openconsoleprovisioning.html"
+                        title="next chapter">OpenDXL Broker Management Console Provisioning</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/updatingconfigfromcli.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="openconsoleprovisioning.html" title="OpenDXL Broker Management Console Provisioning"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advancedcliprovisioning.html" title="Command Line Provisioning (Advanced)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

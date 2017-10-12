@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Command Line Provisioning (Advanced) &#8212; DXL Python SDK 4.0.0.416 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.0.416',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Client Configuration Update via Command Line" href="updatingconfigfromcli.html" />
+    <link rel="prev" title="Command Line Provisioning (Basic)" href="basiccliprovisioning.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="updatingconfigfromcli.html" title="Client Configuration Update via Command Line"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basiccliprovisioning.html" title="Command Line Provisioning (Basic)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="command-line-provisioning-advanced">
+<h1>Command Line Provisioning (Advanced)<a class="headerlink" href="#command-line-provisioning-advanced" title="Permalink to this headline">¶</a></h1>
+<p>This page contain details regarding the advanced usage of the
+<code class="docutils literal"><span class="pre">provisionconfig</span></code> operation.</p>
+<p>Refer to <a class="reference internal" href="basiccliprovisioning.html"><span class="doc">Command Line Provisioning (Basic)</span></a> for basic usage details.</p>
+<div class="section" id="additional-certificate-signing-request-csr-information">
+<span id="subject-attributes-label"></span><h2>Additional Certificate Signing Request (CSR) Information<a class="headerlink" href="#additional-certificate-signing-request-csr-information" title="Permalink to this headline">¶</a></h2>
+<p>Attributes other than the Common Name (CN) may also optionally be provided for
+the CSR subject.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">--</span><span class="n">country</span> <span class="n">US</span> <span class="o">--</span><span class="n">state</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">province</span> <span class="n">Oregon</span> <span class="o">--</span><span class="n">locality</span> <span class="n">Hillsboro</span> <span class="o">--</span><span class="n">organization</span> <span class="n">Engineering</span> <span class="o">--</span><span class="n">organizational</span><span class="o">-</span><span class="n">unit</span> <span class="s2">&quot;DXL Team&quot;</span> <span class="o">--</span><span class="n">email</span><span class="o">-</span><span class="n">address</span> <span class="n">dxl</span><span class="nd">@mcafee</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>By default, the CSR does not include any Subject Alternative Names. To include
+one or more entries of type <code class="docutils literal"><span class="pre">DNS</span> <span class="pre">Name</span></code>, provide the <code class="docutils literal"><span class="pre">-s</span></code> option.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">-</span><span class="n">s</span> <span class="n">client1</span><span class="o">.</span><span class="n">myorg</span><span class="o">.</span><span class="n">com</span> <span class="n">client1</span><span class="o">.</span><span class="n">myorg</span><span class="o">.</span><span class="n">net</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="encrypting-the-client-s-private-key">
+<span id="encrypting-private-key-label"></span><h2>Encrypting the Client&#8217;s Private Key<a class="headerlink" href="#encrypting-the-client-s-private-key" title="Permalink to this headline">¶</a></h2>
+<p>The private key file which the <code class="docutils literal"><span class="pre">provisionconfig</span></code> operation generates can
+optionally be encrypted with a passphrase.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">--</span><span class="n">passphrase</span>
+</pre></div>
+</div>
+<p>If the passphrase is specified with no trailing option (as above), the
+provision operation prompts for the passphrase to be used:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Enter</span> <span class="n">private</span> <span class="n">key</span> <span class="n">passphrase</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>The passphrase can alternatively be specified as an additional argument
+following the <code class="docutils literal"><span class="pre">--passpharse</span></code> argument, in which case no prompt is displayed.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">--</span><span class="n">passphrase</span> <span class="n">itsasecret</span>
+</pre></div>
+</div>
+<p><cite>NOTE:</cite> If the private key is encrypted, the passphrase used to encrypt it
+must be specified when the client attempts to establish a connection to
+the DXL fabric.</p>
+<p>The only way to enter this passphrase is via a prompt:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Enter</span> <span class="n">PEM</span> <span class="k">pass</span> <span class="n">phrase</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="additional-options">
+<h2>Additional Options<a class="headerlink" href="#additional-options" title="Permalink to this headline">¶</a></h2>
+<p>The provision operation assumes that the default web server port is 8443,
+the default port under which the ePO web interface and OpenDXL Broker Management
+Console is hosted.</p>
+<p>A custom port can be specified via the <code class="docutils literal"><span class="pre">-t</span></code> option.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">-</span><span class="n">t</span> <span class="mi">443</span>
+</pre></div>
+</div>
+<p>The provision operation stores each of the certificate artifacts (private key, CSR,
+certificate, etc.) with a base name of <code class="docutils literal"><span class="pre">client</span></code> by default. To use an
+alternative base name for the stored files, use the <code class="docutils literal"><span class="pre">-f</span></code> option.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="n">client1</span> <span class="o">-</span><span class="n">f</span> <span class="n">theclient</span>
+</pre></div>
+</div>
+<p>The output of the command above should appear similar to the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">csr</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">theclient</span><span class="o">.</span><span class="n">csr</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">private</span> <span class="n">key</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">theclient</span><span class="o">.</span><span class="n">key</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">ca</span> <span class="n">bundle</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">client</span> <span class="n">certificate</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">theclient</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+<p>If the management server&#8217;s CA certificate is stored in a local CA truststore
+file &#8211; one or more PEM-formatted certificates concatenated together into a
+single file &#8211; the provision operation can be configured to validate
+the management server&#8217;s certificate against that truststore during TLS session
+negotiation by supplying the <code class="docutils literal"><span class="pre">-e</span></code> option.</p>
+<p>The name of the truststore file should be supplied along with the option:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">config</span> <span class="n">myserver</span> <span class="o">-</span><span class="n">e</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-the-csr-separately-from-signing-the-certificate">
+<h2>Generating the CSR Separately from Signing the Certificate<a class="headerlink" href="#generating-the-csr-separately-from-signing-the-certificate" title="Permalink to this headline">¶</a></h2>
+<p>By default, the <code class="docutils literal"><span class="pre">provisionconfig</span></code> command generates a CSR and immediately
+sends it to a management server for signing. Certificate generation and signing
+could alternatively be performed as separate steps &#8211; for example, to enable a
+workflow where the CSR is signed by a certificate authority at a later time.</p>
+<p>The <code class="docutils literal"><span class="pre">generatecsr</span></code> operation can be used to generate the CSR and private
+key without sending the CSR to the server.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">generatecsr</span> <span class="n">config</span> <span class="n">client1</span>
+</pre></div>
+</div>
+<p>The output of the command above should appear similar to the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">csr</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">csr</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">private</span> <span class="n">key</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">key</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal"><span class="pre">generatecsr</span></code> operation has options similar to those available
+in the <code class="docutils literal"><span class="pre">provisionconfig</span></code> operation for including additional subject attributes
+and/or subject alternative names in the generated CSR and for encrypting the
+private key.</p>
+<p>See the <a class="reference internal" href="#subject-attributes-label"><span class="std std-ref">Additional Certificate Signing Request (CSR) Information</span></a> and <a class="reference internal" href="#encrypting-private-key-label"><span class="std std-ref">Encrypting the Client&#8217;s Private Key</span></a>
+sections for more information.</p>
+<p>If the <code class="docutils literal"><span class="pre">provisionconfig</span></code> operation includes a <code class="docutils literal"><span class="pre">-r</span></code> option, the
+<code class="docutils literal"><span class="pre">COMMON_OR_CSRFILE_NAME</span></code> argument is interpreted as the name of a
+CSR file to load from disk rather than the Common Name to insert into a new
+CSR file.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dxlclient</span> <span class="n">provisionconfig</span> <span class="n">config</span> <span class="n">myserver</span> <span class="o">-</span><span class="n">r</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">csr</span>
+</pre></div>
+</div>
+<p>In this case, the command line output shows that the certificate and
+configuration-related files received from the server are stored but no
+new private key or CSR file is generated:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">DXL</span> <span class="n">config</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">dxlclient</span><span class="o">.</span><span class="n">config</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">ca</span> <span class="n">bundle</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">bundle</span><span class="o">.</span><span class="n">crt</span>
+<span class="n">INFO</span><span class="p">:</span> <span class="n">Saving</span> <span class="n">client</span> <span class="n">certificate</span> <span class="n">file</span> <span class="n">to</span> <span class="n">config</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Command Line Provisioning (Advanced)</a><ul>
+<li><a class="reference internal" href="#additional-certificate-signing-request-csr-information">Additional Certificate Signing Request (CSR) Information</a></li>
+<li><a class="reference internal" href="#encrypting-the-client-s-private-key">Encrypting the Client&#8217;s Private Key</a></li>
+<li><a class="reference internal" href="#additional-options">Additional Options</a></li>
+<li><a class="reference internal" href="#generating-the-csr-separately-from-signing-the-certificate">Generating the CSR Separately from Signing the Certificate</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="basiccliprovisioning.html"
+                        title="previous chapter">Command Line Provisioning (Basic)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="updatingconfigfromcli.html"
+                        title="next chapter">Client Configuration Update via Command Line</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/advancedcliprovisioning.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="updatingconfigfromcli.html" title="Client Configuration Update via Command Line"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basiccliprovisioning.html" title="Command Line Provisioning (Basic)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

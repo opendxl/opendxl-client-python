@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Provisioning Overview &#8212; DXL Python SDK 4.0.0.416 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.0.416',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command Line Provisioning (Basic)" href="basiccliprovisioning.html" />
+    <link rel="prev" title="Python SDK Installation" href="installation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basiccliprovisioning.html" title="Command Line Provisioning (Basic)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Python SDK Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="provisioning-overview">
+<h1>Provisioning Overview<a class="headerlink" href="#provisioning-overview" title="Permalink to this headline">¶</a></h1>
+<p>In order for a client to connect to the DXL fabric it must be provisioned.</p>
+<p>A provisioned client includes certificate information required to establish
+an authenticated connection to the fabric as well as information regarding
+the brokers to connect to.</p>
+<div class="section" id="provisioning-options">
+<h2>Provisioning Options<a class="headerlink" href="#provisioning-options" title="Permalink to this headline">¶</a></h2>
+<p>The following options are available for a provisioning a client:</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="basiccliprovisioning.html#basiccliprovisioning"><span class="std std-ref">Command Line Interface (CLI)</span></a></p>
+<blockquote>
+<div><p>The provisioning process is performed via the OpenDXL Python Client&#8217;s
+command line interface (CLI). A remote call will be made to a
+provisioning server (ePO or OpenDXL Broker) which contains the
+Certificate Authority (CA) that will sign the client&#8217;s certificate.</p>
+<p><cite>NOTE: ePO-managed environments must have 4.0 (or newer) versions of
+DXL ePO extensions installed.</cite></p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="openconsoleprovisioning.html#openconsoleprovisioning"><span class="std std-ref">OpenDXL Broker Management Console</span></a></p>
+<blockquote>
+<div><p>The OpenDXL Broker Management Console includes a page that will generate
+and download client configuration packages. The OpenDXL Broker&#8217;s
+Certificate Authority (CA) will be used to sign the certificates.</p>
+<p><cite>NOTE: This option is not compatible with ePO-managed environments.</cite></p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="epoexternalcertissuance.html#epoexternalcertissuance"><span class="std std-ref">External Certificate Authority (CA)</span></a></p>
+<blockquote>
+<div><p>This option allows for the signing of client certificates using an
+external Certificate Authority (CA).</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="updating-client-configuration">
+<h2>Updating Client Configuration<a class="headerlink" href="#updating-client-configuration" title="Permalink to this headline">¶</a></h2>
+<p>After the initial provisioning of a client, its configuration may
+need to be periodically updated. For example, if new brokers are added or
+removed from the fabric.</p>
+<p>The <a class="reference internal" href="updatingconfigfromcli.html"><span class="doc">Client Configuration Update via Command Line</span></a> section describes how a client&#8217;s
+configuration can be updated via the use of the OpenDXL Python Client&#8217;s
+command line.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Provisioning Overview</a><ul>
+<li><a class="reference internal" href="#provisioning-options">Provisioning Options</a></li>
+<li><a class="reference internal" href="#updating-client-configuration">Updating Client Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Python SDK Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="basiccliprovisioning.html"
+                        title="next chapter">Command Line Provisioning (Basic)</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/provisioningoverview.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="basiccliprovisioning.html" title="Command Line Provisioning (Basic)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Python SDK Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, McAfee Inc..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>
