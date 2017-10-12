@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>dxlclient.client_config module &#8212; DXL Python SDK 3.1.0.587 documentation</title>
+    <title>dxlclient.client_config module &#8212; DXL Python SDK 4.0.0.416 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.1.0.587',
+        VERSION:     '4.0.0.416',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="dxlclient.client.html" title="dxlclient.client module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.1.0.587 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -105,7 +105,8 @@ DXL fabric. When invoking the <a class="reference internal" href="dxlclient.clie
 <dl class="attribute">
 <dt id="dxlclient.client_config.DxlClientConfig.broker_ca_bundle">
 <code class="descname">broker_ca_bundle</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.broker_ca_bundle" title="Permalink to this definition">¶</a></dt>
-<dd><p>The file name of a bundle containing the broker CA certificates in PEM format</p>
+<dd><p>The file name of a bundle containing the broker CA certificates in PEM
+format</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -137,14 +138,14 @@ establishes a connection</p>
 <dd><p>This method allows creation of a <a class="reference internal" href="#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">DxlClientConfig</span></code></a> object from a
 specified configuration file. The information contained in the file has a one-to-one
 correspondence with the <a class="reference internal" href="#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal"><span class="pre">DxlClientConfig</span></code></a> constructor.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
-<span class="n">BrokerCertChain</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certs</span>\\<span class="n">brokercerts</span><span class="o">.</span><span class="n">crt</span>
-<span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certs</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
-<span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certs</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[Certs]</span>
+<span class="na">BrokerCertChain</span><span class="o">=</span><span class="s">c:\\certs\\brokercerts.crt</span>
+<span class="na">CertFile</span><span class="o">=</span><span class="s">c:\\certs\\client.crt</span>
+<span class="na">PrivateKey</span><span class="o">=</span><span class="s">c:\\certs\\client.key</span>
 
-<span class="p">[</span><span class="n">Brokers</span><span class="p">]</span>
-<span class="n">mybroker</span><span class="o">=</span><span class="n">mybroker</span><span class="p">;</span><span class="mi">8883</span><span class="p">;</span><span class="n">mybroker</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">;</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.12</span>
-<span class="n">mybroker2</span><span class="o">=</span><span class="n">mybroker2</span><span class="p">;</span><span class="mi">8883</span><span class="p">;</span><span class="n">mybroker2</span><span class="o">.</span><span class="n">mcafee</span><span class="o">.</span><span class="n">com</span><span class="p">;</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.13</span>
+<span class="k">[Brokers]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
 </pre></div>
 </div>
 <p>The configuration file can be loaded as follows:</p>
@@ -231,6 +232,54 @@ The default value is 0.25</p>
 <p>Defaults to <code class="docutils literal"><span class="pre">True</span></code></p>
 </dd></dl>
 
+<dl class="method">
+<dt id="dxlclient.client_config.DxlClientConfig.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DXL client configuration file from the current object. If the
+current object was created from a call to
+<a class="reference internal" href="#dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file" title="dxlclient.client_config.DxlClientConfig.create_dxl_config_from_file"><code class="xref py py-meth docutils literal"><span class="pre">create_dxl_config_from_file()</span></code></a>, unchanged content should be
+preserved. For example, the original file may have the following:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[Certs]</span>
+<span class="na">BrokerCertChain</span><span class="o">=</span><span class="s">c:\\certs\\brokercerts.crt</span>
+<span class="na">CertFile</span><span class="o">=</span><span class="s">c:\\certs\\client.crt</span>
+<span class="na">PrivateKey</span><span class="o">=</span><span class="s">c:\\certs\\client.key</span>
+
+<span class="k">[Brokers]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
+</pre></div>
+</div>
+<p>The configuration could be loaded and changed as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.client_config</span> <span class="kn">import</span> <span class="n">DxlClientConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">DxlClientConfig</span><span class="o">.</span><span class="n">create_dxl_config_from_file</span><span class="p">(</span><span class="s2">&quot;c:</span><span class="se">\\</span><span class="s2">certs</span><span class="se">\\</span><span class="s2">dxlclient.config&quot;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">cert_file</span> <span class="o">=</span> <span class="s2">&quot;c:</span><span class="se">\\\\</span><span class="s2">certs</span><span class="se">\\\\</span><span class="s2">newclient.crt&quot;</span>
+<span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;c:</span><span class="se">\\</span><span class="s2">certs</span><span class="se">\\</span><span class="s2">dxlclient.config&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting configuration should then appear as follows:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[Certs]</span>
+<span class="na">BrokerCertChain</span><span class="o">=</span><span class="s">c:\\certs\\brokercerts.crt</span>
+<span class="na">CertFile</span><span class="o">=</span><span class="s">c:\\certs\\newclient.crt</span>
+<span class="na">PrivateKey</span><span class="o">=</span><span class="s">c:\\certs\\client.key</span>
+
+<span class="k">[Brokers]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> &#8211; File at which to write the configuration. An attempt
+will be made to create any directories in the path which may not
+exist before writing the file.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -283,7 +332,7 @@ The default value is 0.25</p>
         <li class="right" >
           <a href="dxlclient.client.html" title="dxlclient.client module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 3.1.0.587 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.416 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
