@@ -29,7 +29,7 @@ Provisioning
 
 	provisioningoverview
 
-Command Line Interface (CLI)
+Command Line Interface (CLI) - `(Requires 4.0 or newer client)`
 
 .. toctree::
 	:maxdepth: 1
