@@ -28,11 +28,30 @@ Provisioning
 	:maxdepth: 1
 
 	provisioningoverview
+
+Command Line Interface (CLI)
+
+.. toctree::
+	:maxdepth: 1
+
 	basiccliprovisioning
 	advancedcliprovisioning
-	openconsoleprovisioning
-	epoexternalcertissuance
 	updatingconfigfromcli
+
+OpenDXL Broker Management Console
+
+.. toctree::
+	:maxdepth: 1
+
+	openconsoleprovisioning
+
+External Certificate Authority (CA)
+
+.. toctree::
+	:maxdepth: 1
+
+	epoexternalcertissuance
+
 
 Python API
 ----------

@@ -35,7 +35,6 @@ DIST_DOCTMP_DIR = os.path.join(DIST_DIRECTORY, "doctmp")
 SETUP_PY = os.path.join(DIST_PY_FILE_LOCATION, "setup.py")
 DIST_LIB_DIRECTORY = os.path.join(DIST_DIRECTORY, "lib")
 DIST_RELEASE_DIR = os.path.join(DIST_DIRECTORY, RELEASE_NAME)
-SAMPLE_RELEASE_DIR = os.path.join(DIST_DIRECTORY, "sample")
 
 # Remove the dist directory if it exists
 if os.path.exists(DIST_DIRECTORY):
@@ -107,8 +106,9 @@ run_setup(SETUP_PY,
            "--python-tag",
            "py2.7"])
 
-print("\nCopying sample into dist directory\n")
-copy_tree(os.path.join(DIST_PY_FILE_LOCATION, "sample"), SAMPLE_RELEASE_DIR)
+# cp -rf sample dist
+print("\nCopying sample in to dist directory\n")
+copy_tree(os.path.join(DIST_PY_FILE_LOCATION, "examples"), os.path.join(DIST_DIRECTORY, "sample"))
 
 # Copy everything in to release dir
 print("\nCopying dist to " + DIST_RELEASE_DIR + "\n")

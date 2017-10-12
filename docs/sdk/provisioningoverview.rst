@@ -1,44 +1,47 @@
 Provisioning Overview
 =====================
 
-In order for a client to connect to the DXL fabric, the client must have a
-trusted certificate and a ``dxlclient.config`` file with broker information.
-This section describes the approaches for provisioning the client configuration
-and updating the client configuration to incorporate changes over time.
+In order for a client to connect to the DXL fabric it must be provisioned.
 
-Creating Certificate Files and Configuration
-********************************************
+A provisioned client includes certificate information required to establish
+an authenticated connection to the fabric as well as information regarding
+the brokers to connect to.
 
-The following approaches are available for creating certificate and
-configuration content:
+Provisioning Options
+********************
 
-1. To generate certificate and configuration files from the command line -- for
-   either an OpenDXL-based or ePO-managed broker -- see the
-   :doc:`basiccliprovisioning` section. Note that with this approach, the
-   certificate and key used by the Certificate Authority is managed entirely by
-   the server. Note that the provisioning command line tool is only available
-   in version 4.0 and later of the Python DXL client.
+The following options are available for a provisioning a client:
 
-2. If you are using OpenDXL-based brokers but do not want to use the command
-   line interface, you can use the OpenDXL Broker Console to generate and
-   download certificate and configuration files. See the
-   :doc:`openconsoleprovisioning` section for more information.
+* :ref:`Command Line Interface (CLI) <basiccliprovisioning>`
 
-3. If your brokers are managed by ePO but you want to manage issuance of client
-   certificates from a Certificate Authority outside of ePO, see the steps in
-   the :doc:`epoexternalcertissuance` section.
+    The provisioning process is performed via the OpenDXL Python Client's
+    command line interface (CLI). A remote call will be made to a
+    provisioning server (ePO or OpenDXL Broker) which contains the
+    Certificate Authority (CA) that will sign the client's certificate.
 
-Updating Certificate Files and Configuration
-********************************************
+    `NOTE: ePO-managed environments must have 4.0 (or newer) versions of
+    DXL ePO extensions installed.`
 
-After the initial configuration is established for a new client, the
-configuration may periodically need to be updated. For example, new brokers may
-be connected to the fabric or prior brokers may be removed from the fabric.
-Additionally, the server may periodically issue new certificates which clients
-should import into their truststore. While this information could be updated
-"manually", the :doc:`updatingconfigfromcli` section describes how client
-configuration can be updated programmatically via the use of a command line
-tool.
+* :ref:`OpenDXL Broker Management Console <openconsoleprovisioning>`
 
-Note that the update configuration command line tool is only available in
-version 4.0 and later of the Python DXL client.
+    The OpenDXL Broker Management Console includes a page that will generate
+    and download client configuration packages. The OpenDXL Broker's
+    Certificate Authority (CA) will be used to sign the certificates.
+
+    `NOTE: This option is not compatible with ePO-managed environments.`
+
+* :ref:`External Certificate Authority (CA) <epoexternalcertissuance>`
+
+    This option allows for the signing of client certificates using an
+    external Certificate Authority (CA).
+
+Updating Client Configuration
+*****************************
+
+After the initial provisioning of a client, its configuration may
+need to be periodically updated. For example, if new brokers are added or
+removed from the fabric.
+
+The :doc:`updatingconfigfromcli` section describes how a client's
+configuration can be updated via the use of the OpenDXL Python Client's
+command line.
