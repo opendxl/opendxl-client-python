@@ -10,7 +10,6 @@ import logging
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
-from dxlclient._server_name_helper import ServerNameHelper
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +88,10 @@ class Broker(_BaseObject):
 
     @host_name.setter
     def host_name(self, host_name):
-        # Remove brackets around IPv6 address
-        host = re.sub(r"[\[\]]", "", host_name)
-        if not ServerNameHelper.is_valid_hostname_or_ip_address(host):
+        if host_name:
+            # Remove brackets around IPv6 address
+            host = re.sub(r"[\[\]]", "", host_name)
+        else:
             raise MalformedBrokerUriException("Invalid host name")
         self._host_name = host
 
@@ -105,12 +105,11 @@ class Broker(_BaseObject):
 
     @ip_address.setter
     def ip_address(self, ip_address):
-        ip = ip_address
-        if ip:
+        if ip_address:
             # Remove brackets around IPv6 address
             ip = re.sub(r"[\[\]]", "", ip_address)
-            if not ServerNameHelper.is_valid_ip_address(ip):
-                raise MalformedBrokerUriException("Invalid IP address")
+        else:
+            ip = ip_address
         self._ip_address = ip
 
     @property
@@ -178,6 +177,10 @@ class Broker(_BaseObject):
 
         return broker
 
+    @staticmethod
+    def _get_array_element_or_none(arr, arr_position):
+        return arr[arr_position] if len(arr) > arr_position else None
+
     def _parse(self, broker_string):
         """
         Constructs a Broker object for the specified broker string
@@ -187,24 +190,39 @@ class Broker(_BaseObject):
         :return: None
         """
         elements = [a.strip() for a in broker_string.split(self._FIELD_SEPARATOR)]
-        len_elems = len(elements)
-        attrs = {}
-        if len_elems < 2:
+
+        if len(elements) < 2:
             raise MalformedBrokerUriException("Missing elements")
         else:
             if Broker._is_port_number(elements[0]):
-                attrs['port'] = elements[0]
-                attrs['hostname'] = elements[1]
-                if len_elems > 2:
-                    attrs['ip_address'] = elements[2]
+                self.unique_id = None
+                self.port = elements[0]
+                self.host_name = elements[1]
+                self.ip_address = self._get_array_element_or_none(elements, 2)
             else:
-                attrs['unique_id'] = elements[0]
-                attrs['port'] = elements[1]
-                attrs['hostname'] = elements[2]
-                if len_elems > 3:
-                    attrs['ip_address'] = elements[3]
-        # Sets broker attributes from the dictionary generated.
-        self._set_attributes(attrs)
+                self.unique_id = elements[0]
+                self.port = elements[1]
+                self.host_name = self._get_array_element_or_none(elements, 2)
+                self.ip_address = self._get_array_element_or_none(elements, 3)
+
+    def _to_broker_string(self):
+        """
+        Dumps the content of the current Broker instance into a broker string
+        in the format {[UniqueID];}[Port};[HostName]{;[IpAddress]}. Note that
+        the UniqueId and/or IpAddress fields will be absent from the string
+        output when not set on the Broker instance.
+
+        :return: the broker string
+        :rtype: str
+        """
+        return "{}{}{}{}{}".format(
+            "{}{}".format(self.unique_id, self._FIELD_SEPARATOR)
+            if self.unique_id else "",
+            self._port,
+            self._FIELD_SEPARATOR,
+            self._host_name,
+            "{}{}".format(self._FIELD_SEPARATOR, self._ip_address)
+            if self.ip_address else "")
 
     def _connect_to_broker(self):
         """
@@ -221,7 +239,7 @@ class Broker(_BaseObject):
             self._response_from_ip_address = False
             self._response_time = (end - start).total_seconds()
         except socket.error, msg:
-            if self._ip_address is not None:
+            if self._ip_address:
                 try:
                     start = datetime.datetime.now()
                     broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
@@ -235,29 +253,6 @@ class Broker(_BaseObject):
         finally:
             if broker_s is not None:
                 broker_s.close()
-
-    def _set_attributes(self, attrs):
-        """
-        Sets broker attributes from the input dictionary with format:
-            {'unique_id': <UNIQUE_ID>, 'port': <PORT>, 'hostname': <HOSTNAME>, 'ip_address': <IP>}
-            Required keys: 'port' and 'hostname'.
-        Pre: 'port' in attrs and 'hostname' in attrs
-        :param attrs: input dictionary with broker attributes.
-        """
-        # Unique ID : optional
-        if 'unique_id' in attrs:
-            self.unique_id = attrs['unique_id']
-        else:
-            self.unique_id = None
-        # Port : required
-        self.port = attrs['port']
-        # Hostname : required
-        self.host_name = attrs['hostname']
-        # IP address : optional
-        if 'ip_address' in attrs:
-            self.ip_address = attrs['ip_address']
-        else:
-            self.ip_address = None
 
     @staticmethod
     def _is_port_number(input):

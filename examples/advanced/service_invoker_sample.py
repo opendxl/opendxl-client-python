@@ -102,7 +102,7 @@ try:
 
             # Invalid input
             else:
-                logger.info("fdsaService Invoker - Invalid input: %s", option)
+                logger.info("Service Invoker - Invalid input: %s", option)
 
 except Exception as e:
     logger.exception("Service Invoker - Exception")

@@ -10,7 +10,7 @@ import unittest
 import time
 
 from dxlclient.test.base_test import BaseClientTest
-from nose_parameterized import parameterized
+from parameterized import parameterized
 from mock import Mock, patch
 from threading import Condition
 

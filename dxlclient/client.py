@@ -591,7 +591,7 @@ class DxlClient(_BaseObject):
 
                 if self._thread_terminate:
                     break
-                if self._current_broker is None and broker.ip_address is not None:
+                if self._current_broker is None and broker.ip_address:
                     try:
                         logger.info(
                             "Trying to connect to broker (IP address) %s (%s:%d)...",
