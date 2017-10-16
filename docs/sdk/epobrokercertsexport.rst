@@ -7,8 +7,16 @@ to the fabric. This certificate information allows clients to ensure the Brokers
 
 The following steps walk through the process to export the DXL Broker certificate information:
 
-1. Navigate to **Server Settings** and select the **DXL Certificates** setting on the left navigation bar.
+1. Navigate to **Server Settings** and select the **DXL Certificates (Third Party)** setting on the left navigation bar.
 
+    .. note::
+    
+        If using an older version of the DXL ePO Extensions, the **Server Settings** in the ePO console may have only a  
+        single option for all DXL certificates (titled "**DXL Certificates**"). Click that setting, and proceed with the 
+        rest of the steps in this guide as normal.
+        
+        .. _here: _images/serversettings_old.png
+        
     .. image:: serversettings-certs.png
 
 2. Click the **Edit** button in the lower right corner (as shown in the image above)
