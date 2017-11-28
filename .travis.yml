@@ -1,0 +1,28 @@
+sudo: false
+
+language: python
+
+services:
+  - docker
+
+python:
+  - "2.7"
+
+before_install:
+  - docker pull opendxl/opendxl-broker
+  - docker run -d -p 127.0.0.1:8883:8883 -p 127.0.0.1:8443:8443 opendxl/opendxl-broker
+  - docker ps -a
+
+# command to install dependencies
+install:
+  - pip install .
+
+before_script:
+  - python -m dxlclient provisionconfig dxlclient/test 127.0.0.1 client -u admin -p password
+  - cp dxlclient/test/dxlclient.config dxlclient/test/client_config.cfg
+  - sed -i -e "s/external/unique_broker_id_1/g" -e "/local/d" dxlclient/test/client_config.cfg
+  - cat dxlclient/test/client_config.cfg
+
+# command to run tests
+script:
+  - python setup.py nosetests -a !manual -I "subs_count_test.py" -e "(test_dxl_client_connection|execute_con_disc_test|test_dxlclient_subscription|execute_subs__unsubs_test|test_register_service_weak_reference_after_connect|test_wildcard_performance)"

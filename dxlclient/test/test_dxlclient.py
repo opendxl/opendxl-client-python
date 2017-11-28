@@ -573,7 +573,8 @@ class DxlClientSystemClientTest(BaseClientTest):
     def test_client_raises_exception_when_cannot_sync_connect_to_broker(self):
 
         with self.create_client() as client:
-            broker = Broker("localhost", UuidGenerator.generate_id_as_string(), "127.0.0.1")
+            broker = Broker("localhost", UuidGenerator.generate_id_as_string(),
+                            "127.0.0.255", 58883)
             client._config.brokers = [broker]
 
             with self.assertRaises(DxlException):
