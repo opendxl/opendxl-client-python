@@ -43,7 +43,7 @@ provision operation prompts for the passphrase to be used::
     Enter private key passphrase:
 
 The passphrase can alternatively be specified as an additional argument
-following the ``--passpharse`` argument, in which case no prompt is displayed.
+following the ``--passphrase`` argument, in which case no prompt is displayed.
 
 For example::
 
