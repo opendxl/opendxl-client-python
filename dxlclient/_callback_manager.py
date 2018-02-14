@@ -51,6 +51,19 @@ class _CallbackManager(_BaseObject):
             if not issubclass(callback.__class__, MessageCallback):
                 raise ValueError("Type mismatch on callback argument")
 
+    def _replace_callbacks_by_channel_with_copy(self):
+        """
+        Replace the current value for self.callbacks_by_channel with a copy.
+        This is used when methods are about to make changes to the content
+        of self.callbacks_by_channel. The use of this method allows other
+        methods to access the content within the self.callbacks_by_channel
+        object without needing to hold the service lock the entire time.
+        """
+        self.callbacks_by_channel = self.callbacks_by_channel.copy()
+        for channel in self.callbacks_by_channel:
+            self.callbacks_by_channel[channel] = list(
+                self.callbacks_by_channel[channel])
+
     def add_callback(self, channel="", callback=None):
         """
         Adds the specified callback. The callback will receive messages that were received
@@ -69,6 +82,10 @@ class _CallbackManager(_BaseObject):
         with self.lock:
             if _has_wildcard(channel):
                 self.wildcarding_enabled = True
+            # Replace the contents of self.callbacks_by_channel with a copy
+            # before adding the new callback into it. This avoids causing
+            # issues with any readers using the current value of the object.
+            self._replace_callbacks_by_channel_with_copy()
             callbacks = self.callbacks_by_channel.get(channel)
             if callbacks is None:
                 callbacks = []
@@ -93,6 +110,10 @@ class _CallbackManager(_BaseObject):
 
         rc = False  # pylint: disable=invalid-name
         with self.lock:
+            # Replace the contents of self.callbacks_by_channel with a copy
+            # before removing the callback from it. This avoids causing issues
+            # with any readers using the current value of the object.
+            self._replace_callbacks_by_channel_with_copy()
             callbacks = self.callbacks_by_channel.get(channel)
             if callbacks is not None:
                 callbacks.remove(callback)
@@ -120,24 +141,37 @@ class _CallbackManager(_BaseObject):
         :return: None
         """
         with self.lock:
-            # Fire for global listeners (channel="")
-            self._fire_message(self.callbacks_by_channel.get(""), message)
-            # Fire for channel listeners
-            self._fire_message(self.callbacks_by_channel.get(message.destination_topic), message)
-            #Fire for all wildcarded channels
-            # If wildcarding is enabled the message will be fired to each of the message's destination
-            # wildcards, if such wildcard exists.
-            if self.wildcarding_enabled:
+            # While in the lock, store the current value of
+            # self.callbacks_by_channel in a local variable before accessing its
+            # contents. This should ensure that if self.callbacks_by_channel is
+            # reassigned after the lock is released that no concurrent
+            # modification errors are encountered. This method should avoid
+            # holding the lock during processing of the _fire_message calls
+            # later since downstream calls could be made back into this class,
+            # potentially leading to deadlocks.
+            callbacks_by_channel = self.callbacks_by_channel
 
-                def on_next_wildcard(wildcard):
-                    #if wildcarded channel does not exist no message is fired
-                    self._fire_message(self.callbacks_by_channel.get(wildcard), message)
+        # Fire for global listeners (channel="")
+        self._fire_message(callbacks_by_channel.get(""), message)
 
-                wildcard_callback = WildcardCallback()
-                wildcard_callback.on_next_wildcard = on_next_wildcard
+        # Fire for channel listeners
+        self._fire_message(callbacks_by_channel.get(message.destination_topic),
+                           message)
 
-                #Iterate over all channel wildcards sending messages via callback if
-                DxlUtils.iterate_wildcards(wildcard_callback, message.destination_topic)
+        # Fire for all wildcarded channels
+        # If wildcarding is enabled the message will be fired to each of the message's destination
+        # wildcards, if such wildcard exists.
+        if self.wildcarding_enabled:
+
+            def on_next_wildcard(wildcard):
+                #if wildcarded channel does not exist no message is fired
+                self._fire_message(callbacks_by_channel.get(wildcard), message)
+
+            wildcard_callback = WildcardCallback()
+            wildcard_callback.on_next_wildcard = on_next_wildcard
+
+            #Iterate over all channel wildcards sending messages via callback if
+            DxlUtils.iterate_wildcards(wildcard_callback, message.destination_topic)
 
     def _fire_message(self, callbacks, message):
         """

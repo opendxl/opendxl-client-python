@@ -587,6 +587,10 @@ class _ServiceManager(RequestCallback):
 
             # Add service to registry
             service_handler = _ServiceRegistrationHandler(self.__client, service_reg_info)
+            # Replace the contents of self.services with a copy before adding
+            # the new service handler into it. This avoids causing issues with
+            # any readers using the current value of the object.
+            self.services = self.services.copy()
             self.services[service_reg_info._service_id] = service_handler
 
             # Subscribe channels
@@ -631,6 +635,10 @@ class _ServiceManager(RequestCallback):
                     logger.error("Error sending unregister service event for " +
                          service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
 
+            # Replace the contents of self.services with a copy before removing
+            # the service handler from it. This avoids causing issues with any
+            # readers using the current value of the object.
+            self.services = self.services.copy()
             del self.services[service_id]
             service_handler.destroy(unregister=False)
 
@@ -642,17 +650,26 @@ class _ServiceManager(RequestCallback):
         :return: None.
         """
         with self.lock:
-            service_instance_id = request.service_id
-            if not service_instance_id:
-                for service in self.services:
-                    self._on_request(self.services[service], request)
+            # While in the lock, store the current value of self.services
+            # in a local variable before accessing its contents. This should
+            # ensure that if self.callbacks_by_channel is reassigned after the
+            # lock is released that no concurrent modification errors are
+            # encountered. This method should avoid holding the lock during
+            # processing of the _on_request calls later since downstream calls
+            # could be made back into this class, potentially leading to
+            # deadlocks.
+            services = self.services
+        service_instance_id = request.service_id
+        if not service_instance_id:
+            for service_id in services:
+                self._on_request(services[service_id], request)
+        else:
+            service_registration_handler = services.get(service_instance_id)
+            if service_registration_handler:
+                self._on_request(service_registration_handler, request)
             else:
-                service_registration_handler = self.services.get(service_instance_id)
-                if service_registration_handler:
-                    self._on_request(service_registration_handler, request)
-                else:
-                    logger.warning("No service with GUID " + service_instance_id + " registered. Ignoring request.")
-                    self.send_service_not_found_error_message(request)
+                logger.warning("No service with GUID " + service_instance_id + " registered. Ignoring request.")
+                self.send_service_not_found_error_message(request)
 
     def send_service_not_found_error_message(self, request):
         """
@@ -681,22 +698,25 @@ class _ServiceManager(RequestCallback):
         :return: None
         """
         with self.lock:
+            new_services = {}
             for service_id in self.services:
-                if self.services[service_id].is_deleted() or self.services[service_id].is_invalid_reference():
+                service_handler = self.services[service_id]
+                if service_handler.is_deleted() or service_handler.is_invalid_reference():
                     try:
-                        self.services[service_id].send_unregister_service_event()
-                        del self.services[service_id]
+                        service_handler.send_unregister_service_event()
                     except Exception, ex:
                         logger.error("Error sending unregister service event for " +
-                                     self.services[service_id].service_type + " (" +
-                                     self.services[service_id].instance_id + "): " + str(ex))
+                                     service_handler.service_type + " (" +
+                                     service_handler.instance_id + "): " + str(ex))
                 else:
+                    new_services[service_id] = service_handler
                     try:
-                        self.services[service_id].start_timer()
+                        service_handler.start_timer()
                     except Exception, ex:
                         logger.error("Failed to start timer thread for service " +
-                                     self.services[service_id].service_type + " (" +
-                                     self.services[service_id].instance_id + "): " + str(ex))
+                                     service_handler.service_type + " (" +
+                                     service_handler.instance_id + "): " + str(ex))
+            self.services = new_services
 
     def on_disconnect(self):
         """
@@ -706,13 +726,13 @@ class _ServiceManager(RequestCallback):
         :return: None.
         """
         with self.lock:
-
-            for handler in self.services:
+            for service_id in self.services:
+                service_handler = self.services[service_id]
                 if self.__client.connected:
                     try:
-                        self.services[handler].send_unregister_service_event()
+                        service_handler.send_unregister_service_event()
                     except Exception, ex:
                         logger.error("Error sending unregister service event for " +
-                                     self.services[handler].service_type + " (" +
-                                     self.services[handler].instance_id + "): " + str(ex))
-                self.services[handler].stop_timer()
+                                     service_handler.service_type + " (" +
+                                     service_handler.instance_id + "): " + str(ex))
+                service_handler.stop_timer()

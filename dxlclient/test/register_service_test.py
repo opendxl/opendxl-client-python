@@ -4,6 +4,7 @@ from threading import RLock, Condition
 from nose.plugins.attrib import attr
 import time
 import logging
+import threading
 import weakref
 import gc
 
@@ -50,13 +51,15 @@ class RegisterServiceClientTest(BaseClientTest):
     info = None
     request_callback = None
 
-    def add_client_callbacks(self, client):
+    def add_client_callbacks(self, client, on_client_request_callback=None):
         self.request_callback = RequestCallback()
 
         def on_request(request):
             logging.info(request.destination_topic)
             logging.info(request.payload)
 
+            if on_client_request_callback:
+                on_client_request_callback()
             response = Response(request)
             response.payload = bytes("Ok")
             try:
@@ -145,6 +148,78 @@ class RegisterServiceClientTest(BaseClientTest):
             logging.info("Response payload: {0}".format(str(response.payload)))
 
             self.assertEquals("Ok", str(response.payload))
+
+    @attr('system')
+    def test_register_service_call_from_request_callback(self):
+        # While in the request callback for a service invocation, attempt to
+        # register a second service. Confirm that a call to the second service
+        # is successful. This test ensures that concurrent add/remove service
+        # calls and processing of incoming messages do not produce deadlocks.
+        with self.create_client(self.DEFAULT_RETRIES, 2) as client:
+            second_service_response_payload = "Second service request okay too"
+            second_service_callback = RequestCallback()
+
+            def on_second_service_request(request):
+                response = Response(request)
+                response.payload = bytes(second_service_response_payload)
+                try:
+                    client.send_response(response)
+                except DxlException, ex:
+                    print "Failed to send response" + str(ex)
+
+            second_service_callback.on_request = on_second_service_request
+
+            second_service_info = ServiceRegistrationInfo(
+                client, "/mcafee/service/JTI2")
+            second_service_info.add_topic(
+                "/mcafee/service/JTI2/file/reputation/" +
+                second_service_info.service_id, second_service_callback)
+
+            def register_second_service():
+                client.register_service_sync(second_service_info,
+                                             self.REG_DELAY)
+
+            register_second_service_thread = threading.Thread(
+                target=register_second_service)
+            register_second_service_thread.daemon = True
+
+            # Perform the second service registration from a separate thread
+            # in order to ensure that locks taken by the callback and
+            # service managers do not produce deadlocks between the
+            # thread from which the service registration request is made and
+            # any threads on which response messages are received from the
+            # broker.
+            def on_first_service_request():
+                register_second_service_thread.start()
+                register_second_service_thread.join()
+
+            self.add_client_callbacks(client, on_first_service_request)
+            client.connect()
+            client.register_service_sync(self.info, self.REG_DELAY)
+
+            first_service_request = Request(
+                "/mcafee/service/JTI/file/reputation/" + self.info.service_id)
+            first_service_request.payload = bytes("Test")
+
+            first_service_response = client.sync_request(
+                first_service_request, self.POST_OP_DELAY)
+            logging.info("First service response payload: {0}".format(
+                str(first_service_response.payload)))
+
+            self.assertEquals("Ok", str(first_service_response.payload))
+
+            second_service_request = Request(
+                "/mcafee/service/JTI2/file/reputation/" +
+                second_service_info.service_id)
+            second_service_request.payload = bytes("Test")
+
+            second_service_response = client.sync_request(
+                second_service_request, self.POST_OP_DELAY)
+            logging.info("Second service response payload: {0}".format(
+                str(second_service_request.payload)))
+
+            self.assertEquals(second_service_response_payload,
+                              str(second_service_response.payload))
 
     @attr('system')
     def test_register_service_weak_reference_before_connect(self):
