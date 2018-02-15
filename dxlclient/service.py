@@ -564,7 +564,7 @@ class _ServiceManager(RequestCallback):
     def destroy(self):
         """Destroys the service manager (releases resources)"""
         with self.lock:
-            for key in self.services.keys():
+            for key in list(self.services.keys()):
                 self.remove_service(key)
             self.__client = None
 
