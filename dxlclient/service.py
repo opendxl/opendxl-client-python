@@ -592,7 +592,6 @@ class _ServiceManager(RequestCallback):
             # the object.
             services = self.services.copy()
             services[service_reg_info._service_id] = service_handler
-            self.services = services
 
             # Subscribe channels
             for channel in service_reg_info.topics:
@@ -601,6 +600,8 @@ class _ServiceManager(RequestCallback):
 
             if self.__client.connected:
                 service_handler.start_timer()
+
+            self.services = services
 
     def remove_service(self, service_id):
         """
@@ -641,8 +642,8 @@ class _ServiceManager(RequestCallback):
             # the object.
             services = self.services.copy()
             del services[service_id]
-            self.services = services
             service_handler.destroy(unregister=False)
+            self.services = services
 
     def on_request(self, request):
         """
