@@ -587,11 +587,12 @@ class _ServiceManager(RequestCallback):
 
             # Add service to registry
             service_handler = _ServiceRegistrationHandler(self.__client, service_reg_info)
-            # Replace the contents of self.services with a copy before adding
-            # the new service handler into it. This avoids causing issues with
-            # any readers using the current value of the object.
-            self.services = self.services.copy()
-            self.services[service_reg_info._service_id] = service_handler
+            # Add the new service handler into a copy of self.services. This
+            # avoids causing issues with any readers using the current value of
+            # the object.
+            services = self.services.copy()
+            services[service_reg_info._service_id] = service_handler
+            self.services = services
 
             # Subscribe channels
             for channel in service_reg_info.topics:
@@ -635,11 +636,12 @@ class _ServiceManager(RequestCallback):
                     logger.error("Error sending unregister service event for " +
                          service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
 
-            # Replace the contents of self.services with a copy before removing
-            # the service handler from it. This avoids causing issues with any
-            # readers using the current value of the object.
-            self.services = self.services.copy()
-            del self.services[service_id]
+            # Remove the service handler from a copy of self.services. This
+            # avoids causing issues with any readers using the current value of
+            # the object.
+            services = self.services.copy()
+            del services[service_id]
+            self.services = services
             service_handler.destroy(unregister=False)
 
     def on_request(self, request):
@@ -649,16 +651,11 @@ class _ServiceManager(RequestCallback):
         :param request: The request.
         :return: None.
         """
-        with self.lock:
-            # While in the lock, store the current value of self.services
-            # in a local variable before accessing its contents. This should
-            # ensure that if self.callbacks_by_channel is reassigned after the
-            # lock is released that no concurrent modification errors are
-            # encountered. This method should avoid holding the lock during
-            # processing of the _on_request calls later since downstream calls
-            # could be made back into this class, potentially leading to
-            # deadlocks.
-            services = self.services
+        # Store the current value of self.services in a local variable before
+        # accessing its contents. This should ensure that if
+        # self.callbacks_by_channel is reassigned after the lock is released
+        # that no concurrent modification errors are encountered.
+        services = self.services
         service_instance_id = request.service_id
         if not service_instance_id:
             for service_id in services:
@@ -698,7 +695,7 @@ class _ServiceManager(RequestCallback):
         :return: None
         """
         with self.lock:
-            new_services = {}
+            services = {}
             for service_id in self.services:
                 service_handler = self.services[service_id]
                 if service_handler.is_deleted() or service_handler.is_invalid_reference():
@@ -709,14 +706,14 @@ class _ServiceManager(RequestCallback):
                                      service_handler.service_type + " (" +
                                      service_handler.instance_id + "): " + str(ex))
                 else:
-                    new_services[service_id] = service_handler
+                    services[service_id] = service_handler
                     try:
                         service_handler.start_timer()
                     except Exception, ex:
                         logger.error("Failed to start timer thread for service " +
                                      service_handler.service_type + " (" +
                                      service_handler.instance_id + "): " + str(ex))
-            self.services = new_services
+            self.services = services
 
     def on_disconnect(self):
         """

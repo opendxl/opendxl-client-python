@@ -51,18 +51,24 @@ class _CallbackManager(_BaseObject):
             if not issubclass(callback.__class__, MessageCallback):
                 raise ValueError("Type mismatch on callback argument")
 
-    def _replace_callbacks_by_channel_with_copy(self):
+    def _get_callbacks_by_channel_copy(self):
         """
-        Replace the current value for self.callbacks_by_channel with a copy.
-        This is used when methods are about to make changes to the content
-        of self.callbacks_by_channel. The use of this method allows other
-        methods to access the content within the self.callbacks_by_channel
-        object without needing to hold the service lock the entire time.
+        Get a copy of the contents of self.callbacks_by_channel. This is used
+        when methods are about to make changes to the content of
+        self.callbacks_by_channel. The use of this method allows other methods
+        to access the content within the self.callbacks_by_channel object
+        without needing to hold a lock.
+
+        :return: Copy of the self.callbacks_by_channel dictionary. The memory
+            for the keys is copied. The memory for the arrays in the values for
+            each key is copied as well. The individual members of each array,
+            however, will be the same references as in the arrays in the
+            current self.callbacks_by_channel dictionary.
         """
-        self.callbacks_by_channel = self.callbacks_by_channel.copy()
-        for channel in self.callbacks_by_channel:
-            self.callbacks_by_channel[channel] = list(
-                self.callbacks_by_channel[channel])
+        callbacks_by_channel = self.callbacks_by_channel.copy()
+        for channel in callbacks_by_channel:
+            callbacks_by_channel[channel] = list(callbacks_by_channel[channel])
+        return callbacks_by_channel
 
     def add_callback(self, channel="", callback=None):
         """
@@ -82,17 +88,18 @@ class _CallbackManager(_BaseObject):
         with self.lock:
             if _has_wildcard(channel):
                 self.wildcarding_enabled = True
-            # Replace the contents of self.callbacks_by_channel with a copy
-            # before adding the new callback into it. This avoids causing
-            # issues with any readers using the current value of the object.
-            self._replace_callbacks_by_channel_with_copy()
-            callbacks = self.callbacks_by_channel.get(channel)
+            # Add the new callback into a copy of the contents of
+            # self.callbacks_by_channel. This avoids causing issues with any
+            # readers using the current value of the object.
+            callbacks_by_channel = self._get_callbacks_by_channel_copy()
+            callbacks = callbacks_by_channel.get(channel)
             if callbacks is None:
                 callbacks = []
             if not callback in callbacks:
                 callbacks.append(callback)
-                self.callbacks_by_channel[channel] = callbacks
+                callbacks_by_channel[channel] = callbacks
                 rc = True  # pylint: disable=invalid-name
+            self.callbacks_by_channel = callbacks_by_channel
         return rc
 
     def remove_callback(self, channel="", callback=None):
@@ -110,26 +117,26 @@ class _CallbackManager(_BaseObject):
 
         rc = False  # pylint: disable=invalid-name
         with self.lock:
-            # Replace the contents of self.callbacks_by_channel with a copy
-            # before removing the callback from it. This avoids causing issues
-            # with any readers using the current value of the object.
-            self._replace_callbacks_by_channel_with_copy()
-            callbacks = self.callbacks_by_channel.get(channel)
+            # Remove the callback from a copy of the contents of
+            # self.callbacks_by_channel. This avoids causing issues with any
+            # readers using the current value of the object.
+            callbacks_by_channel = self._get_callbacks_by_channel_copy()
+            callbacks = callbacks_by_channel.get(channel)
             if callbacks is not None:
                 callbacks.remove(callback)
                 if len(callbacks) == 0:
-                    del self.callbacks_by_channel[channel]
+                    del callbacks_by_channel[channel]
                 else:
-                    self.callbacks_by_channel[channel] = callbacks
+                    callbacks_by_channel[channel] = callbacks
                 rc = True  # pylint: disable=invalid-name
-
             #Determine if any wildcard exist
             if self.wildcarding_enabled:
                 self.wildcarding_enabled = False
-                for current_channel_name in self.callbacks_by_channel.keys():
+                for current_channel_name in callbacks_by_channel.keys():
                     if _has_wildcard(current_channel_name):
                         self.wildcarding_enabled = True
                         break
+            self.callbacks_by_channel = callbacks_by_channel
         return rc
 
     def fire_message(self, message):
@@ -140,16 +147,11 @@ class _CallbackManager(_BaseObject):
         :param message: The message to fire
         :return: None
         """
-        with self.lock:
-            # While in the lock, store the current value of
-            # self.callbacks_by_channel in a local variable before accessing its
-            # contents. This should ensure that if self.callbacks_by_channel is
-            # reassigned after the lock is released that no concurrent
-            # modification errors are encountered. This method should avoid
-            # holding the lock during processing of the _fire_message calls
-            # later since downstream calls could be made back into this class,
-            # potentially leading to deadlocks.
-            callbacks_by_channel = self.callbacks_by_channel
+        # Store the current value of self.callbacks_by_channel in a local
+        # variable before accessing its contents. This should ensure that if
+        # self.callbacks_by_channel is reassigned while iterating over its
+        # contents that no concurrent modification errors are encountered.
+        callbacks_by_channel = self.callbacks_by_channel
 
         # Fire for global listeners (channel="")
         self._fire_message(callbacks_by_channel.get(""), message)
