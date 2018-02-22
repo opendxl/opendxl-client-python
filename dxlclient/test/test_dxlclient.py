@@ -447,6 +447,16 @@ class DxlClientTest(unittest.TestCase):
         # callback was unregistered
         self.assertEqual(callback.on_response.call_count, 1)
 
+    def test_client_remove_call_for_unregistered_callback_does_not_error(self):
+        callback = EventCallback()
+        callback.on_event = Mock()
+        callback2 = EventCallback()
+        callback2.on_event = Mock()
+        self.client.add_event_callback(self.test_channel, callback)
+        self.client.add_event_callback(self.test_channel, callback2)
+        self.client.remove_event_callback(self.test_channel, callback)
+        self.client.remove_event_callback(self.test_channel, callback)
+
     def test_client_send_event_publishes_message_to_dxl_fabric(self):
         self.client._client.publish = Mock(return_value=None)
         # Create and process Request

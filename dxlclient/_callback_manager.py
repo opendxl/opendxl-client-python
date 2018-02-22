@@ -123,7 +123,8 @@ class _CallbackManager(_BaseObject):
             callbacks_by_channel = self._get_callbacks_by_channel_copy()
             callbacks = callbacks_by_channel.get(channel)
             if callbacks is not None:
-                callbacks.remove(callback)
+                if callback in callbacks:
+                    callbacks.remove(callback)
                 if len(callbacks) == 0:
                     del callbacks_by_channel[channel]
                 else:
