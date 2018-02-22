@@ -25,4 +25,4 @@ before_script:
 
 # command to run tests
 script:
-  - python setup.py nosetests --verbosity 2 -a !manual -I "subs_count_test.py" -e "(test_dxl_client_connection|execute_con_disc_test|test_register_service_weak_reference_after_connect|test_wildcard_performance)"
+  - python setup.py test
