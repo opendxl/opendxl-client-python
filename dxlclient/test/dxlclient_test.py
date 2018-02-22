@@ -39,6 +39,21 @@ class DxlClientTest (BaseClientTest):
             self.assertNotIn(topic, client.subscriptions)
 
     #
+    # Tests that an unsubscribe call made after a previous unsubscribe for the
+    # same topic does not raise an error.
+    #
+    @attr('system')
+    def test_unsubscribe_for_unknown_topic_does_not_raise_error(self):
+        with self.create_client(max_retries=0) as client:
+            client.connect()
+            topic = UuidGenerator.generate_id_as_string()
+            client.subscribe(topic)
+            self.assertIn(topic, client.subscriptions)
+            client.unsubscribe(topic)
+            client.unsubscribe(topic)
+            self.assertNotIn(topic, client.subscriptions)
+
+    #
     # Test to ensure that ErrorResponse messages can be successfully delivered
     # from a service to a client.
     #
