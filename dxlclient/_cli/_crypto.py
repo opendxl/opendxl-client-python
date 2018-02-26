@@ -15,7 +15,6 @@ from asn1crypto import x509, pem, csr
 from oscrypto import asymmetric
 
 from dxlclient import DxlUtils
-from six.moves import map
 
 logger = logging.getLogger(__name__)
 
@@ -280,9 +279,9 @@ class _CertificateRequest(object):  # pylint: disable=too-few-public-methods
             "version": u"v1",
             "subject": x509_subject,
             "subject_pk_info": public_key.asn1,
-            "attributes": [{"type": u"extension_request",
-                            "values": [list(map(self._create_extension,
-                                           extensions))]}]})
+            "attributes":
+                [{"type": u"extension_request",
+                  "values": [[self._create_extension(x) for x in extensions]]}]})
 
     @staticmethod
     def _create_extension(extension):
