@@ -24,7 +24,6 @@ from dxlclient import RequestCallback
 from dxlclient import Request
 from dxlclient._global_settings import *
 from nose.plugins.attrib import attr
-from six.moves import range
 
 def topic_splitter(topic):
     if topic is "":

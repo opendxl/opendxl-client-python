@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 from concurrent.futures import ThreadPoolExecutor
-from six.moves import range
 
 
 class ThreadRunExecutor(object):

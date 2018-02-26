@@ -6,7 +6,6 @@ from dxlclient import RequestCallback, Response, Message, ResponseCallback, Requ
 from dxlclient.test.base_test import BaseClientTest
 from threading import Condition
 from nose.plugins.attrib import attr
-from six.moves import range
 
 
 #

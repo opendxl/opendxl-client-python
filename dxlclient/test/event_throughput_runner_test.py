@@ -8,7 +8,6 @@ from dxlclient import EventCallback, Event, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest, atomize
 from dxlclient.test.thread_executor import ThreadRunExecutor
 from nose.plugins.attrib import attr
-from six.moves import range
 
 
 class EventThroughputRunner(BaseClientTest):

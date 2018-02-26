@@ -24,7 +24,6 @@ import requests_mock
 
 from dxlclient import DxlUtils
 from dxlclient._cli import cli_run
-from six.moves import range
 
 
 def command_args(args):

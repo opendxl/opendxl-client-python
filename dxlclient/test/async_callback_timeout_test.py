@@ -5,7 +5,6 @@ from nose.plugins.attrib import attr
 from dxlclient import ResponseCallback, UuidGenerator, ServiceRegistrationInfo, Request
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from six.moves import range
 
 
 class AsyncCallbackTimeoutTest(BaseClientTest):

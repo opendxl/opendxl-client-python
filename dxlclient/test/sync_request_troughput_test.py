@@ -8,7 +8,6 @@ from .thread_executor import ThreadRunExecutor
 import logging
 import time
 from nose.plugins.attrib import attr
-from six.moves import range
 
 
 class SyncRequestTroughputRunner(BaseClientTest):

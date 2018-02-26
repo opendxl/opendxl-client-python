@@ -4,7 +4,6 @@ from threading import Condition
 from dxlclient import UuidGenerator, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest, atomize
 from nose.plugins.attrib import attr
-from six.moves import range
 
 @attr('system')
 class EventTests(BaseClientTest):

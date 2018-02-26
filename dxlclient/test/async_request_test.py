@@ -5,7 +5,6 @@ from dxlclient.test.test_service import TestService
 from dxlclient import UuidGenerator, Request, ResponseCallback, ServiceRegistrationInfo
 from dxlclient.test.base_test import BaseClientTest, atomize
 from nose.plugins.attrib import attr
-from six.moves import range
 
 
 class AsyncRequestTests(BaseClientTest):

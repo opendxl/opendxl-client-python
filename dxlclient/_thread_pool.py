@@ -11,7 +11,6 @@ import sys
 
 from dxlclient import _BaseObject, _ObjectTracker
 from dxlclient._uuid_generator import UuidGenerator
-from six.moves import range
 
 if sys.version_info[0] < 3:
     from Queue import Queue

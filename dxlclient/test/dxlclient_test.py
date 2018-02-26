@@ -8,7 +8,6 @@ from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResp
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
 from nose.plugins.attrib import attr
-from six.moves import range
 
 @attr('system')
 class DxlClientTest (BaseClientTest):
