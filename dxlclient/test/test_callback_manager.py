@@ -5,6 +5,7 @@
 
 # Run with python -m unittest dxlclient.test.test_callback_manager
 
+from __future__ import absolute_import
 import unittest
 
 import dxlclient.callbacks as callbacks

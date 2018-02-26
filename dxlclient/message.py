@@ -39,6 +39,7 @@ the client should use the asynchronous form for sending requests,
 :func:`dxlclient.client.DxlClient.async_request`
 """
 
+from __future__ import absolute_import
 import msgpack  # pylint: disable=import-error
 from io import BytesIO
 from abc import ABCMeta, abstractproperty, abstractmethod
@@ -46,13 +47,13 @@ from abc import ABCMeta, abstractproperty, abstractmethod
 from dxlclient import _BaseObject
 from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import DxlException
+import six
 
 # pylint: disable=too-many-instance-attributes
-class Message(_BaseObject):
+class Message(six.with_metaclass(ABCMeta, _BaseObject)):
     """
     The base class for the different Data Exchange Layer (DXL) message types
     """
-    __metaclass__ = ABCMeta
 
     # The message version
     MESSAGE_VERSION = 2
@@ -220,12 +221,12 @@ class Message(_BaseObject):
 
         :param unpacker: Unpacker object.
         """
-        self._message_id = unpacker.next()
-        self._source_client_id = unpacker.next()
-        self._source_broker_id = unpacker.next()
-        self._broker_ids = unpacker.next()
-        self._client_ids = unpacker.next()
-        self._payload = unpacker.next()
+        self._message_id = next(unpacker)
+        self._source_client_id = next(unpacker)
+        self._source_broker_id = next(unpacker)
+        self._broker_ids = next(unpacker)
+        self._client_ids = next(unpacker)
+        self._payload = next(unpacker)
 
     @property
     def other_fields(self):
@@ -280,7 +281,7 @@ class Message(_BaseObject):
         """
         # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
         array = []
-        for key, value in self._other_fields.iteritems():
+        for key, value in six.iteritems(self._other_fields):
             array.extend((key.encode('utf8'), value.encode('utf8')))
         buf.write(packer.pack(array))
 
@@ -291,7 +292,7 @@ class Message(_BaseObject):
         :param unpacker: The unpacker
         """
         # The "otherFields" member is unpacked as a list format, and then it is converted to a dictionary.
-        array = unpacker.next()
+        array = next(unpacker)
         key = None
         self._other_fields = {}
         for curr in array:
@@ -317,8 +318,8 @@ class Message(_BaseObject):
 
         :param unpacker: The unpacker
         """
-        self._source_tenant_guid = unpacker.next()
-        self._destination_tenant_guids = unpacker.next()
+        self._source_tenant_guid = next(unpacker)
+        self._destination_tenant_guids = next(unpacker)
 
     def _to_bytes(self):
         """
@@ -352,8 +353,8 @@ class Message(_BaseObject):
         buf = BytesIO(raw)
         buf.seek(0)
         unpacker = msgpack.Unpacker(buf)
-        version = unpacker.next()
-        message_type = unpacker.next()
+        version = next(unpacker)
+        message_type = next(unpacker)
 
         message = None
         if message_type == Message.MESSAGE_TYPE_REQUEST:
@@ -449,8 +450,8 @@ class Request(Message):
         :param unpacker: Unpacker object.
         """
         super(Request, self)._unpack_message(unpacker)
-        self._reply_to_topic = unpacker.next()
-        self._service_id = unpacker.next()
+        self._reply_to_topic = next(unpacker)
+        self._service_id = next(unpacker)
 
 
 class Response(Message):
@@ -542,8 +543,8 @@ class Response(Message):
         :param unpacker: Unpacker object.
         """
         super(Response, self)._unpack_message(unpacker)
-        self._request_message_id = unpacker.next()
-        self._service_id = unpacker.next()
+        self._request_message_id = next(unpacker)
+        self._service_id = next(unpacker)
 
 
 class Event(Message):
@@ -646,5 +647,5 @@ class ErrorResponse(Response):
         :param unpacker: Unpacker object.
         """
         super(ErrorResponse, self)._unpack_message(unpacker)
-        self._error_code = unpacker.next()
+        self._error_code = next(unpacker)
         self._error_message = unpacker.next().decode('utf8')

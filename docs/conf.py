@@ -3,6 +3,7 @@
 # DXL Python SDK documentation build configuration file, created by
 # sphinx-quickstart on Tue Jan 13 11:34:32 2015.
 
+from __future__ import absolute_import
 import sys
 import os
 

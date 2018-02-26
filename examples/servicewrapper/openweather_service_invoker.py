@@ -8,6 +8,8 @@
 # openweather_common.py must be edited to include the OpenWeatherMap API
 # key (see http://openweathermap.org/appid)
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import logging
 import os
@@ -55,7 +57,7 @@ with DxlClient(config) as client:
     # Extract information from the response (if an error did not occur)
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
         response_dict = json.loads(res.payload.decode(encoding="UTF-8"))
-        print "Client received response payload: \n" + \
-          json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': '))
+        print("Client received response payload: \n" + \
+          json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')))
     else:
         logger.error("Error: " + res.error_message + " (" + str(res.error_code) + ")")

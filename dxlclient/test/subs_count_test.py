@@ -1,6 +1,9 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dxlclient import Request, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest
 from nose.plugins.attrib import attr
+from six.moves import range
 
 @attr('system')
 class SubsCountTest(BaseClientTest):
@@ -48,4 +51,4 @@ class SubsCountTest(BaseClientTest):
             pl = str(resp.payload)
             self.assertTrue(":3}" in pl)
 
-            print "Test passed!"
+            print("Test passed!")

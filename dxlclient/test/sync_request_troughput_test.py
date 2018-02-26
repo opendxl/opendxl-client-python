@@ -1,11 +1,14 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from threading import Condition
-from base_test import BaseClientTest, atomize
+from .base_test import BaseClientTest, atomize
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse
 from dxlclient.test.test_service import TestService
-from thread_executor import ThreadRunExecutor
+from .thread_executor import ThreadRunExecutor
 import logging
 import time
 from nose.plugins.attrib import attr
+from six.moves import range
 
 
 class SyncRequestTroughputRunner(BaseClientTest):
@@ -97,7 +100,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
     @attr('load')
     def test_sync_request_troughput(self):
         self.execute_t(self.create_client)
-        print self.get_execution_results()
+        print(self.get_execution_results())
 
     def get_execution_results(self):
         total_time = self.requests_end_time - self.requests_start_time
@@ -183,20 +186,20 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                     self.requests_end_time = time.time()
 
                             if count % 100 is 0:
-                                print str(count) + ", " + str(time.time() - self.requests_start_time)
+                                print(str(count) + ", " + str(time.time() - self.requests_start_time))
 
                             # Calulate and track response times
                             self.cummulative_response_time = self.cummulative_response_time + response_time
                             self.response_times.append(response_time)
 
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
                     logging.info(e.message)
                     raise e
             executor.execute(run)
 
             if self.THREAD_COUNT != self.response_count / self.REQUEST_COUNT:
-                print "Failed! responseCount=" + str(self.response_count)
+                print("Failed! responseCount=" + str(self.response_count))
             self.assertEqual(self.THREAD_COUNT, self.response_count / self.REQUEST_COUNT)
 
             server_client.unregister_service_sync(reg_info, self.DEFAULT_TIMEOUT)

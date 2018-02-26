@@ -5,6 +5,7 @@
 
 """Helpers for making requests to a Management Service for CLI subcommands"""
 
+from __future__ import absolute_import
 import json
 import logging
 import warnings

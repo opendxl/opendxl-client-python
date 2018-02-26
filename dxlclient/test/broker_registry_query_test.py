@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient import Request, ErrorResponse
 from nose.plugins.attrib import attr
@@ -19,6 +21,6 @@ class BrokerRegistryQueryTest(BaseClientTest):
             response = client.sync_request(req)
 
             self.assertNotIsInstance(response, ErrorResponse)
-            print "## sourceBrokerGuid: " + str(response.source_broker_id)
-            print "## sourceClientGuid: " + str(response.source_client_id)
-            print str(response.payload)
+            print("## sourceBrokerGuid: " + str(response.source_broker_id))
+            print("## sourceClientGuid: " + str(response.source_client_id))
+            print(str(response.payload))

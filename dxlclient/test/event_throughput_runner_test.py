@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import time
 from threading import Condition
@@ -6,6 +8,7 @@ from dxlclient import EventCallback, Event, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest, atomize
 from dxlclient.test.thread_executor import ThreadRunExecutor
 from nose.plugins.attrib import attr
+from six.moves import range
 
 
 class EventThroughputRunner(BaseClientTest):
@@ -119,7 +122,7 @@ class EventThroughputRunner(BaseClientTest):
                                 self.event_count_condition.notify_all()
 
                                 if current_count % 100 == 0:
-                                    print client.config._client_id + " : " + str(current_count) + " : " + event.payload
+                                    print(client.config._client_id + " : " + str(current_count) + " : " + event.payload)
 
                         # callback registration
                         callback = EventCallback()
@@ -145,7 +148,7 @@ class EventThroughputRunner(BaseClientTest):
                                 for i in range(0, self.EVENT_COUNT):
                                     event = Event(event_topic)
                                     if i % 10 == 0:
-                                        print "###send: " + str(i)
+                                        print("###send: " + str(i))
                                     event.payload = str(i)
                                     send_client.send_event(event)
 
@@ -159,7 +162,7 @@ class EventThroughputRunner(BaseClientTest):
                             if self.requests_end_time == 0:
                                 self.requests_end_time = time.time()
 
-                except Exception, e:
+                except Exception as e:
                     logging.error(e.message)
                     raise e
 
@@ -168,10 +171,10 @@ class EventThroughputRunner(BaseClientTest):
             self.assertEquals(self.EVENT_COUNT * self.THREAD_COUNT, self.event_count)
 
             total_time = self.requests_end_time - self.requests_start_time
-            print "Connect time: " + str(self.connect_time)
-            print "Connect retries: " + str(self.connect_retries)
-            print "Total events: " + str(self.EVENT_COUNT)
-            print "Events/second: " + str(self.EVENT_COUNT / total_time)
-            print "Total events received: " + str(self.EVENT_COUNT * self.THREAD_COUNT)
-            print "Total events received/second: " + str((self.EVENT_COUNT * self.THREAD_COUNT) / total_time)
-            print "Elapsed time: " + str(total_time)
+            print("Connect time: " + str(self.connect_time))
+            print("Connect retries: " + str(self.connect_retries))
+            print("Total events: " + str(self.EVENT_COUNT))
+            print("Events/second: " + str(self.EVENT_COUNT / total_time))
+            print("Total events received: " + str(self.EVENT_COUNT * self.THREAD_COUNT))
+            print("Total events received/second: " + str((self.EVENT_COUNT * self.THREAD_COUNT) / total_time))
+            print("Elapsed time: " + str(total_time))

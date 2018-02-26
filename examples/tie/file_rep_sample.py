@@ -2,6 +2,8 @@
 # (TIE) DXL service to retrieve the reputation of files (as identified
 # by their hashes)
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -81,8 +83,8 @@ with DxlClient(config) as client:
     response_dict = get_tie_file_reputation(client=client,
                                             md5_hex="f2c7bb8acc97f92e987a2d4087d021b1",
                                             sha1_hex="7eb0139d2175739b3ccb0d1110067820be6abd29")
-    print "Notepad.exe reputation:"
-    print json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')) + "\n"
+    print("Notepad.exe reputation:")
+    print(json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')) + "\n")
 
     #
     # Request and display reputation for EICAR
@@ -90,5 +92,5 @@ with DxlClient(config) as client:
     response_dict = get_tie_file_reputation(client=client,
                                             md5_hex="44d88612fea8a8f36de82e1278abb02f",
                                             sha1_hex="3395856ce81f2b7382dee72602f798b642f14140")
-    print "EICAR reputation:"
-    print json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': '))
+    print("EICAR reputation:")
+    print(json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')))

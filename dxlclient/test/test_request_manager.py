@@ -5,6 +5,7 @@
 
 # Run with python -m unittest dxlclient.test.test_request_manager
 
+from __future__ import absolute_import
 import unittest
 
 import dxlclient.exceptions as exceptions

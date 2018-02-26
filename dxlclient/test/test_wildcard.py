@@ -5,6 +5,8 @@
 
 # Run with python -m unittest dxlclient.test.test_dxlclient
 
+from __future__ import absolute_import
+from __future__ import print_function
 import unittest
 
 import time
@@ -22,6 +24,7 @@ from dxlclient import RequestCallback
 from dxlclient import Request
 from dxlclient._global_settings import *
 from nose.plugins.attrib import attr
+from six.moves import range
 
 def topic_splitter(topic):
     if topic is "":
@@ -49,9 +52,9 @@ class WilcardPerformanceTest(BaseClientTest):
             with_wildcard =self.measure_performance(client, False, True)
             with_wildcard_topic_exists = self.measure_performance(client, True, True)
 
-            print "without_wildcard: " + str(without_wildcard)
-            print "with_wildcard: " + str(with_wildcard)
-            print "with_wildcard_topic_exists: " + str(with_wildcard_topic_exists)
+            print("without_wildcard: " + str(without_wildcard))
+            print("with_wildcard: " + str(with_wildcard))
+            print("with_wildcard_topic_exists: " + str(with_wildcard_topic_exists))
 
             self.assertTrue(with_wildcard < (2 * without_wildcard))
 
@@ -77,7 +80,7 @@ class WilcardPerformanceTest(BaseClientTest):
                     message_ids.add(event.message_id)
                     message_id_condition.notify()
                     if len(message_ids) % SUB_COUNT == 0:
-                        print "Messages size: " + str(len(message_ids))
+                        print("Messages size: " + str(len(message_ids)))
 
         cb.on_event = on_event
         client.add_event_callback("#", cb, False)
@@ -87,10 +90,10 @@ class WilcardPerformanceTest(BaseClientTest):
 
         for i in range(SUB_COUNT):
             if i % 1000 == 0:
-                print "Subscribed: " + str(i)
+                print("Subscribed: " + str(i))
             client.subscribe(TOPIC_PREFIX + str(i))
 
-        print "Subscribed."
+        print("Subscribed.")
 
         start_time = time.time()
 
@@ -139,8 +142,8 @@ class WilcardPerformanceTest(BaseClientTest):
             rcb = RequestCallback()
 
             def on_request(request):
-                print "## Request in service: " + request.destination_topic + ", " + str(request.message_id)
-                print "## Request in service - payload: " + request.payload
+                print("## Request in service: " + request.destination_topic + ", " + str(request.message_id))
+                print("## Request in service - payload: " + request.payload)
 
                 service_request_message.append(request.message_id)
                 service_request_message_receive_payload.append(request.payload)
@@ -160,8 +163,8 @@ class WilcardPerformanceTest(BaseClientTest):
             def on_response(response):
                 # Only handle the response corresponding to the event we sent
                 if response.request_message_id == evt.message_id:
-                    print "## received_response: " + response.request_message_id + ", " + response.__class__.__name__
-                    print "## received_response_payload: " + response.payload
+                    print("## received_response: " + response.request_message_id + ", " + response.__class__.__name__)
+                    print("## received_response_payload: " + response.payload)
                     client_response_message_request[0] = response.request_message_id
 
             rcb.on_response = on_response
@@ -169,14 +172,14 @@ class WilcardPerformanceTest(BaseClientTest):
 
             ecb = EventCallback()
             def on_event(event):
-                print "## received event: " + event.destination_topic + ", " + event.message_id
+                print("## received event: " + event.destination_topic + ", " + event.message_id)
                 client_event_message.append(event.message_id)
 
             ecb.on_event = on_event
             client.add_event_callback("/test/#", ecb)
 
             # Send our event
-            print "## Sending event: " + evt.destination_topic + ", " + evt.message_id
+            print("## Sending event: " + evt.destination_topic + ", " + evt.message_id)
             evt.payload = "Unit test payload"
             client.send_event(evt)
 

@@ -1,7 +1,10 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from threading import Condition
 from dxlclient import UuidGenerator, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest, atomize
 from nose.plugins.attrib import attr
+from six.moves import range
 
 @attr('system')
 class EventTests(BaseClientTest):
@@ -64,8 +67,8 @@ class EventTests(BaseClientTest):
                             self.fail("Event wait timeout.")
 
                 self.assertEqual(0, len(self.outstanding_events))
-                print "Events test: PASSED"
+                print("Events test: PASSED")
 
-            except Exception, ex:
-                print ex.message
+            except Exception as ex:
+                print(ex.message)
                 raise ex

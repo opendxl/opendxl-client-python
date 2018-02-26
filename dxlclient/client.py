@@ -2,6 +2,7 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+from __future__ import absolute_import
 import threading
 import logging
 import ssl
@@ -21,7 +22,7 @@ from dxlclient._thread_pool import ThreadPool
 from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
-from _dxl_utils import DxlUtils
+from ._dxl_utils import DxlUtils
 
 __all__ = [
     # Callbacks
@@ -828,7 +829,7 @@ class DxlClient(_BaseObject):
 
         :param topic: The topic to subscribe to
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
         self._subscriptions_lock.acquire()
         try:
             if topic not in self._subscriptions:
@@ -839,7 +840,7 @@ class DxlClient(_BaseObject):
                         self._wait_packet_acked(result, mid,
                                                 "subscription to " + topic)
         finally:
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
             self._subscriptions_lock.release()
 
     def unsubscribe(self, topic):
@@ -850,7 +851,7 @@ class DxlClient(_BaseObject):
 
         :param topic: The topic to unsubscribe from
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
         self._subscriptions_lock.acquire()
         try:
             if topic in self._subscriptions:
@@ -862,7 +863,7 @@ class DxlClient(_BaseObject):
         finally:
             if topic in self._subscriptions:
                 self._subscriptions.remove(topic)
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
             self._subscriptions_lock.release()
 
     def _wait_packet_acked(self, result, mid, description):
@@ -931,12 +932,12 @@ class DxlClient(_BaseObject):
 
         See :func:`subscribe` for more information on adding subscriptions
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
         self._subscriptions_lock.acquire()
         try:
             return tuple(self._subscriptions)
         finally:
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
             self._subscriptions_lock.release()
 
     def sync_request(self, request, timeout=_DEFAULT_WAIT):

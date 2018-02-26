@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -5,6 +7,7 @@ import sys
 from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
 from dxlclient.message import Event
+from six.moves import input
 
 # Import common logging and configuration
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -32,9 +35,9 @@ try:
 
         # Prompt user for input to publish DXL Events
         while True:
-            print "   Enter 1 to publish a DXL Event"
-            print "   Enter 9 to quit"
-            input = raw_input("   Enter value: ")
+            print("   Enter 1 to publish a DXL Event")
+            print("   Enter 9 to quit")
+            input = input("   Enter value: ")
 
             try:
                 option = int(input)

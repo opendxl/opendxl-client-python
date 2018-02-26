@@ -5,6 +5,7 @@
 
 # Run with nosetests dxlclient.test.test_cli
 
+from __future__ import absolute_import
 import base64
 import datetime
 import io
@@ -23,6 +24,7 @@ import requests_mock
 
 from dxlclient import DxlUtils
 from dxlclient._cli import cli_run
+from six.moves import range
 
 
 def command_args(args):

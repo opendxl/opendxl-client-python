@@ -3,6 +3,7 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+from __future__ import absolute_import
 import re
 import socket
 import datetime
@@ -238,7 +239,7 @@ class Broker(_BaseObject):
             end = datetime.datetime.now()
             self._response_from_ip_address = False
             self._response_time = (end - start).total_seconds()
-        except socket.error, msg:
+        except socket.error as msg:
             if self._ip_address:
                 try:
                     start = datetime.datetime.now()
@@ -246,7 +247,7 @@ class Broker(_BaseObject):
                     end = datetime.datetime.now()
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
-                except socket.error, msg:
+                except socket.error as msg:
                     logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
             else:
                 logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
@@ -266,6 +267,6 @@ class Broker(_BaseObject):
             port = int(input)
             if port < 1 or port > 65535:
                 res = False
-        except Exception, e:
+        except Exception as e:
             res = False
         return res

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 
 from dxlclient import ErrorResponse, Response
@@ -59,7 +60,7 @@ class TestService(RequestCallback):
         def run_task():
             try:
                 self.m_client.send_response(response)
-            except Exception, e:
+            except Exception as e:
                 logging.info(e.message)
                 raise e
 

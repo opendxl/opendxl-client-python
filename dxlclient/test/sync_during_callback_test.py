@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import time
 from dxlclient import UuidGenerator, Request, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest
@@ -24,7 +25,7 @@ class TestSyncDuringCallback(BaseClientTest):
                 try:
                     req = Request(destination_topic=req_topic)
                     client.sync_request(req)
-                except Exception, e:
+                except Exception as e:
                     self.exceptions.append(e)
                     raise e
 

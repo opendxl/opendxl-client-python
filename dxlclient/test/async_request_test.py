@@ -1,8 +1,11 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from threading import Condition
 from dxlclient.test.test_service import TestService
 from dxlclient import UuidGenerator, Request, ResponseCallback, ServiceRegistrationInfo
 from dxlclient.test.base_test import BaseClientTest, atomize
 from nose.plugins.attrib import attr
+from six.moves import range
 
 
 class AsyncRequestTests(BaseClientTest):
@@ -85,8 +88,8 @@ class AsyncRequestTests(BaseClientTest):
 
                 # Make sure there are no outstanding requests
                 self.assertEqual(0, len(self.outstanding_requests))
-                print "Async request test: PASSED"
+                print("Async request test: PASSED")
 
-            except Exception, ex:
-                print ex.message
+            except Exception as ex:
+                print(ex.message)
                 raise ex

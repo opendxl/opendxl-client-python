@@ -1,6 +1,8 @@
 # This sample demonstrates how to register a DXL service to receive Request
 # messages and send Response messages back to an invoking client.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -39,7 +41,7 @@ with DxlClient(config) as client:
     class MyRequestCallback(RequestCallback):
         def on_request(self, request):
             # Extract information from request
-            print "Service received request payload: " + request.payload.decode()
+            print("Service received request payload: " + request.payload.decode())
             # Create the response message
             res = Response(request)
             # Populate the response payload
@@ -71,4 +73,4 @@ with DxlClient(config) as client:
 
     # Extract information from the response (if an error did not occur)
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
-        print "Client received response payload: " + res.payload.decode()
+        print("Client received response payload: " + res.payload.decode())

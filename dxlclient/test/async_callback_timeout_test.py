@@ -1,8 +1,11 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 from nose.plugins.attrib import attr
 from dxlclient import ResponseCallback, UuidGenerator, ServiceRegistrationInfo, Request
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
+from six.moves import range
 
 
 class AsyncCallbackTimeoutTest(BaseClientTest):
@@ -48,7 +51,7 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
             self.assertEquals(11, async_callback_count)
 
             for i in range(0, 20):
-                print "asyncCallbackCount = " + str(client._get_async_callback_count())
+                print("asyncCallbackCount = " + str(client._get_async_callback_count()))
                 time.sleep(1)
                 req = Request(destination_topic=req_topic)
                 client.async_request(req, cb)

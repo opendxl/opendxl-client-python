@@ -3,13 +3,15 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+from __future__ import absolute_import
 import traceback
-from Queue import Queue
+from six.moves.queue import Queue
 from threading import Thread
 import logging
 
 from dxlclient import _BaseObject, _ObjectTracker
 from dxlclient._uuid_generator import UuidGenerator
+from six.moves import range
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from threading import Condition
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
@@ -42,12 +44,12 @@ class MessagePayloadTest(BaseClientTest):
 
                 with self.request_complete_condition:
                     try:
-                        self.assertEquals(unpacker.next(), self.TEST_STRING)
-                        self.assertEquals(unpacker.next(), self.TEST_BYTE)
-                        self.assertEquals(unpacker.next(), self.TEST_INT)
+                        self.assertEquals(next(unpacker), self.TEST_STRING)
+                        self.assertEquals(next(unpacker), self.TEST_BYTE)
+                        self.assertEquals(next(unpacker), self.TEST_INT)
                         self.received_request = True
-                    except Exception, e:
-                        print e.message
+                    except Exception as e:
+                        print(e.message)
                     self.request_complete_condition.notify_all()
 
             request_callback = RequestCallback()

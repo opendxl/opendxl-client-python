@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import threading
 import time
 from threading import Condition
@@ -6,6 +8,7 @@ from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResp
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
 from nose.plugins.attrib import attr
+from six.moves import range
 
 @attr('system')
 class DxlClientTest (BaseClientTest):

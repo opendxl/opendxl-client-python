@@ -8,12 +8,14 @@ Helpers for crypto operations used by the cli tools - e.g., for creating
 certificate requests and private keys
 """
 
+from __future__ import absolute_import
 import logging
 
 from asn1crypto import x509, pem, csr
 from oscrypto import asymmetric
 
 from dxlclient import DxlUtils
+from six.moves import map
 
 logger = logging.getLogger(__name__)
 
@@ -279,8 +281,8 @@ class _CertificateRequest(object):  # pylint: disable=too-few-public-methods
             "subject": x509_subject,
             "subject_pk_info": public_key.asn1,
             "attributes": [{"type": u"extension_request",
-                            "values": [map(self._create_extension,
-                                           extensions)]}]})
+                            "values": [list(map(self._create_extension,
+                                           extensions))]}]})
 
     @staticmethod
     def _create_extension(extension):

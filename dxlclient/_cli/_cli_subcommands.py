@@ -5,6 +5,8 @@
 
 """Subcommand classes and helpers for the cli"""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import abc
 import argparse
 import getpass
@@ -100,7 +102,7 @@ def _get_value_from_prompt(title, confirm=False):
         confirm_value = getpass.getpass("Confirm {}:".format(title)) \
             if confirm else value
         if value != confirm_value:
-            print("Values for {} do not match. Try again.".format(title))
+            print(("Values for {} do not match. Try again.".format(title)))
         else:
             break
     return value

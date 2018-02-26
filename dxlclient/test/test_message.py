@@ -5,6 +5,7 @@
 
 # Run with python -m unittest dxlclient.test.test_message
 
+from __future__ import absolute_import
 import unittest
 
 from dxlclient import Message

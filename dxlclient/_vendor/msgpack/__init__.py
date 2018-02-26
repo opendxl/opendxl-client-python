@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import absolute_import
 from msgpack._version import version
 from msgpack.exceptions import *
 

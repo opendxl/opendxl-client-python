@@ -5,16 +5,18 @@
 
 # Run with python -m unittest dxlclient.test.test_dxlclient
 
+from __future__ import absolute_import
 import unittest
 import time
 import threading
 
-from base_test import BaseClientTest
+from .base_test import BaseClientTest
 import io
 from nose.plugins.attrib import attr
 from parameterized import parameterized
 from mock import Mock, patch
 from textwrap import dedent
+import six.moves.builtins
 import __builtin__
 import paho.mqtt.client as mqtt # pylint: disable=import-error
 

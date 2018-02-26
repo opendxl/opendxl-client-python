@@ -1,9 +1,11 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from threading import Condition
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
 from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, Request, ErrorResponse
-from thread_executor import ThreadRunExecutor
+from .thread_executor import ThreadRunExecutor
 
 @attr('system')
 class SyncRequestTests(BaseClientTest):
@@ -50,10 +52,10 @@ class SyncRequestTests(BaseClientTest):
                     with self.response_count_condition:
                         self.response_count += 1
                         if self.response_count % 100 == 0:
-                            print self.response_count
+                            print(self.response_count)
                         self.response_count_condition.notify_all()
-                except Exception, e:
-                    print e.message
+                except Exception as e:
+                    print(e.message)
                     raise e
 
             executor.execute(run)

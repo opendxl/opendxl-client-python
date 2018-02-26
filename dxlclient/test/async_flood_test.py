@@ -1,9 +1,12 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 from threading import Condition
 from nose.plugins.attrib import attr
+from six.moves import range
 
 
 #
@@ -47,8 +50,8 @@ class AsyncFloodTest(BaseClientTest):
                     resp = Response(rq)
                     resp.payload = rq.payload
                     client.send_response(resp)
-                except Exception, e:
-                    print e.message
+                except Exception as e:
+                    print(e.message)
 
             req_callback = RequestCallback()
             req_callback.on_request = my_request_callback
@@ -62,14 +65,14 @@ class AsyncFloodTest(BaseClientTest):
                 def my_response_callback(response):
                     # print "response"
                     if response.message_type == Message.MESSAGE_TYPE_ERROR:
-                        print "Received error response: " + response._error_response
+                        print("Received error response: " + response._error_response)
                         with self.resp_condition:
                             self.error_count += 1
                             self.resp_condition.notify_all()
                     else:
                         with self.resp_condition:
                             if self.response_count % 10 == 0:
-                                print "Received request " + str(self.response_count)
+                                print("Received request " + str(self.response_count))
                             self.response_count += 1
                             self.resp_condition.notify_all()
 
@@ -80,7 +83,7 @@ class AsyncFloodTest(BaseClientTest):
 
                 for i in range(0, self.REQUEST_COUNT):
                     if i % 100 == 0:
-                        print "Sent: " + str(i)
+                        print("Sent: " + str(i))
 
                     request = Request(channel)
                     pl = str(i)

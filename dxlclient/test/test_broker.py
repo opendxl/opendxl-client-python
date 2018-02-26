@@ -5,6 +5,7 @@
 
 # Run with python -m unittest dxlclient.test.test_broker
 
+from __future__ import absolute_import
 import unittest
 import socket
 from mock import patch, ANY

@@ -8,11 +8,13 @@
 # openweather_common.py must be edited to include the OpenWeatherMap API
 # key (see http://openweathermap.org/appid)
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
 import time
-import urllib2
+import six.moves.urllib.request, six.moves.urllib.error, six.moves.urllib.parse
 
 from dxlclient.callbacks import RequestCallback
 from dxlclient.client import DxlClient
@@ -55,10 +57,10 @@ with DxlClient(config) as client:
                 logger.info("Service received request payload: " + query)
 
                 # Send HTTP request to OpenWeatherMap
-                req = urllib2.Request(
+                req = six.moves.urllib.request.Request(
                     CURRENT_WEATHER_URL.format(query, API_KEY), None,
                     {'Content-Type': 'text/json'})
-                f = urllib2.urlopen(req)
+                f = six.moves.urllib.request.urlopen(req)
                 weather_response = f.read()
                 f.close()
 
@@ -70,7 +72,7 @@ with DxlClient(config) as client:
                 client.send_response(response)
 
             except Exception as ex:
-                print str(ex)
+                print(str(ex))
                 # Send error response
                 client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
 

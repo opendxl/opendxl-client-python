@@ -2,11 +2,12 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+from __future__ import absolute_import
 from collections import OrderedDict
 import logging
 from os import path
 import threading
-from Queue import Queue
+from six.moves.queue import Queue
 
 from configobj import ConfigObj
 
@@ -54,7 +55,7 @@ def _get_brokers(broker_list_json):
     """
     try:
         return _get_brokers_from_list(broker_list_json)
-    except Exception, broker_error:
+    except Exception as broker_error:
         raise BrokerListError("Broker list is not a valid JSON: " + str(broker_error))
 
 ################################################################################
