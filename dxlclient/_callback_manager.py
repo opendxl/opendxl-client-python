@@ -4,6 +4,7 @@
 ################################################################################
 
 from __future__ import absolute_import
+import inspect
 import threading
 import types
 
@@ -19,7 +20,7 @@ def _has_wildcard(channel_name):
     :param channel_name: The channel name
     :return: Whether the channel has a wildcard
     """
-    if not  isinstance(channel_name, str):
+    if not isinstance(channel_name, str):
         raise ValueError("Channel name should be str class")
     return channel_name and channel_name[-1] == '#'
 
@@ -44,7 +45,7 @@ class _CallbackManager(_BaseObject):
         if callback is None:
             raise ValueError("Missing callback argument")
         # Check if the provided eventCallback is a class
-        if isinstance(callback, (type, type)):
+        if inspect.isclass(callback):
             if not issubclass(callback, MessageCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -215,7 +216,7 @@ class _RequestCallbackManager(_CallbackManager):
         """
         super(_RequestCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, type)):
+        if inspect.isclass(callback):
             if not issubclass(callback, RequestCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -231,7 +232,7 @@ class _RequestCallbackManager(_CallbackManager):
         :param request: {@link dxlclient.request.Request} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(request_callback, (type, type)):
+        if inspect.isclass(request_callback):
             callback = request_callback()
             callback.on_request(request)
         # Not a class, but an instance
@@ -252,7 +253,7 @@ class _ResponseCallbackManager(_CallbackManager):
         """
         super(_ResponseCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, type)):
+        if inspect.isclass(callback):
             if not issubclass(callback, ResponseCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -268,7 +269,7 @@ class _ResponseCallbackManager(_CallbackManager):
         :param response: {@link dxlclient.response.Response} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(response_callback, (type, type)):
+        if inspect.isclass(response_callback):
             callback = response_callback()
             callback.on_response(response)
         # Not a class, but an instance
@@ -289,7 +290,7 @@ class _EventCallbackManager(_CallbackManager):
         """
         super(_EventCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, type)):
+        if inspect.isclass(callback):
             if not issubclass(callback, EventCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -305,7 +306,7 @@ class _EventCallbackManager(_CallbackManager):
         :param event: {@link dxlclient.event.Event} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(event_callback, (type, type)):
+        if inspect.isclass(event_callback):
             callback = event_callback()
             callback.on_event(event)
         # Not a class, but an instance
