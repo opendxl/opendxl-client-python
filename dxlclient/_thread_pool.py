@@ -5,13 +5,18 @@
 
 from __future__ import absolute_import
 import traceback
-from six.moves.queue import Queue
 from threading import Thread
 import logging
+import sys
 
 from dxlclient import _BaseObject, _ObjectTracker
 from dxlclient._uuid_generator import UuidGenerator
 from six.moves import range
+
+if sys.version_info[0] < 3:
+    from Queue import Queue
+else:
+    from queue import Queue
 
 logger = logging.getLogger(__name__)
 

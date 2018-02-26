@@ -6,8 +6,13 @@ from __future__ import absolute_import
 from collections import OrderedDict
 import logging
 from os import path
+import sys
 import threading
-from six.moves.queue import Queue
+
+if sys.version_info[0] < 3:
+    from Queue import Queue
+else:
+    from queue import Queue
 
 from configobj import ConfigObj
 
