@@ -16,15 +16,11 @@
 This is an MQTT v3.1 client module. MQTT is a lightweight pub/sub messaging
 protocol that is easy to implement and suitable for low powered devices.
 """
-from __future__ import absolute_import
-from __future__ import print_function
 import errno
 import platform
 import random
 import select
 import socket
-import six
-from six.moves import range
 HAVE_SSL = True
 try:
     import ssl
@@ -63,6 +59,7 @@ if sys.version_info[0] < 3:
 else:
     PROTOCOL_NAMEv31 = b"MQIsdp"
     PROTOCOL_NAMEv311 = b"MQTT"
+    unicode = str
 
 PROTOCOL_VERSION = 3
 
@@ -1602,7 +1599,7 @@ class Client(object):
             elif isinstance(data, str):
                 pack_format = "!H" + str(len(data)) + "s"
                 packet.extend(struct.pack(pack_format, len(data), data))
-            elif isinstance(data, six.text_type):
+            elif isinstance(data, unicode):
                 udata = data.encode('utf-8')
                 pack_format = "!H" + str(len(udata)) + "s"
                 packet.extend(struct.pack(pack_format, len(udata), udata))
@@ -1655,7 +1652,7 @@ class Client(object):
                     packet.extend(struct.pack(pack_format, upayload))
             elif isinstance(payload, bytearray):
                 packet.extend(payload)
-            elif isinstance(payload, six.text_type):
+            elif isinstance(payload, unicode):
                     upayload = payload.encode('utf-8')
                     pack_format = str(len(upayload)) + "s"
                     packet.extend(struct.pack(pack_format, upayload))

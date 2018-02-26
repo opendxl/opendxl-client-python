@@ -19,7 +19,6 @@ situation where you have a single/multiple messages you want to publish to a
 broker, then disconnect and nothing else is required.
 """
 
-from __future__ import absolute_import
 import paho.mqtt.client as mqtt
 
 

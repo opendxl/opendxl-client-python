@@ -1,12 +1,8 @@
 """Fallback pure Python implementation of msgpack"""
 
-from __future__ import absolute_import
 import sys
 import array
 import struct
-import six
-from six.moves import map
-from six.moves import range
 
 if sys.version_info[0] == 3:
     PY3 = True
@@ -14,13 +10,13 @@ if sys.version_info[0] == 3:
     Unicode = str
     xrange = range
     def dict_iteritems(d):
-        return list(d.items())
+        return d.items()
 else:
     PY3 = False
-    int_types = six.integer_types
-    Unicode = six.text_type
+    int_types = (int, long)
+    Unicode = unicode
     def dict_iteritems(d):
-        return six.iteritems(d)
+        return d.iteritems()
 
 
 if hasattr(sys, 'pypy_version_info'):
@@ -397,12 +393,12 @@ class Unpacker(object):
         # TODO should we eliminate the recursion?
         if typ == TYPE_ARRAY:
             if execute == EX_SKIP:
-                for i in range(n):
+                for i in xrange(n):
                     # TODO check whether we need to call `list_hook`
                     self._fb_unpack(EX_SKIP, write_bytes)
                 return
             ret = newlist_hint(n)
-            for i in range(n):
+            for i in xrange(n):
                 ret.append(self._fb_unpack(EX_CONSTRUCT, write_bytes))
             if self._list_hook is not None:
                 ret = self._list_hook(ret)
@@ -410,7 +406,7 @@ class Unpacker(object):
             return ret if self._use_list else tuple(ret)
         if typ == TYPE_MAP:
             if execute == EX_SKIP:
-                for i in range(n):
+                for i in xrange(n):
                     # TODO check whether we need to call hooks
                     self._fb_unpack(EX_SKIP, write_bytes)
                     self._fb_unpack(EX_SKIP, write_bytes)
@@ -419,10 +415,10 @@ class Unpacker(object):
                 ret = self._object_pairs_hook(
                     (self._fb_unpack(EX_CONSTRUCT, write_bytes),
                      self._fb_unpack(EX_CONSTRUCT, write_bytes))
-                    for _ in range(n))
+                    for _ in xrange(n))
             else:
                 ret = {}
-                for _ in range(n):
+                for _ in xrange(n):
                     key = self._fb_unpack(EX_CONSTRUCT, write_bytes)
                     ret[key] = self._fb_unpack(EX_CONSTRUCT, write_bytes)
                 if self._object_hook is not None:
@@ -606,7 +602,7 @@ class Packer(object):
             if isinstance(obj, (list, tuple)):
                 n = len(obj)
                 self._fb_pack_array_header(n)
-                for i in range(n):
+                for i in xrange(n):
                     self._pack(obj[i], nest_limit - 1)
                 return
             if isinstance(obj, dict):
