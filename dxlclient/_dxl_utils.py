@@ -121,8 +121,8 @@ class DxlUtils(object):
         :param int mode: permissions mode to use for the file
         """
         DxlUtils.makedirs(os.path.dirname(filename))
-        with os.fdopen(os.open(filename,
-                               os.O_WRONLY | os.O_CREAT, mode), 'w') as handle:
+        with os.fdopen(os.open(filename, os.O_WRONLY | os.O_CREAT, mode),
+                       'wb' if isinstance(data, bytes) else 'w') as handle:
             handle.write(data)
 
 
