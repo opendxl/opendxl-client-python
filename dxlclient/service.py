@@ -15,7 +15,7 @@ from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.callbacks import RequestCallback
 from dxlclient.exceptions import DxlException
 from dxlclient.message import Message, Request, ErrorResponse
-import six
+from ._compat import iter_dict_items, string
 
 logger = logging.getLogger(__name__)
 
@@ -239,7 +239,7 @@ class ServiceRegistrationInfo(_BaseObject):
             raise ValueError("Channel and callback should be a dictionary")
         if not callbacks_by_topic:
             raise ValueError("Undefined channel")
-        for channel, callback in six.iteritems(callbacks_by_topic):
+        for channel, callback in iter_dict_items(callbacks_by_topic):
             self.add_topic(channel, callback)
 
     @property
@@ -359,7 +359,7 @@ class _ServiceRegistrationHandler(_BaseObject):
         if not service_ref:
             raise DxlException("Service no longer valid")
 
-        for channel, callbacks in six.iteritems(service_ref._callbacks_by_topic):
+        for channel, callbacks in iter_dict_items(service_ref._callbacks_by_topic):
             for callback in callbacks:
                 self.request_callbacks.add_callback(channel, callback)
 
@@ -378,7 +378,7 @@ class _ServiceRegistrationHandler(_BaseObject):
             if not self._destroyed:
                 info = self.service_weak_reference()
                 if info:
-                    for channel, callbacks in six.iteritems(info._callbacks_by_topic):
+                    for channel, callbacks in iter_dict_items(info._callbacks_by_topic):
                         for callback in callbacks:
                             self.request_callbacks.remove_callback(channel, callback)
                     info._destroy(unregister)
@@ -619,7 +619,7 @@ class _ServiceManager(RequestCallback):
         :param instanceId: The instance ID of the service to remove.
         :return: None.
         """
-        if not isinstance(service_id, (type, six.string_types)):
+        if not isinstance(service_id, string):
             raise ValueError("Expected service id")
 
         if not service_id:

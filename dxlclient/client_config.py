@@ -6,13 +6,7 @@ from __future__ import absolute_import
 from collections import OrderedDict
 import logging
 from os import path
-import sys
 import threading
-
-if sys.version_info[0] < 3:
-    from Queue import Queue
-else:
-    from queue import Queue
 
 from configobj import ConfigObj
 
@@ -20,6 +14,8 @@ from dxlclient import _BaseObject, DxlUtils
 from dxlclient.broker import Broker
 from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import BrokerListError
+
+from ._compat import Queue
 
 ################################################################################
 #

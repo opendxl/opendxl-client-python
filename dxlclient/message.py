@@ -47,7 +47,7 @@ from abc import ABCMeta, abstractproperty, abstractmethod
 from dxlclient import _BaseObject
 from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import DxlException
-import six
+from ._compat import iter_dict_items
 
 # pylint: disable=too-many-instance-attributes
 class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
@@ -281,7 +281,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         """
         # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
         array = []
-        for key, value in six.iteritems(self._other_fields):
+        for key, value in iter_dict_items(self._other_fields):
             array.extend((key.encode('utf8'), value.encode('utf8')))
         buf.write(packer.pack(array))
 
