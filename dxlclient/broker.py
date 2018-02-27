@@ -248,9 +248,11 @@ class Broker(_BaseObject):
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
                 except socket.error as msg:
-                    logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
+                    logger.error("Socket could not be created. Error Code: " +
+                                 str(msg.errno) + ". Message: " + str(msg) + ".")
             else:
-                logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
+                logger.error("Socket could not be created. Error Code: " +
+                             str(msg.errno) + ". Message: " + str(msg) + ".")
         finally:
             if broker_s is not None:
                 broker_s.close()
