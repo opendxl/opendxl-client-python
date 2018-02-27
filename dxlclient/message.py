@@ -50,7 +50,7 @@ from dxlclient.exceptions import DxlException
 import six
 
 # pylint: disable=too-many-instance-attributes
-class Message(six.with_metaclass(ABCMeta, _BaseObject)):
+class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
     """
     The base class for the different Data Exchange Layer (DXL) message types
     """

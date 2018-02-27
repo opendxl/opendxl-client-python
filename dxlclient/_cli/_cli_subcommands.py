@@ -7,14 +7,12 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
-import abc
+from abc import ABCMeta, abstractproperty, abstractmethod
 import argparse
 import getpass
 import json
 import logging
 import os
-
-import six
 
 from dxlclient import Broker, DxlClientConfig
 from dxlclient._cli._crypto import X509Name, validate_cert_pem, \
@@ -357,12 +355,11 @@ def generate_csr_and_private_key(common_name, private_key_filename, args):
     return generator.csr
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Subcommand:  # pylint: disable=no-init
+class Subcommand(ABCMeta('ABC', (object,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
     """
     Abstract base class for cli subcommands
     """
-    @abc.abstractproperty
+    @abstractproperty
     def help(self):
         """
         Help text to display at the cli for the subcommand
@@ -370,7 +367,7 @@ class Subcommand:  # pylint: disable=no-init
         """
         pass
 
-    @abc.abstractproperty
+    @abstractproperty
     def name(self):
         """
         Name of the subcommand, used as the argument to identify the subcommand
@@ -402,7 +399,7 @@ class Subcommand:  # pylint: disable=no-init
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def execute(self, args):
         """
         Execution entry point for the subcommand. This method is called when
