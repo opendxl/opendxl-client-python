@@ -834,12 +834,14 @@ class Client(object):
             raise ValueError('Invalid topic.')
         if qos<0 or qos>2:
             raise ValueError('Invalid QoS level.')
-        if isinstance(payload, str) or isinstance(payload, bytearray):
+        if isinstance(payload, unicode):
+            local_payload = payload.encode('utf-8')
+        elif isinstance(payload, (bytes, bytearray)):
             local_payload = payload
-        elif isinstance(payload, int) or isinstance(payload, float):
-            local_payload = str(payload)
+        elif isinstance(payload, (int, float)):
+            local_payload = str(payload).encode('ascii')
         elif payload is None:
-            local_payload = None
+            local_payload = b''
         else:
             raise TypeError('payload must be a string, bytearray, int, float or None.')
 
@@ -1641,23 +1643,7 @@ class Client(object):
             # For message id
             packet.extend(struct.pack("!H", mid))
 
-        if payload is not None:
-            if isinstance(payload, str):
-                if sys.version_info[0] < 3:
-                    pack_format = str(len(payload)) + "s"
-                    packet.extend(struct.pack(pack_format, payload))
-                else:
-                    upayload = payload.encode('utf-8')
-                    pack_format = str(len(upayload)) + "s"
-                    packet.extend(struct.pack(pack_format, upayload))
-            elif isinstance(payload, bytearray):
-                packet.extend(payload)
-            elif isinstance(payload, unicode):
-                    upayload = payload.encode('utf-8')
-                    pack_format = str(len(upayload)) + "s"
-                    packet.extend(struct.pack(pack_format, upayload))
-            else:
-                raise TypeError('payload must be a string, unicode or a bytearray.')
+        packet.extend(payload)
 
         return self._packet_queue(PUBLISH, packet, mid, qos)
 
