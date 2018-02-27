@@ -829,7 +829,7 @@ class DxlClient(_BaseObject):
 
         :param topic: The topic to subscribe to
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
         self._subscriptions_lock.acquire()
         try:
             if topic not in self._subscriptions:
@@ -840,7 +840,7 @@ class DxlClient(_BaseObject):
                         self._wait_packet_acked(result, mid,
                                                 "subscription to " + topic)
         finally:
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
 
     def unsubscribe(self, topic):
@@ -851,7 +851,7 @@ class DxlClient(_BaseObject):
 
         :param topic: The topic to unsubscribe from
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
         self._subscriptions_lock.acquire()
         try:
             if topic in self._subscriptions:
@@ -863,7 +863,7 @@ class DxlClient(_BaseObject):
         finally:
             if topic in self._subscriptions:
                 self._subscriptions.remove(topic)
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
 
     def _wait_packet_acked(self, result, mid, description):
@@ -932,12 +932,12 @@ class DxlClient(_BaseObject):
 
         See :func:`subscribe` for more information on adding subscriptions
         """
-        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.__name__())
+        logger.debug("%s(): Waiting for Subscriptions lock...", DxlUtils.func_name())
         self._subscriptions_lock.acquire()
         try:
             return tuple(self._subscriptions)
         finally:
-            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.__name__())
+            logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
 
     def sync_request(self, request, timeout=_DEFAULT_WAIT):
