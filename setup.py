@@ -64,7 +64,7 @@ dist = setup(
     ],
 
     tests_require=[
-        "futures",
+        'futures; python_version == "2.7"',
         "mock",
         "nose",
         "parameterized",

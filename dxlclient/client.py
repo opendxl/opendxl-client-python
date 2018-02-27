@@ -766,7 +766,7 @@ class DxlClient(_BaseObject):
 
         if not self._current_broker:
             if latest_ex:
-                logger.error("Error during connect: %s", latest_ex.message)
+                logger.error("Error during connect: %s", latest_ex)
             if latest_ex_traceback:
                 logger.debug(latest_ex_traceback)
 

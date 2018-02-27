@@ -8,6 +8,7 @@
 from __future__ import absolute_import
 import unittest
 import time
+import sys
 import threading
 
 from .base_test import BaseClientTest
@@ -16,8 +17,12 @@ from nose.plugins.attrib import attr
 from parameterized import parameterized
 from mock import Mock, patch
 from textwrap import dedent
-import six.moves.builtins
-import __builtin__
+
+if sys.version_info[0] < 3:
+    import __builtin__
+    builtins = __builtin__
+else:
+    import builtins
 import paho.mqtt.client as mqtt # pylint: disable=import-error
 
 import dxlclient._global_settings
@@ -147,8 +152,8 @@ class DxlClientConfigTest(unittest.TestCase):
                                  private_key=get_dxl_private_key(),
                                  brokers=[])
         # Create mocked brokers
-        b1 = Mock()
-        b2 = Mock()
+        b1 = Broker('b1host')
+        b2 = Broker('b2host')
         b1._connect_to_broker = b2._connect_to_broker = Mock(return_value=True)
         # Add them to config
         config.brokers.append(b1)
@@ -170,8 +175,9 @@ class DxlClientConfigTest(unittest.TestCase):
         22cdcace-6e8f-11e5-29c0-005056aa56de=22cdcace-6e8f-11e5-29c0-005056aa56de;8883;dxl-broker-1;10.218.73.206
         """
 
-        with patch.object(__builtin__, 'open',
-                          return_value=io.BytesIO(dedent(read_data))) as mock_open, \
+        with patch.object(builtins, 'open',
+                          return_value=io.BytesIO(
+                              dedent(read_data).encode())) as mock_open, \
                 patch.object(os.path, 'isfile', return_value=True):
             client_config = DxlClientConfig.create_dxl_config_from_file("mock_file")
             self.assertEqual(client_config.cert_file, "certfile.pem")
@@ -195,8 +201,9 @@ class DxlClientConfigTest(unittest.TestCase):
         (CONFIG_DATA_NO_PK_OPTION,),
     ])
     def test_missing_certs_raises_exception(self, read_data):
-        with patch.object(__builtin__, 'open',
-                          return_value=io.BytesIO(dedent(read_data))), \
+        with patch.object(builtins, 'open',
+                          return_value=io.BytesIO(
+                              dedent(read_data).encode())), \
              patch.object(os.path, 'isfile', return_value=True):
             with self.assertRaises(ValueError):
                 DxlClientConfig.create_dxl_config_from_file("mock_file.cfg")
@@ -206,8 +213,9 @@ class DxlClientConfigTest(unittest.TestCase):
         (CONFIG_DATA_NO_BROKERS_OPTION,),
     ])
     def test_missing_brokers_doesnt_raise_exceptions(self, read_data):
-        with patch.object(__builtin__, 'open',
-                          return_value=io.BytesIO(dedent(read_data))), \
+        with patch.object(builtins, 'open',
+                          return_value=io.BytesIO(
+                              dedent(read_data).encode())), \
              patch.object(os.path, 'isfile', return_value=True):
             client_config = DxlClientConfig.create_dxl_config_from_file(
                 "mock_file.cfg")
@@ -235,7 +243,7 @@ class DxlClientConfigTest(unittest.TestCase):
             "myid1 = myid1;8001;myhost1;10.10.100.1",
             "myid2 = myid2;8002;myhost2;10.10.100.2{}".format(os.linesep)])
         byte_stream = self.CapturedBytesIO()
-        with patch.object(__builtin__, 'open',
+        with patch.object(builtins, 'open',
                           return_value=byte_stream) as mock_open:
             config = DxlClientConfig(
                 "mycabundle.pem",
@@ -246,7 +254,7 @@ class DxlClientConfigTest(unittest.TestCase):
                  Broker("myhost2", "myid2", "10.10.100.2",
                         8002)])
             config.write("myfile.txt")
-        self.assertEqual(expected_data, byte_stream.bytes_captured)
+        self.assertEqual(expected_data.encode(), byte_stream.bytes_captured)
         mock_open.assert_called_with("myfile.txt", "wb")
 
     def test_write_modified_config(self):
@@ -275,8 +283,8 @@ class DxlClientConfigTest(unittest.TestCase):
             "myid8 = myid8;8008;myhost8;10.10.100.8",
             "myid9 = myid9;8009;myhost9;10.10.100.9{}".format(os.linesep)])
 
-        with patch.object(__builtin__, 'open',
-                          return_value=io.BytesIO(initial_data)), \
+        with patch.object(builtins, 'open',
+                          return_value=io.BytesIO(initial_data.encode())), \
                 patch.object(os.path, 'isfile', return_value=True):
             config = DxlClientConfig.create_dxl_config_from_file(
                 "mock_file.cfg")
@@ -288,10 +296,11 @@ class DxlClientConfigTest(unittest.TestCase):
                                      "10.10.100.9",
                                      8009))
         byte_stream = self.CapturedBytesIO()
-        with patch.object(__builtin__, 'open',
+        with patch.object(builtins, 'open',
                           return_value=byte_stream) as mock_open:
             config.write("newfile.txt")
-        self.assertEqual(expected_data_after_mods, byte_stream.bytes_captured)
+        self.assertEqual(expected_data_after_mods.encode(),
+                         byte_stream.bytes_captured)
         mock_open.assert_called_with("newfile.txt", "wb")
 
 
