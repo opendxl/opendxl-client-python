@@ -221,11 +221,11 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
 
         :param unpacker: Unpacker object.
         """
-        self._message_id = next(unpacker)
-        self._source_client_id = next(unpacker)
-        self._source_broker_id = next(unpacker)
-        self._broker_ids = next(unpacker)
-        self._client_ids = next(unpacker)
+        self._message_id = self._unpack_next_string(unpacker)
+        self._source_client_id = self._unpack_next_string(unpacker)
+        self._source_broker_id = self._unpack_next_string(unpacker)
+        self._broker_ids = self._unpack_next_string_array(unpacker)
+        self._client_ids = self._unpack_next_string_array(unpacker)
         self._payload = next(unpacker)
 
     @property
@@ -318,8 +318,8 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
 
         :param unpacker: The unpacker
         """
-        self._source_tenant_guid = next(unpacker)
-        self._destination_tenant_guids = next(unpacker)
+        self._source_tenant_guid = self._unpack_next_string(unpacker)
+        self._destination_tenant_guids = self._unpack_next_string_array(unpacker)
 
     def _to_bytes(self):
         """
@@ -380,6 +380,13 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
 
         raise DxlException("Unknown message type: " + message_type)
 
+    @staticmethod
+    def _unpack_next_string(unpacker):
+        return next(unpacker).decode('utf8')
+
+    @staticmethod
+    def _unpack_next_string_array(unpacker):
+        return [x.decode('utf8') for x in next(unpacker)]
 
 class Request(Message):
     """
@@ -450,8 +457,8 @@ class Request(Message):
         :param unpacker: Unpacker object.
         """
         super(Request, self)._unpack_message(unpacker)
-        self._reply_to_topic = next(unpacker)
-        self._service_id = next(unpacker)
+        self._reply_to_topic = self._unpack_next_string(unpacker)
+        self._service_id = self._unpack_next_string(unpacker)
 
 
 class Response(Message):
@@ -543,8 +550,8 @@ class Response(Message):
         :param unpacker: Unpacker object.
         """
         super(Response, self)._unpack_message(unpacker)
-        self._request_message_id = next(unpacker)
-        self._service_id = next(unpacker)
+        self._request_message_id = self._unpack_next_string(unpacker)
+        self._service_id = self._unpack_next_string(unpacker)
 
 
 class Event(Message):
@@ -648,4 +655,4 @@ class ErrorResponse(Response):
         """
         super(ErrorResponse, self)._unpack_message(unpacker)
         self._error_code = next(unpacker)
-        self._error_message = unpacker.next().decode('utf8')
+        self._error_message = self._unpack_next_string(unpacker)
