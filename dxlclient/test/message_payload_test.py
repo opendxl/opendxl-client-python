@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from io import BytesIO
+import time
 from threading import Condition
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
@@ -7,7 +9,7 @@ from dxlclient.test.test_service import TestService
 from nose.plugins.attrib import attr
 from dxlclient._vendor.msgpack.fallback import Unpacker
 from dxlclient._vendor.msgpack.fallback import Packer
-import StringIO
+
 
 @attr('system')
 class MessagePayloadTest(BaseClientTest):
@@ -20,7 +22,7 @@ class MessagePayloadTest(BaseClientTest):
     # A test integer
     TEST_INT = 123456
 
-    received_request = False
+    request_received = None
     request_complete_condition = Condition()
 
     # Tests whether payloads can be successfully delivered from a client to the server.
@@ -35,19 +37,14 @@ class MessagePayloadTest(BaseClientTest):
             test_service = TestService(server, 1)
             server.connect()
             topic = UuidGenerator.generate_id_as_string()
-            reg_info = ServiceRegistrationInfo(server, "message_payload_runner_service")
+            reg_info = ServiceRegistrationInfo(server,
+                                               "message_payload_runner_service")
 
             # callback definition
             def on_request(request):
-
-                unpacker = Unpacker(file_like=StringIO.StringIO(request.payload))
-
                 with self.request_complete_condition:
                     try:
-                        self.assertEquals(next(unpacker), self.TEST_STRING)
-                        self.assertEquals(next(unpacker), self.TEST_BYTE)
-                        self.assertEquals(next(unpacker), self.TEST_INT)
-                        self.received_request = True
+                        self.request_received = request
                     except Exception as e:
                         print(e.message)
                     self.request_complete_condition.notify_all()
@@ -70,9 +67,16 @@ class MessagePayloadTest(BaseClientTest):
                 request.payload += packer.pack(self.TEST_INT)
                 client.async_request(request, request_callback)
 
+                start = time.time()
+                # Wait until the request has been processed
                 with self.request_complete_condition:
-                    if not self.received_request:
-                        # Wait until the request has been processed
+                    while (time.time() - start < self.MAX_WAIT) and \
+                            not self.request_received:
                         self.request_complete_condition.wait(self.MAX_WAIT)
-                        if not self.received_request:
-                            self.fail("Request not received.")
+
+                self.assertIsNotNone(self.request_received)
+                unpacker = Unpacker(file_like=BytesIO(request.payload))
+                self.assertEquals(next(unpacker).decode('utf8'),
+                                  self.TEST_STRING)
+                self.assertEquals(next(unpacker), self.TEST_BYTE)
+                self.assertEquals(next(unpacker), self.TEST_INT)
