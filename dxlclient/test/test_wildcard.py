@@ -68,12 +68,13 @@ class WilcardPerformanceTest(BaseClientTest):
         event_count = [0]
         message_ids = set()
         PAYLOAD = UuidGenerator.generate_id_as_string()
+        PAYLOAD_AS_BYTES = PAYLOAD.encode()
         message_id_condition = Condition()
 
         cb = EventCallback()
 
         def on_event(event):
-            if event.payload == PAYLOAD:
+            if event.payload == PAYLOAD_AS_BYTES:
                 with message_id_condition:
                     event_count[0] += 1
                     message_ids.add(event.message_id)
@@ -100,7 +101,6 @@ class WilcardPerformanceTest(BaseClientTest):
             evt = Event(TOPIC_PREFIX + str(j % SUB_COUNT + (SUB_COUNT if not topic_exists else 0)))
             evt.payload = PAYLOAD
             client.send_event(evt)
-
 
         with message_id_condition:
             while len(message_ids) != SUB_COUNT * QUERY_MULTIPLIER \
