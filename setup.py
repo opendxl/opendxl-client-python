@@ -59,8 +59,7 @@ dist = setup(
         "asn1crypto",
         "configobj",
         "oscrypto",
-        "requests",
-        "six"
+        "requests"
     ],
 
     tests_require=[
