@@ -414,6 +414,6 @@ def validate_cert_pem(pem_text, message_on_exception=None):
         logger.error("%s. Reason: %s",
                      message_on_exception or
                      "Failed to validate certificate PEM",
-                     ex.message)
+                     ex)
         logger.debug("Certificate PEM: %s", pem_text)
         raise

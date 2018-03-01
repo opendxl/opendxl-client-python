@@ -768,8 +768,7 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
                                      broker["ipAddress"],
                                      broker["port"]) for broker in brokers]
         except Exception as ex:
-            logger.error("Failed to process broker list. Message: %s",
-                         ex.message)
+            logger.error("Failed to process broker list. Message: %s", ex)
             raise
 
     def execute(self, args):

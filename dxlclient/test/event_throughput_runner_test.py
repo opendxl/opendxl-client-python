@@ -162,7 +162,7 @@ class EventThroughputRunner(BaseClientTest):
                                 self.requests_end_time = time.time()
 
                 except Exception as e:
-                    logging.error(e.message)
+                    logging.error(e)
                     raise e
 
             executor.execute(run)

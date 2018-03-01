@@ -90,5 +90,5 @@ class AsyncRequestTests(BaseClientTest):
                 print("Async request test: PASSED")
 
             except Exception as ex:
-                print(ex.message)
+                print(ex)
                 raise ex

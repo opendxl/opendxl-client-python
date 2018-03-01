@@ -69,5 +69,5 @@ class EventTests(BaseClientTest):
                 print("Events test: PASSED")
 
             except Exception as ex:
-                print(ex.message)
+                print(ex)
                 raise ex

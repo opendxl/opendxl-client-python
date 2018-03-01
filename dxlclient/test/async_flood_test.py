@@ -50,7 +50,7 @@ class AsyncFloodTest(BaseClientTest):
                     resp.payload = rq.payload
                     client.send_response(resp)
                 except Exception as e:
-                    print(e.message)
+                    print(e)
 
             req_callback = RequestCallback()
             req_callback.on_request = my_request_callback
@@ -99,8 +99,6 @@ class AsyncFloodTest(BaseClientTest):
                         self.resp_condition.wait(5)
 
                 if self.error_count != 0:
-                    exc = Exception()
-                    exc.message = "Received an error response!"
-                    raise exc
+                    raise Exception("Received an error response!")
 
                 self.assertEquals(self.REQUEST_COUNT, self.response_count, "Did not receive all messages!")

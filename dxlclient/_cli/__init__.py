@@ -100,7 +100,7 @@ def cli_run():
     try:
         args.func(args)
     except Exception as ex:  # pylint: disable=broad-except
-        logger.error("Command failed. Message: %s", ex.message)
+        logger.error("Command failed. Message: %s", ex)
         if verbosity_level >= 2:
             raise
         else:

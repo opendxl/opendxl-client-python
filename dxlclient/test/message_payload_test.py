@@ -46,7 +46,7 @@ class MessagePayloadTest(BaseClientTest):
                     try:
                         self.request_received = request
                     except Exception as e:
-                        print(e.message)
+                        print(e)
                     self.request_complete_condition.notify_all()
 
             request_callback = RequestCallback()

@@ -55,7 +55,7 @@ class SyncRequestTests(BaseClientTest):
                             print(self.response_count)
                         self.response_count_condition.notify_all()
                 except Exception as e:
-                    print(e.message)
+                    print(e)
                     raise e
 
             executor.execute(run)

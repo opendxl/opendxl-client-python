@@ -193,7 +193,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
 
                 except Exception as e:
                     print(e)
-                    logging.info(e.message)
+                    logging.info(e)
                     raise e
             executor.execute(run)
 

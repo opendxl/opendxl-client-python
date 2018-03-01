@@ -61,7 +61,7 @@ class TestService(RequestCallback):
             try:
                 self.m_client.send_response(response)
             except Exception as e:
-                logging.info(e.message)
+                logging.info(e)
                 raise e
 
         self.m_executor.submit(run_task)
