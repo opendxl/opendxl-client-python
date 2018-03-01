@@ -111,7 +111,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
         output += "Average response time: " + str(self.cummulative_response_time /
                                                   (self.THREAD_COUNT * self.REQUEST_COUNT)) + "\n"
 
-        mid = (self.THREAD_COUNT * self.REQUEST_COUNT) / 2
+        mid = (self.THREAD_COUNT * self.REQUEST_COUNT) // 2
         self.response_times.sort()
         if (self.THREAD_COUNT * self.REQUEST_COUNT) % 2 == 0:
             median_response_time = self.response_times[mid] + self.response_times[mid-1] / 2
