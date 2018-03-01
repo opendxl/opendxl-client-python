@@ -8,13 +8,18 @@
 from __future__ import absolute_import
 import base64
 import datetime
-import io
 import json
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 import uuid
+
+if sys.version_info[0] < 3:
+    from io import BytesIO as NativeStringIO
+else:
+    from io import StringIO as NativeStringIO
 
 from asn1crypto import csr, pem, x509, algos
 from mock import patch
@@ -48,7 +53,7 @@ class _TempDir(object):
 
 class _CertificateRequest(object):
     def __init__(self, csr_file):
-        csr_bytes = slurp_file_into_string(csr_file)
+        csr_bytes = slurp_file_into_bytes(csr_file)
         _, _, der_bytes = pem.unarmor(csr_bytes)
         self.request = csr.CertificationRequest.load(der_bytes)
 
@@ -82,7 +87,7 @@ class _CertificateRequest(object):
 
 class _PrivateKey(object):
     def __init__(self, private_key_file, password=None):
-        private_key_bytes = slurp_file_into_string(private_key_file)
+        private_key_bytes = slurp_file_into_bytes(private_key_file)
         self.private_key = asymmetric.load_private_key(private_key_bytes,
                                                        password)
 
@@ -120,7 +125,7 @@ FAKE_CERTIFICATE = \
                           get_fake_public_key_asn1()}),
                   "signature_algorithm": algos.SignedDigestAlgorithm({
                       "algorithm": u"sha256_rsa"}),
-                  "signature_value": "fake"}).dump())
+                  "signature_value": b"fake"}).dump()).decode('utf8')
 
 FAKE_CSR = \
     pem.armor(
@@ -132,7 +137,7 @@ FAKE_CSR = \
                     "subject": _FAKE_SUBJECT,
                     "subject_pk_info": get_fake_public_key_asn1()}),
             "signature_algorithm": _SIGNATURE_ALGORITHM,
-            "signature": "fake"}).dump())
+            "signature": b"fake"}).dump()).decode('utf8')
 
 
 class CliTest(unittest.TestCase):
@@ -160,7 +165,7 @@ class CliTest(unittest.TestCase):
         ("",),
         ("?",)])
     def test_invalid_args_returns_error_code(self, value):
-        stderr_bytes = io.BytesIO()
+        stderr_bytes = NativeStringIO()
         with patch("dxlclient._cli.argparse.ArgumentParser.print_help"), \
                 patch("sys.argv", command_args(value)), \
                 patch("sys.stderr", new=stderr_bytes), \
@@ -314,27 +319,30 @@ class CliTest(unittest.TestCase):
 
             # Validate auth credentials sent in request
             expected_creds = "Basic {}".format(base64.b64encode(
-                "myuser:mypass"))
+                b"myuser:mypass").decode("utf8"))
             self.assertEqual(expected_creds, request.headers["Authorization"])
 
             # Validate csr saved to disk matches csr submitted for signing
-            csr_bytes_from_file = slurp_file_into_string(csr_file)
+            csr_bytes_from_file = slurp_file_into_bytes(csr_file)
             csr_bytes_in_request = flattened_query_params(request).get(
                 "csrString")
-            self.assertEqual(csr_bytes_from_file, csr_bytes_in_request)
+            self.assertEqual(csr_bytes_in_request.encode("utf8"),
+                             csr_bytes_from_file)
 
             # Validate CA bundle returned for request matches stored file
             ca_bundle_file = os.path.join(temp_dir, "ca-bundle.crt")
             self.assertTrue(os.path.exists(ca_bundle_file))
-            ca_bundle_from_file = slurp_file_into_string(ca_bundle_file)
-            self.assertEqual(ca_bundle_for_response, ca_bundle_from_file)
+            ca_bundle_from_file = slurp_file_into_bytes(ca_bundle_file)
+            self.assertEqual(ca_bundle_for_response.encode("utf8"),
+                             ca_bundle_from_file)
 
             # Validate client cert returned for request matches stored file
             client_cert_file = os.path.join(temp_dir, "{}.crt".format(
                 file_prefix))
             self.assertTrue(os.path.exists(client_cert_file))
-            client_cert_from_file = slurp_file_into_string(client_cert_file)
-            self.assertEqual(client_cert_for_response, client_cert_from_file)
+            client_cert_from_file = slurp_file_into_bytes(client_cert_file)
+            self.assertEqual(client_cert_for_response.encode("utf8"),
+                             client_cert_from_file)
 
             # Validate config file stored properly, with broker data returned
             # from server
@@ -344,7 +352,7 @@ class CliTest(unittest.TestCase):
 
             config_file = os.path.join(temp_dir, "dxlclient.config")
             self.assertTrue(os.path.exists(config_file))
-            config_from_file = slurp_file_into_string(config_file)
+            config_from_file = slurp_file_into_bytes(config_file)
             self.assertEqual(expected_config_content, config_from_file)
 
     def test_provisionconfig_with_csr(self):
@@ -374,17 +382,20 @@ class CliTest(unittest.TestCase):
 
             # Validate csr saved to disk was not regenerated and matches csr
             # submitted for signing
-            csr_bytes_from_file = slurp_file_into_string(full_csr_file_path)
+            csr_bytes_from_file = slurp_file_into_bytes(full_csr_file_path)
             csr_bytes_in_request = flattened_query_params(request).get(
                 "csrString")
-            self.assertEqual(csr_bytes_from_file, csr_bytes_in_request)
-            self.assertEqual(csr_to_test, csr_bytes_from_file)
+            self.assertEqual(csr_bytes_in_request.encode("utf8"),
+                             csr_bytes_from_file)
+            self.assertEqual(csr_to_test.encode("utf8"),
+                             csr_bytes_from_file)
 
             # Validate client cert returned for request matches stored file
             client_cert_file = os.path.join(temp_dir, "client.crt")
             self.assertTrue(os.path.exists(client_cert_file))
-            client_cert_from_file = slurp_file_into_string(client_cert_file)
-            self.assertEqual(client_cert_for_response, client_cert_from_file)
+            client_cert_from_file = slurp_file_into_bytes(client_cert_file)
+            self.assertEqual(client_cert_for_response.encode("utf8"),
+                             client_cert_from_file)
 
     def test_provisionconfig_with_trusted_ca_cert_and_port(self):
         with _TempDir("provconfig_ca_port") as temp_dir, \
@@ -458,19 +469,20 @@ class CliTest(unittest.TestCase):
 
             # Validate auth credentials sent in requests
             expected_creds = "Basic {}".format(base64.b64encode(
-                "myuser:mypass"))
+                b"myuser:mypass").decode("utf8"))
             for request in req_mock.request_history:
                 self.assertEqual(expected_creds,
                                  request.headers["Authorization"])
 
             # Validate updates to the ca bundle file
             self.assertTrue(os.path.exists(ca_bundle_file))
-            ca_bundle_from_file = slurp_file_into_string(ca_bundle_file)
-            self.assertEqual(updated_ca_bundle, ca_bundle_from_file)
+            ca_bundle_from_file = slurp_file_into_bytes(ca_bundle_file)
+            self.assertEqual(updated_ca_bundle.encode("utf8"),
+                             ca_bundle_from_file)
 
             # Validate updates to the config file
             self.assertTrue(os.path.exists(config_file))
-            config_from_file = slurp_file_into_string(config_file)
+            config_from_file = slurp_file_into_bytes(config_file)
             self.assertEqual(expected_config_content, config_from_file)
 
     def test_updateconfig_with_trusted_ca_cert_and_port(self):
@@ -515,9 +527,9 @@ class CliTest(unittest.TestCase):
             self.assertIn(broker_list_url, request_urls)
 
 
-def slurp_file_into_string(filename):
-    with open(filename, "r") as handle:
-        return handle.read()
+def slurp_file_into_bytes(filename):
+    with open(filename) as handle:
+        return handle.read().encode('utf8')
 
 
 def get_server_provision_url(host, port=8443):
@@ -588,7 +600,7 @@ def make_config(basic_config_lines=None, broker_lines=None):
         broker_lines = broker_lines_for_config_file(
             make_broker_lines(2))
 
-    return "\n".join(basic_config_lines + [broker_lines])
+    return "\n".join(basic_config_lines + [broker_lines]).encode("utf8")
 
 
 def flattened_broker_lines(broker_lines,
@@ -624,8 +636,8 @@ def make_fake_ca_bundle(ca_certs=3):
 
 def make_ok_response(message, request):
     output = flattened_query_params(request).get(":output")
-    return "OK:\r\n{}\r\n".format(json.dumps(message)
-                                  if output == "json" else message)
+    return u"OK:\r\n{}\r\n".format(json.dumps(message)
+                                   if output == "json" else message)
 
 
 def get_mock_provision_response_func(ca_bundle=None,
