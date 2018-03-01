@@ -1,58 +1,27 @@
-
-from base_test import BaseClientTest
-from threading import RLock, Condition
-from nose.plugins.attrib import attr
 import time
 import logging
 import threading
-import weakref
 import gc
-
-from dxlclient import Response, DxlException, RequestCallback, ServiceRegistrationInfo
-from dxlclient import EventCallback
+import json
+from nose.plugins.attrib import attr
+from dxlclient import DxlException, ErrorResponse, EventCallback, Request
+from dxlclient import RequestCallback, Response, ServiceRegistrationInfo
 from dxlclient.service import _ServiceManager
-from dxlclient import Request
 from dxlclient.exceptions import WaitTimeoutException
-from dxlclient import ErrorResponse
-
-
-class EventCounterCallback(EventCallback):
-
-    counter_lock = RLock()
-    condition = Condition()
-    counter = 0
-
-    def get(self):
-        with self.counter_lock:
-            return self.counter
-
-    def reset(self):
-        with self.condition:
-            with self.counter_lock:
-                self.counter = 0
-            self.condition.notify_all()
-
-    def on_event(self, event):
-        print event.destination_topic
-        print event.payload
-
-        with self.counter_lock:
-            with self.condition:
-                self.counter += 1
-                self.condition.notify_all()
+from .base_test import BaseClientTest
 
 
 @attr('system')
 class RegisterServiceClientTest(BaseClientTest):
-
-    register_callback = EventCounterCallback()
-    unregister_callback = EventCounterCallback()
+    SERVICE_REF_CLEANUP_DELAY = 30
 
     info = None
-    request_callback = None
+    info_registered = False
+    info_registrations = 0
+    info_unregistrations = 0
 
     def add_client_callbacks(self, client, on_client_request_callback=None):
-        self.request_callback = RequestCallback()
+        request_callback = RequestCallback()
 
         def on_request(request):
             logging.info(request.destination_topic)
@@ -61,39 +30,94 @@ class RegisterServiceClientTest(BaseClientTest):
             if on_client_request_callback:
                 on_client_request_callback()
             response = Response(request)
-            response.payload = bytes("Ok")
+            response.payload = "Ok"
             try:
                 client.send_response(response)
-            except DxlException, ex:
-                print "Failed to send response" + str(ex)
+            except DxlException as ex:
+                print("Failed to send response" + str(ex))
 
-        self.request_callback.on_request = on_request
-
-        client.add_event_callback(_ServiceManager.DXL_SERVICE_REGISTER_CHANNEL, self.register_callback)
-        client.add_event_callback(_ServiceManager.DXL_SERVICE_UNREGISTER_CHANNEL, self.unregister_callback)
+        request_callback.on_request = on_request
 
         self.info = ServiceRegistrationInfo(client, "/mcafee/service/JTI")
-        self.info.add_topic("/mcafee/service/JTI/file/reputation/" + self.info.service_id, self.request_callback)
-        self.info.add_topic("/mcafee/service/JTI/cert/reputation/" + self.info.service_id, self.request_callback)
+        self.info_registered = False
+        self.info_registrations = 0
+        self.info_unregistrations = 0
 
-    def setUp(self):
-        super(RegisterServiceClientTest, self).setUp()
+        service_id = self.info.service_id
+        self.info.add_topic("/mcafee/service/JTI/file/reputation/" +
+                            service_id, request_callback)
+        self.info.add_topic("/mcafee/service/JTI/cert/reputation/" +
+                            service_id, request_callback)
 
-        self.register_callback.reset()
-        self.unregister_callback.reset()
+        def is_event_for_service(event):
+            return json.loads(event.payload.decode(
+                "utf8").rstrip("\0"))["serviceGuid"] == service_id
+
+        class ServiceRegisteredCallback(EventCallback):
+            def __init__(self, test):
+                self.test = test
+                super(ServiceRegisteredCallback, self).__init__()
+
+            def on_event(self, event):
+                if is_event_for_service(event):
+                    self.test.info_registrations += 1
+                    self.test.info_registered = True
+
+        class ServiceUnregisteredCallback(EventCallback):
+            def __init__(self, test):
+                self.test = test
+                super(ServiceUnregisteredCallback, self).__init__()
+
+            def on_event(self, event):
+                if is_event_for_service(event):
+                    self.test.info_unregistrations += 1
+                    self.test.info_registered = False
+
+        client.add_event_callback(_ServiceManager.DXL_SERVICE_REGISTER_CHANNEL,
+                                  ServiceRegisteredCallback(self))
+        client.add_event_callback(
+            _ServiceManager.DXL_SERVICE_UNREGISTER_CHANNEL,
+            ServiceUnregisteredCallback(self))
+
+    def wait_info_registered_state(self, new_register_state):
+        start = time.time()
+        while (self.info_registered != new_register_state) and \
+                (time.time() - start < self.REG_DELAY):
+            if self.info_registered != new_register_state:
+                time.sleep(0.1)
+        return self.info_registered
+
+    def wait_info_registered(self):
+        return self.wait_info_registered_state(True)
+
+    def wait_info_not_registered(self):
+        return not self.wait_info_registered_state(False)
+
+    @staticmethod
+    def service_ref_valid(client, service_id):
+        services = client._service_manager.services
+        return service_id in services and \
+               services[service_id].get_service() is not None
+
+    def wait_for_service_reference_to_be_freed(self, client, service_id):
+        start = time.time()
+        while self.service_ref_valid(client, service_id) and \
+                (time.time() - start < self.SERVICE_REF_CLEANUP_DELAY):
+            time.sleep(0.1)
+        return not self.service_ref_valid(client, service_id)
 
     @attr('system')
     def test_register_service_before_connect(self):
-
         with self.create_client() as client:
             self.add_client_callbacks(client)
             client.register_service_async(self.info)
             client.connect()
-            time.sleep(self.POST_OP_DELAY)
+            self.assertTrue(self.wait_info_registered())
             client.unregister_service_sync(self.info, self.REG_DELAY)
+            self.assertTrue(self.wait_info_not_registered())
 
-            self.assertEquals(1, self.register_callback.get())
-            self.assertEquals(1, self.unregister_callback.get())
+            self.assertEqual(1, self.info_registrations)
+            self.assertEqual(1, self.info_unregistrations)
 
     @attr('system')
     def test_register_service_after_connect(self):
@@ -101,11 +125,15 @@ class RegisterServiceClientTest(BaseClientTest):
         with self.create_client() as client:
             self.add_client_callbacks(client)
             client.connect()
-            client.register_service_sync(self.info, self.REG_DELAY)
-            client.unregister_service_sync(self.info, self.REG_DELAY)
 
-            self.assertEquals(1, self.register_callback.get())
-            self.assertEquals(1, self.unregister_callback.get())
+            client.register_service_sync(self.info, self.REG_DELAY)
+            self.assertTrue(self.wait_info_registered())
+
+            client.unregister_service_sync(self.info, self.REG_DELAY)
+            self.assertTrue(self.wait_info_not_registered())
+
+            self.assertEqual(1, self.info_registrations)
+            self.assertEqual(1, self.info_unregistrations)
 
     @attr('system')
     def test_register_service_never_connect(self):
@@ -113,23 +141,21 @@ class RegisterServiceClientTest(BaseClientTest):
         with self.create_client() as client:
             self.add_client_callbacks(client)
             client.register_service_async(self.info)
-
             client.unregister_service_async(self.info)
 
-            self.assertEquals(0, self.register_callback.get())
-            self.assertEquals(0, self.unregister_callback.get())
+            self.assertEqual(0, self.info_registrations)
+            self.assertEqual(0, self.info_unregistrations)
 
     @attr('system')
     def test_register_unregister_service_before_connect(self):
-
         with self.create_client() as client:
             self.add_client_callbacks(client)
             client.register_service_async(self.info)
             client.unregister_service_async(self.info)
             client.connect()
 
-            self.assertEquals(0, self.register_callback.get())
-            self.assertEquals(0, self.unregister_callback.get())
+            self.assertEqual(0, self.info_registrations)
+            self.assertEqual(0, self.info_unregistrations)
 
     @attr('system')
     def test_register_service_and_send_request(self):
@@ -137,17 +163,17 @@ class RegisterServiceClientTest(BaseClientTest):
         with self.create_client() as client:
             self.add_client_callbacks(client)
             client.register_service_async(self.info)
-            time.sleep(self.POST_OP_DELAY)
             client.connect()
-            time.sleep(self.POST_OP_DELAY)
+            self.assertTrue(self.wait_info_registered())
 
-            request = Request("/mcafee/service/JTI/file/reputation/" + self.info.service_id)
-            request.payload = bytes("Test")
+            request = Request("/mcafee/service/JTI/file/reputation/" +
+                              self.info.service_id)
+            request.payload = "Test"
 
             response = client.sync_request(request, self.POST_OP_DELAY)
-            logging.info("Response payload: {0}".format(str(response.payload)))
+            logging.info("Response payload: %s".format(response.payload.decode("utf8")))
 
-            self.assertEquals("Ok", str(response.payload))
+            self.assertEqual("Ok", response.payload.decode("utf8"))
 
     @attr('system')
     def test_register_service_call_from_request_callback(self):
@@ -161,11 +187,11 @@ class RegisterServiceClientTest(BaseClientTest):
 
             def on_second_service_request(request):
                 response = Response(request)
-                response.payload = bytes(second_service_response_payload)
+                response.payload = second_service_response_payload
                 try:
                     client.send_response(response)
-                except DxlException, ex:
-                    print "Failed to send response" + str(ex)
+                except DxlException as ex:
+                    print("Failed to send response" + str(ex))
 
             second_service_callback.on_request = on_second_service_request
 
@@ -199,104 +225,106 @@ class RegisterServiceClientTest(BaseClientTest):
 
             first_service_request = Request(
                 "/mcafee/service/JTI/file/reputation/" + self.info.service_id)
-            first_service_request.payload = bytes("Test")
+            first_service_request.payload = "Test"
 
             first_service_response = client.sync_request(
                 first_service_request, self.POST_OP_DELAY)
-            logging.info("First service response payload: {0}".format(
-                str(first_service_response.payload)))
+            logging.info("First service response payload: %s".format(
+                first_service_response.payload))
 
-            self.assertEquals("Ok", str(first_service_response.payload))
+            self.assertEqual("Ok",
+                             first_service_response.payload.decode("utf8"))
 
             second_service_request = Request(
                 "/mcafee/service/JTI2/file/reputation/" +
                 second_service_info.service_id)
-            second_service_request.payload = bytes("Test")
+            second_service_request.payload = "Test"
 
             second_service_response = client.sync_request(
                 second_service_request, self.POST_OP_DELAY)
-            logging.info("Second service response payload: {0}".format(
-                str(second_service_request.payload)))
+            logging.info("Second service response payload: %s".format(
+                second_service_request.payload))
 
-            self.assertEquals(second_service_response_payload,
-                              str(second_service_response.payload))
+            self.assertEqual(second_service_response_payload,
+                             second_service_response.payload.decode("utf8"))
 
     @attr('system')
     def test_register_service_weak_reference_before_connect(self):
 
         with self.create_client() as client:
             self.add_client_callbacks(client)
-            ref = weakref.ref(self.info)
 
             client.register_service_async(self.info)
 
+            service_id = self.info.service_id
+            self.assertTrue(self.service_ref_valid(client, service_id))
+
             # Deleted the service registration
             self.info = 1
-            time.sleep(self.POST_OP_DELAY * 2)
 
             # Enforce garbage collection
             gc.collect()
-            # Weak reference should now be null
-            self.assertEquals(None, ref())
+
+            # Weak reference should freed after a few seconds
+            self.assertTrue(self.wait_for_service_reference_to_be_freed(
+                client, service_id))
 
             client.connect()
+            self.assertTrue(client.connected)
 
-        self.assertEquals(0, self.register_callback.get())
-        self.assertEquals(0, self.unregister_callback.get())
+        self.assertEqual(0, self.info_registrations)
+        self.assertEqual(0, self.info_unregistrations)
 
     @attr('system')
     def test_register_service_weak_reference_after_connect(self):
 
         with self.create_client() as client:
             self.add_client_callbacks(client)
-            ref = weakref.ref(self.info)
             client.register_service_async(self.info)
 
             client.connect()
 
+            self.assertTrue(self.wait_info_registered())
+
             # Deleted the service registration
             self.info = 1
-            time.sleep(self.POST_OP_DELAY)
 
             # Enforce garbage collection
             gc.collect()
-            # Weak reference should now be null
-            self.assertEquals(None, ref())
 
-        self.assertEquals(1, self.register_callback.get())
+            # Service should be implicitly unregistered from the broker
+            # as the weak reference to the service is cleaned up.
+            self.assertTrue(self.wait_info_not_registered())
 
-        #
-        # Sometimes the unregister event does not get send; don't check for now
-        # self.assertEquals(1, self.unregister_callback.get())
-        #
+        self.assertEqual(1, self.info_registrations)
 
     @attr('system')
     def test_register_service_weak_reference_after_connect_and_send_request(self):
 
         with self.create_client() as client:
             self.add_client_callbacks(client)
-            ref = weakref.ref(self.info)
 
             client.register_service_async(self.info)
             client.connect()
 
-            info_guid = self.info.service_id
-            # Theoretically, sending the destroy method when creating the weakref
-            # would made the magic of calling that method when info get unref
-            self.info._destroy()
+            service_id = self.info.service_id
+            self.assertTrue(self.wait_info_registered())
+
             # Deleted the service registration
             self.info = 1
-            time.sleep(self.POST_OP_DELAY * 2)
 
             # Enforce garbage collection
             gc.collect()
-            # Weak reference should now be null
-            self.assertEquals(None, ref())
 
-            # Sending an request should result in a WaitTimeoutException since the destroy() method
-            # of ServiceRegistrationInfo will unregister the service
-            request = Request("/mcafee/service/JTI/file/reputation/" + info_guid)
-            request.payload = bytes("Test")
+            # Service should be implicitly unregistered from the broker
+            # as the weak reference to the service is cleaned up.
+            self.assertTrue(self.wait_info_not_registered())
+
+            # Sending an request should result in a WaitTimeoutException since
+            # the destroy() method of ServiceRegistrationInfo will unregister
+            # the service
+            request = Request("/mcafee/service/JTI/file/reputation/" + service_id)
+            request.payload = "Test"
 
             try:
                 response = client.sync_request(request, 2)
@@ -304,13 +332,6 @@ class RegisterServiceClientTest(BaseClientTest):
                 # self.assertIsInstance(response, ErrorResponse, "response is instance of ErrorResponse")
                 self.assertTrue(isinstance(response, ErrorResponse), response.__class__)
             except WaitTimeoutException as ex:
-                assert(ex.message.__contains__(request.message_id))
+                self.assertIn(request.message_id, str(ex))
 
-        self.assertEquals(1, self.register_callback.get())
-        logging.debug("Waiting for unregister event...")
-        ttw = 30
-        while self.unregister_callback.get() < 1 and ttw > 0:
-            time.sleep(self.POST_OP_DELAY)
-            ttw -= 1
-        # Sometimes the unregister event does not get send; don't check for now
-        # self.assertEquals(1, self.unregister_callback.get())
+        self.assertEqual(1, self.info_registrations)

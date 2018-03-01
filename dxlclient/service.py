@@ -408,18 +408,19 @@ class _ServiceRegistrationHandler(_BaseObject):
         """
         if not self.client:
             raise DxlException("Client not defined")
-        req = Request(destination_topic=_ServiceManager.DXL_SERVICE_REGISTER_REQUEST_CHANNEL)
-        req.payload = bytes(self.json_register_service())
-        req.destination_tenant_guids = self.get_service().destination_tenant_guids
-        response = self.client.sync_request(req, timeout=10)
-        if response.message_type != Message.MESSAGE_TYPE_ERROR:
-            self.update_register_time()
-            info = self.get_service()
-            if info:
-                info._notify_registration_succeeded()
-        else:
-            # TODO: Notify the client with an exception if an error occurred, so that it doesn't wait for timeout
-            logger.error("Error registering service.")
+        with self.lock:
+            req = Request(destination_topic=_ServiceManager.DXL_SERVICE_REGISTER_REQUEST_CHANNEL)
+            req.payload = self.json_register_service()
+            req.destination_tenant_guids = self.get_service().destination_tenant_guids
+            response = self.client.sync_request(req, timeout=10)
+            if response.message_type != Message.MESSAGE_TYPE_ERROR:
+                self.update_register_time()
+                info = self.get_service()
+                if info:
+                    info._notify_registration_succeeded()
+            else:
+                # TODO: Notify the client with an exception if an error occurred, so that it doesn't wait for timeout
+                logger.error("Error registering service.")
 
     def send_unregister_service_event(self):
         """
@@ -429,22 +430,26 @@ class _ServiceRegistrationHandler(_BaseObject):
         """
         if not self.client:
             raise DxlException("Client not defined")
-        # Send the unregister event only if the register event was sent before and TTL has not yet expired.
-        current_time = int(time.time())
-        last_register_time = self.get_register_time()
+        with self.lock:
+            # Send the unregister event only if the register event was sent before and TTL has not yet expired.
+            current_time = int(time.time())
+            last_register_time = self.get_register_time()
 
-        if last_register_time > 0 and (current_time - last_register_time) <= (self.ttl * 60):
-            request = Request(destination_topic=_ServiceManager.DXL_SERVICE_UNREGISTER_REQUEST_CHANNEL)
-            request.payload = bytes(self.json_unregister_service())
-            response = self.client.sync_request(request, timeout=60)
-            if response.message_type != Message.MESSAGE_TYPE_ERROR:
-                info = self.get_service()
-                if info:
-                    info._notify_unregistration_succeeded()
+            if last_register_time > 0 and (current_time - last_register_time) <= (self.ttl * 60):
+                request = Request(destination_topic=_ServiceManager.DXL_SERVICE_UNREGISTER_REQUEST_CHANNEL)
+                request.payload = self.json_unregister_service()
+                response = self.client.sync_request(request, timeout=60)
+                if response.message_type == Message.MESSAGE_TYPE_ERROR:
+                    raise DxlException("Unregister service request timed out")
             else:
-                raise DxlException("Unregister service request timed out")
-        else:
-            raise DxlException("Unregister service request timed out")
+                if last_register_time > 0:
+                    logger.info(
+                        "TTL expired, unregister service event omitted for " +
+                        self.service_type + " (" + self.instance_id +
+                        ")")
+            info = self.get_service()
+            if info:
+                info._notify_unregistration_succeeded()
 
     def get_register_time(self):
         """
@@ -483,15 +488,17 @@ class _ServiceRegistrationHandler(_BaseObject):
     def _timer_callback(self):
         """Callback invoked by the timer task (to re-register the service"""
         if self.client.connected:
-            # Send unregister event if service marked for deletion or is no longer valid
-            if self.deleted or self.is_invalid_reference():
-                self.mark_for_deletion()
-                self.send_unregister_service_event()
-                self.ttl_timer.cancel()
-            else:
-                self.send_register_service_request()
-                self.ttl_timer = Timer(self.ttl * 60, self._timer_callback)
-                self.ttl_timer.start()
+            with self.lock:
+                # Send unregister event if service marked for deletion or is no
+                # longer valid
+                if self.deleted or self.is_invalid_reference():
+                    self.mark_for_deletion()
+                    self.send_unregister_service_event()
+                    self.ttl_timer.cancel()
+                else:
+                    self.send_register_service_request()
+                    self.ttl_timer = Timer(self.ttl * 60, self._timer_callback)
+                    self.ttl_timer.start()
         else:
             if self.ttl_timer:
                 self.ttl_timer.cancel()
