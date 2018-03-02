@@ -90,16 +90,22 @@ class DxlClientTest (BaseClientTest):
     #
     @attr('system')
     def test_incoming_message_threading(self):
+        max_wait = 30
         thread_count = 10
+        thread_name_condition = Condition()
         thread_name = set()
 
         event_topic = UuidGenerator.generate_id_as_string()
-        with self.create_client(incoming_message_thread_pool_size=thread_count) as client:
+        with self.create_client(incoming_message_thread_pool_size=
+                                thread_count) as client:
             client.connect()
             event_callback = EventCallback()
 
             def on_event(event):
-                thread_name.add(threading.current_thread())
+                with thread_name_condition:
+                    thread_name.add(threading.current_thread())
+                    if len(thread_name) == thread_count:
+                        thread_name_condition.notify_all()
 
             event_callback.on_event = on_event
             client.add_event_callback(event_topic, event_callback)
@@ -108,7 +114,11 @@ class DxlClientTest (BaseClientTest):
                 evt = Event(event_topic)
                 client.send_event(evt)
 
-            time.sleep(30)
+            start = time.time()
+            with thread_name_condition:
+                while (time.time() - start < max_wait) and \
+                        len(thread_name) < thread_count:
+                    thread_name_condition.wait(max_wait)
 
             self.assertEquals(thread_count, len(thread_name))
 
