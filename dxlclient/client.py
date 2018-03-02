@@ -474,7 +474,7 @@ class DxlClient(_BaseObject):
     def connected(self):
         """Whether the client is currently connected to the DXL fabric."""
         with self._connected_lock:
-                return self._connected
+            return self._connected
 
     def connect(self):
         """
