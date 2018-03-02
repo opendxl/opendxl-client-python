@@ -120,6 +120,7 @@ class WilcardPerformanceTest(BaseClientTest):
     # Test wildcarding of events
     @attr('system')
     def test_wildcard_services(self):
+        max_wait = 10
         with self.create_client() as client:
             # The request message that the service receives
             service_request_message = []
@@ -127,6 +128,7 @@ class WilcardPerformanceTest(BaseClientTest):
             client_response_message_request = []
             # The event that we received
             client_event_message = []
+            client_event_message_condition = Condition()
             # The payload that the service receives
             service_request_message_receive_payload = []
 
@@ -172,7 +174,9 @@ class WilcardPerformanceTest(BaseClientTest):
             ecb = EventCallback()
             def on_event(event):
                 print("## received event: " + event.destination_topic + ", " + event.message_id)
-                client_event_message.append(event.message_id)
+                with client_event_message_condition:
+                    client_event_message.append(event.message_id)
+                    client_event_message_condition.notify_all()
 
             ecb.on_event = on_event
             client.add_event_callback("/test/#", ecb)
@@ -182,7 +186,11 @@ class WilcardPerformanceTest(BaseClientTest):
             evt.payload = "Unit test payload"
             client.send_event(evt)
 
-            time.sleep(10)
+            start = time.time()
+            with client_event_message_condition:
+                while (time.time() - start < max_wait) and \
+                        len(client_event_message) == 0:
+                    client_event_message_condition.wait(max_wait)
 
             # # Make sure the service received the request properly
             # self.assertEquals(evt.message_id, service_request_message[0])
@@ -191,6 +199,7 @@ class WilcardPerformanceTest(BaseClientTest):
             # Make sure the response we received was for the request message
             # self.assertEquals(evt.message_id, client_response_message_request[0])
             # Make sure we received the correct event
+            self.assertGreater(len(client_event_message), 0)
             self.assertEquals(evt.message_id, client_event_message[0])
 
 
@@ -239,54 +248,61 @@ class WildcardTest(unittest.TestCase):
             self.assertEqual(topic, wildcard)
 
     def test_adding_wildcarded_channel_enables_wildcarding(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/wildcard/#",
+                                            self.req_callback)
+            self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
 
     def test_adding_normal_channel_does_not_enable_wildcarding(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/no/wildcard/", self.req_callback)
-        self.assertFalse(dxl_client._request_callbacks.wildcarding_enabled)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/no/wildcard/",
+                                            self.req_callback)
+            self.assertFalse(dxl_client._request_callbacks.wildcarding_enabled)
 
     def test_removing_only_wildcarded_channel_disables_wildcarding(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        dxl_client.add_request_callback("/this/channel/has/no/wildcard/", self.req_callback)
-        self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
-
-        dxl_client.remove_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        self.assertFalse(dxl_client._request_callbacks.wildcarding_enabled)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/wildcard/#",
+                                            self.req_callback)
+            dxl_client.add_request_callback("/this/channel/has/no/wildcard/",
+                                            self.req_callback)
+            self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
+            dxl_client.remove_request_callback("/this/channel/has/wildcard/#",
+                                               self.req_callback)
+            self.assertFalse(dxl_client._request_callbacks.wildcarding_enabled)
 
     def test_removing_one_of_two_wildcarded_channels_does_not_disable_wildcarding(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        dxl_client.add_request_callback("/this/channel/has/wildcard/too/#", self.req_callback)
-
-        dxl_client.remove_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/wildcard/#",
+                                            self.req_callback)
+            dxl_client.add_request_callback("/this/channel/has/wildcard/too/#",
+                                            self.req_callback)
+            dxl_client.remove_request_callback("/this/channel/has/wildcard/#",
+                                               self.req_callback)
+            self.assertTrue(dxl_client._request_callbacks.wildcarding_enabled)
 
     def test_messages_are_fired_with_wildcards_enabled(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/wildcard/#", self.req_callback)
-        dxl_client.add_request_callback("/this/channel/has/wildcard/not/", self.req_callback)
-        # Create and process Request
-        req = Request(destination_topic="/this/channel/has/wildcard/not/")._to_bytes()
-        dxl_client._handle_message("/this/channel/has/wildcard/not/", req)
-        # Check that callback was called
-        self.assertEqual(self.req_callback.on_request.call_count, 2)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/wildcard/#",
+                                            self.req_callback)
+            dxl_client.add_request_callback("/this/channel/has/wildcard/not/",
+                                            self.req_callback)
+            # Create and process Request
+            req = Request(destination_topic=
+                          "/this/channel/has/wildcard/not/")._to_bytes()
+            dxl_client._handle_message("/this/channel/has/wildcard/not/", req)
+            # Check that callback was called
+            self.assertEqual(self.req_callback.on_request.call_count, 2)
 
     def test_messages_are_correctly_fired_with_wildcards_disabled(self):
-        dxl_client = DxlClient(self.config)
-
-        dxl_client.add_request_callback("/this/channel/has/no/wildcard/", self.req_callback)
-        dxl_client.add_request_callback("/this/channel/has/no/wildcard/either/", self.req_callback)
-        # Create and process Request
-        req = Request(destination_topic="/this/channel/has/no/wildcard/either/")._to_bytes()
-        dxl_client._handle_message("/this/channel/has/no/wildcard/either/", req)
-        # Check that callback was called
-        self.assertEqual(self.req_callback.on_request.call_count, 1)
+        with DxlClient(self.config) as dxl_client:
+            dxl_client.add_request_callback("/this/channel/has/no/wildcard/",
+                                            self.req_callback)
+            dxl_client.add_request_callback(
+                "/this/channel/has/no/wildcard/either/", self.req_callback)
+            # Create and process Request
+            req = Request(destination_topic=
+                          "/this/channel/has/no/wildcard/either/")._to_bytes()
+            dxl_client._handle_message("/this/channel/has/no/wildcard/either/",
+                                       req)
+            # Check that callback was called
+            self.assertEqual(self.req_callback.on_request.call_count, 1)
