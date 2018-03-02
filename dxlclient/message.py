@@ -649,7 +649,7 @@ class ErrorResponse(Response):
         """
         super(ErrorResponse, self)._pack_message(packer, buf)
         buf.write(packer.pack(self._error_code))
-        buf.write(packer.pack(self._error_message.encode('utf8')))
+        buf.write(packer.pack(self._error_message))
 
     def _unpack_message(self, unpacker):
         """

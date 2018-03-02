@@ -14,7 +14,13 @@ import logging
 import os
 import sys
 import time
-import six.moves.urllib.request, six.moves.urllib.error, six.moves.urllib.parse
+
+try:
+    from urllib.request import urlopen
+    from urllib.request import Request as URLRequest
+except ImportError:
+    from urllib2 import urlopen
+    from urllib2 import Request as URLRequest
 
 from dxlclient.callbacks import RequestCallback
 from dxlclient.client import DxlClient
@@ -57,17 +63,17 @@ with DxlClient(config) as client:
                 logger.info("Service received request payload: " + query)
 
                 # Send HTTP request to OpenWeatherMap
-                req = six.moves.urllib.request.Request(
+                req = URLRequest(
                     CURRENT_WEATHER_URL.format(query, API_KEY), None,
                     {'Content-Type': 'text/json'})
-                f = six.moves.urllib.request.urlopen(req)
+                f = urlopen(req)
                 weather_response = f.read()
                 f.close()
 
                 # Create the response message
                 response = Response(request)
                 # Populate the response payload
-                response.payload = weather_response.encode(encoding="UTF-8")
+                response.payload = weather_response
                 # Send the response
                 client.send_response(response)
 

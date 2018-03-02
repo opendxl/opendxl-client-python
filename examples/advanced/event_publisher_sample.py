@@ -7,7 +7,6 @@ import sys
 from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
 from dxlclient.message import Event
-from six.moves import input
 
 # Import common logging and configuration
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -37,7 +36,7 @@ try:
         while True:
             print("   Enter 1 to publish a DXL Event")
             print("   Enter 9 to quit")
-            input = input("   Enter value: ")
+            input = prompt("   Enter value: ")
 
             try:
                 option = int(input)

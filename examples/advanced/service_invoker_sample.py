@@ -8,7 +8,6 @@ from dxlclient.callbacks import ResponseCallback
 from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
 from dxlclient.message import Message, Request
-from six.moves import input
 
 # Import common logging and configuration
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -39,7 +38,7 @@ try:
             print("   Press 1 to send a Synchronous Request")
             print("   Press 2 to send an Asynchronous Request")
             print("   Press 9 to quit")
-            input = input("   Enter value: ")
+            input = prompt("   Enter value: ")
 
             try:
                 option = int(input)

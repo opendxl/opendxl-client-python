@@ -23,3 +23,8 @@ console_handler.setFormatter(log_formatter)
 logger = logging.getLogger()
 logger.addHandler(console_handler)
 logger.setLevel(logging.INFO)
+
+try:
+    from builtins import input as prompt
+except ImportError:
+    from __builtin__ import raw_input as prompt

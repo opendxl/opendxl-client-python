@@ -9,7 +9,6 @@ from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
 from dxlclient.message import Response
 from dxlclient.service import ServiceRegistrationInfo
-from six.moves import input
 
 # Import common logging and configuration
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -70,7 +69,7 @@ try:
         # Wait for DXL Requests
         while True:
             print("   Enter 9 to quit")
-            input = input("   Enter value: ")
+            input = prompt("   Enter value: ")
 
             try:
                 option = int(input)
