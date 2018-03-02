@@ -121,7 +121,9 @@ class EventThroughputRunner(BaseClientTest):
                                 self.event_count_condition.notify_all()
 
                                 if current_count % 100 == 0:
-                                    print(client.config._client_id + " : " + str(current_count) + " : " + event.payload)
+                                    print(client.config._client_id + " : " +
+                                          str(current_count) + " : " +
+                                          event.payload.decode("utf8"))
 
                         # callback registration
                         callback = EventCallback()
