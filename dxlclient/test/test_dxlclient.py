@@ -18,11 +18,11 @@ from parameterized import parameterized
 from mock import Mock, patch
 from textwrap import dedent
 
-if sys.version_info[0] < 3:
+if sys.version_info[0] > 2:
+    import builtins
+else:
     import __builtin__
     builtins = __builtin__
-else:
-    import builtins
 import paho.mqtt.client as mqtt # pylint: disable=import-error
 
 import dxlclient._global_settings

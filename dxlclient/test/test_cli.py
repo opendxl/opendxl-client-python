@@ -16,10 +16,10 @@ import tempfile
 import unittest
 import uuid
 
-if sys.version_info[0] < 3:
-    from io import BytesIO as NativeStringIO
-else:
+if sys.version_info[0] > 2:
     from io import StringIO as NativeStringIO
+else:
+    from io import BytesIO as NativeStringIO
 
 from asn1crypto import csr, pem, x509, algos
 from mock import patch

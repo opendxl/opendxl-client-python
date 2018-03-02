@@ -1,12 +1,15 @@
 import sys
 
-if sys.version_info[0] < 3:
-    from Queue import Queue
-    def iter_dict_items(d):
-        return d.iteritems()
-    string = basestring
-else:
+try:
     from queue import Queue
+except ImportError:
+    from Queue import Queue
+
+if sys.version_info[0] > 2:
     def iter_dict_items(d):
         return d.items()
     string = str
+else:
+    def iter_dict_items(d):
+        return d.iteritems()
+    string = basestring
