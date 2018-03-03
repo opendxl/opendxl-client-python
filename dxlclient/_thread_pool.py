@@ -82,16 +82,18 @@ class ThreadPool(_BaseObject):
         """Wait for completion of all the tasks in the queue"""
         self._tasks.join()
 
-    def shutdown(self):
+    def shutdown(self, wait_complete=True):
         """Shuts down the thread pool"""
         logger.debug("Shutting down thread pool...")
-        self.wait_completion()
+        if wait_complete:
+            self.wait_completion()
 
         # Add task to stop the thread
         for _ in self._threads:
             self.add_task(None)
 
         # Wait for threads to exit
-        for t in self._threads:
-            t.join()
+        if wait_complete:
+            for t in self._threads:
+                t.join()
 

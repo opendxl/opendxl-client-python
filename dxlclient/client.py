@@ -449,7 +449,10 @@ class DxlClient(_BaseObject):
     def __del__(self):
         """destructor"""
         super(DxlClient, self).__del__()
-        self.destroy()
+        # Avoid waiting for all of the threads in the thread pool to complete
+        # since they may never shutdown completely (leading to a hang) if the
+        # destructor is called at process shutdown.
+        self._destroy(wait_complete=False)
 
     def __enter__(self):
         """Enter with"""
@@ -547,6 +550,9 @@ class DxlClient(_BaseObject):
         is exited (the :func:`destroy` method is invoked).
 
         """
+        self._destroy()
+
+    def _destroy(self, wait_complete=True):
         with self._destroy_lock:
             if not self._destroyed:
                 self._service_manager.destroy()
@@ -557,7 +563,7 @@ class DxlClient(_BaseObject):
 
                 self.disconnect()
 
-                self._thread_pool.shutdown()
+                self._thread_pool.shutdown(wait_complete)
 
                 self._config = None
 
