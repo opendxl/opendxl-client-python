@@ -500,6 +500,7 @@ class _ServiceRegistrationHandler(_BaseObject):
                 else:
                     self.send_register_service_request()
                     self.ttl_timer = Timer(self.ttl * 60, self._timer_callback)
+                    self.ttl_timer.daemon = True
                     self.ttl_timer.start()
         else:
             if self.ttl_timer:
@@ -516,6 +517,7 @@ class _ServiceRegistrationHandler(_BaseObject):
 
         if self.client.connected and not self.deleted:
             self.ttl_timer = Timer(0, self._timer_callback)
+            self.ttl_timer.daemon = True
             self.ttl_timer.start()
 
     def stop_timer(self):
