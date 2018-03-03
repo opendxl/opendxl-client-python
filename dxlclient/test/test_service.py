@@ -1,9 +1,9 @@
 from __future__ import absolute_import
+from concurrent.futures import ThreadPoolExecutor
 import logging
 
 from dxlclient import ErrorResponse, Response
 from dxlclient.callbacks import RequestCallback
-from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
 

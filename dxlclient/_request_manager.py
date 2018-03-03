@@ -8,7 +8,7 @@ import threading
 import time
 import logging
 
-from dxlclient.exceptions import _raise_wrapped_exception, WaitTimeoutException
+from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.callbacks import ResponseCallback
 
 logger = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class RequestManager(ResponseCallback):
             # Add to set of current requests
             self.add_current_request(request.message_id)
             self.client._send_request(request)
-        except Exception as ex:
+        except Exception:
             try:
                 if not response_callback is None:
                     self.unregister_async_callback(destination)

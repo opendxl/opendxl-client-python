@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from threading import Condition
 import time
+from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
-from threading import Condition
-from nose.plugins.attrib import attr
 
 
 #
@@ -101,4 +101,4 @@ class AsyncFloodTest(BaseClientTest):
                 if self.error_count != 0:
                     raise Exception("Received an error response!")
 
-                self.assertEquals(self.REQUEST_COUNT, self.response_count, "Did not receive all messages!")
+                self.assertEqual(self.REQUEST_COUNT, self.response_count, "Did not receive all messages!")

@@ -2,15 +2,14 @@ from __future__ import absolute_import
 from __future__ import print_function
 import threading
 import time
-from threading import Condition
 
+from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from nose.plugins.attrib import attr
 
 @attr('system')
-class DxlClientTest (BaseClientTest):
+class DxlClientTest(BaseClientTest):
 
     #
     # Tests the connect and disconnect methods of the DxlClient
@@ -82,8 +81,8 @@ class DxlClientTest (BaseClientTest):
             # Send a request and ensure the response is an error message
             response = client.sync_request(Request(topic))
             self.assertIsInstance(response, ErrorResponse, msg="Response is not an ErrorResponse")
-            self.assertEquals(error_code, response.error_code)
-            self.assertEquals(error_message, response.error_message)
+            self.assertEqual(error_code, response.error_code)
+            self.assertEqual(error_message, response.error_message)
 
     #
     # Tests threading of incoming requests
@@ -92,7 +91,7 @@ class DxlClientTest (BaseClientTest):
     def test_incoming_message_threading(self):
         max_wait = 30
         thread_count = 10
-        thread_name_condition = Condition()
+        thread_name_condition = threading.Condition()
         thread_name = set()
 
         event_topic = UuidGenerator.generate_id_as_string()
@@ -120,5 +119,4 @@ class DxlClientTest (BaseClientTest):
                         len(thread_name) < thread_count:
                     thread_name_condition.wait(max_wait)
 
-            self.assertEquals(thread_count, len(thread_name))
-
+            self.assertEqual(thread_count, len(thread_name))

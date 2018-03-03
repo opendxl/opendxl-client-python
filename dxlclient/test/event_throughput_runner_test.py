@@ -3,11 +3,10 @@ from __future__ import print_function
 import logging
 import time
 from threading import Condition
-
+from nose.plugins.attrib import attr
 from dxlclient import EventCallback, Event, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest, atomize
 from dxlclient.test.thread_executor import ThreadRunExecutor
-from nose.plugins.attrib import attr
 
 
 class EventThroughputRunner(BaseClientTest):
@@ -16,9 +15,7 @@ class EventThroughputRunner(BaseClientTest):
     EVENT_COUNT = 100
 
     # The maximum time for the test
-    MAX_TIME = 10 * 60
-    # The maximum time to wait between connections
-    MAX_CONNECT_WAIT = 2 * 60
+    MAX_TIME = 2 * 60
     # The number of times to try to connect to the broker
     MAX_CONNECT_RETRIES = 10
 
@@ -91,7 +88,7 @@ class EventThroughputRunner(BaseClientTest):
         # print self.get_statistics()
 
     def execute_t(self, client_factory):
-        self.threads = 0
+        start = time.time()
         with client_factory() as send_client:
             send_client.connect()
             event_topic = UuidGenerator.generate_id_as_string()
@@ -118,7 +115,9 @@ class EventThroughputRunner(BaseClientTest):
                             with self.event_count_condition:
                                 self.event_count += 1
                                 current_count = self.event_count
-                                self.event_count_condition.notify_all()
+                                if current_count == \
+                                        self.EVENT_COUNT * self.THREAD_COUNT:
+                                    self.event_count_condition.notify_all()
 
                                 if current_count % 100 == 0:
                                     print(client.config._client_id + " : " +
@@ -133,18 +132,26 @@ class EventThroughputRunner(BaseClientTest):
                         # Waiting all clients have connected
                         with self.connect_condition:
                             self.atomic_connect_count += 1
-                            curr_count = self.atomic_connect_count
-
-                            self.connect_condition.notify_all()
-                            while self.atomic_connect_count != self.THREAD_COUNT:
-                                self.connect_condition.wait(timeout=self.MAX_CONNECT_WAIT)
-                                if curr_count == self.atomic_connect_count:
-                                    self.fail("Timeout waiting for all threads to connect")
-
+                            if self.atomic_connect_count == self.THREAD_COUNT:
+                                self.connect_condition.notify_all()
+                            time_remaining = self.MAX_TIME
+                            while self.atomic_connect_count != \
+                                    self.THREAD_COUNT and time_remaining > 0:
+                                self.connect_condition.wait(
+                                    timeout=time_remaining)
+                                time_remaining = start - time.time() + \
+                                                 self.MAX_TIME
+                            self.assertEqual(
+                                self.THREAD_COUNT,
+                                self.atomic_connect_count,
+                                "Timeout waiting for all threads to connect"
+                            )
                             # Once all clients have connected, reset timing information
                             if self.requests_start_time == 0:
                                 self.requests_start_time = time.time()
-                                self.connect_time = self.requests_start_time - self.connect_time_start
+                                self.connect_time = \
+                                    self.requests_start_time - \
+                                    self.connect_time_start
 
                                 for i in range(0, self.EVENT_COUNT):
                                     event = Event(event_topic)
@@ -154,12 +161,19 @@ class EventThroughputRunner(BaseClientTest):
                                     send_client.send_event(event)
 
                         with self.event_count_condition:
-                            while self.event_count != self.EVENT_COUNT * self.THREAD_COUNT:
-                                curr_count = self.event_count
-                                self.event_count_condition.wait(timeout = self.MAX_CONNECT_WAIT)
-                                if self.event_count == curr_count:
-                                    self.fail("Timed out while receiving events")
-                            self.event_count_condition.notify_all()
+                            time_remaining = self.MAX_TIME
+                            while self.event_count != \
+                                    self.EVENT_COUNT * self.THREAD_COUNT and \
+                                    time_remaining > 0:
+                                self.event_count_condition.wait(
+                                    timeout=time_remaining)
+                                time_remaining = start - time.time() + \
+                                                 self.MAX_TIME
+                            self.assertEqual(
+                                self.EVENT_COUNT * self.THREAD_COUNT,
+                                self.event_count,
+                                "Timed out while receiving events"
+                            )
                             if self.requests_end_time == 0:
                                 self.requests_end_time = time.time()
 
@@ -169,7 +183,7 @@ class EventThroughputRunner(BaseClientTest):
 
             executor.execute(run)
 
-            self.assertEquals(self.EVENT_COUNT * self.THREAD_COUNT, self.event_count)
+            self.assertEqual(self.EVENT_COUNT * self.THREAD_COUNT, self.event_count)
 
             total_time = self.requests_end_time - self.requests_start_time
             print("Connect time: " + str(self.connect_time))
@@ -177,5 +191,6 @@ class EventThroughputRunner(BaseClientTest):
             print("Total events: " + str(self.EVENT_COUNT))
             print("Events/second: " + str(self.EVENT_COUNT / total_time))
             print("Total events received: " + str(self.EVENT_COUNT * self.THREAD_COUNT))
-            print("Total events received/second: " + str((self.EVENT_COUNT * self.THREAD_COUNT) / total_time))
+            print("Total events received/second: " +
+                  str((self.EVENT_COUNT * self.THREAD_COUNT) / total_time))
             print("Elapsed time: " + str(total_time))

@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from nose.plugins.attrib import attr
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient import Request, ErrorResponse
-from nose.plugins.attrib import attr
 
 @attr('system')
 class BrokerRegistryQueryTest(BaseClientTest):

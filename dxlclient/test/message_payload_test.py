@@ -3,12 +3,11 @@ from __future__ import print_function
 from io import BytesIO
 import time
 from threading import Condition
+from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from nose.plugins.attrib import attr
-from dxlclient._vendor.msgpack.fallback import Unpacker
-from dxlclient._vendor.msgpack.fallback import Packer
+from dxlclient._vendor.msgpack.fallback import Packer, Unpacker
 
 
 @attr('system')
@@ -76,7 +75,7 @@ class MessagePayloadTest(BaseClientTest):
 
                 self.assertIsNotNone(self.request_received)
                 unpacker = Unpacker(file_like=BytesIO(request.payload))
-                self.assertEquals(next(unpacker).decode('utf8'),
+                self.assertEqual(next(unpacker).decode('utf8'),
                                   self.TEST_STRING)
-                self.assertEquals(next(unpacker), self.TEST_BYTE)
-                self.assertEquals(next(unpacker), self.TEST_INT)
+                self.assertEqual(next(unpacker), self.TEST_BYTE)
+                self.assertEqual(next(unpacker), self.TEST_INT)

@@ -1,10 +1,9 @@
 from __future__ import absolute_import
 from threading import Condition
 import time
+from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, Request, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest
-from nose.plugins.attrib import attr
-import sys
 
 @attr('system')
 class TestSyncDuringCallback(BaseClientTest):

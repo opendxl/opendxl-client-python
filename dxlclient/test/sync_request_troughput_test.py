@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 from __future__ import print_function
-from threading import Condition
-from .base_test import BaseClientTest, atomize
-from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse
-from dxlclient.test.test_service import TestService
-from .thread_executor import ThreadRunExecutor
 import logging
 import time
+from threading import Condition
 from nose.plugins.attrib import attr
+from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse
+from dxlclient.test.test_service import TestService
+from .base_test import BaseClientTest, atomize
+from .thread_executor import ThreadRunExecutor
 
 
 class SyncRequestTroughputRunner(BaseClientTest):
@@ -163,7 +163,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                 curr_count = self.atomic_connect_count
                                 self.connect_condition.wait(self.MAX_CONNECT_WAIT)
                                 if self.atomic_connect_count == curr_count:
-                                    self.fail( "Timeout waiting for all threads to connect" )
+                                    self.fail("Timeout waiting for all threads to connect")
 
                             # Once all clients have connected, reset timing information
                             if self.requests_start_time == 0:

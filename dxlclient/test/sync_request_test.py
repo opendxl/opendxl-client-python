@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
+from nose.plugins.attrib import attr
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, Request, ErrorResponse
 from .thread_executor import ThreadRunExecutor
 
@@ -47,7 +47,7 @@ class SyncRequestTests(BaseClientTest):
                     request = Request(topic)
                     response = client.sync_request(request, timeout=self.RESPONSE_WAIT)
                     self.assertNotIsInstance(response, ErrorResponse)
-                    self.assertEquals(request.message_id, response.request_message_id)
+                    self.assertEqual(request.message_id, response.request_message_id)
 
                     with self.response_count_condition:
                         self.response_count += 1
@@ -68,4 +68,4 @@ class SyncRequestTests(BaseClientTest):
                     if current_count == self.response_count:
                         self.fail("Request wait timeout.")
 
-            self.assertEquals(self.REQUEST_COUNT, self.response_count)
+            self.assertEqual(self.REQUEST_COUNT, self.response_count)

@@ -34,13 +34,13 @@ class DxlUtils(object):
         :param topic: channel topic.
         :return: wildcarded topic
         """
-        if topic is "":
+        if not topic:
             return "#"
         splitted = topic.split("/")
         if topic[-1] != "#":
             return "/".join(splitted[:-1]) + "/#"
         else:
-            if len(topic) is 2:
+            if len(topic) == 2:
                 return "#"
             return "/".join(splitted[:-2]) + "/#"
 

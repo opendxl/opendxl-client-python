@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 from functools import wraps
+import os
 from unittest import TestCase
 from dxlclient import DxlClientConfig, DxlClient
-import os
 
 
 def atomize(lock):
@@ -21,9 +21,9 @@ class BaseClientTest(TestCase):
     POST_OP_DELAY = 8
     REG_DELAY = 60
 
-    def create_client(self, max_retries=DEFAULT_RETRIES, incoming_message_thread_pool_size = 1):
+    def create_client(self, max_retries=DEFAULT_RETRIES, incoming_message_thread_pool_size=1):
         config = DxlClientConfig.create_dxl_config_from_file(os.path.dirname(os.path.abspath(__file__)) +
-                                                              "/client_config.cfg")
+                                                             "/client_config.cfg")
         config.incoming_message_thread_pool_size = incoming_message_thread_pool_size
 
         config.connect_retries = max_retries

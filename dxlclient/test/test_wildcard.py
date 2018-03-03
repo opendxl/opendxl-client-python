@@ -7,14 +7,13 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
+from threading import Condition
+import time
 import unittest
 
-import time
-
-from dxlclient.test.base_test import BaseClientTest
 from parameterized import parameterized
 from mock import Mock, patch
-from threading import Condition
+from nose.plugins.attrib import attr
 
 from dxlclient import DxlClient, UuidGenerator, EventCallback, Event, ServiceRegistrationInfo, Response, \
     ResponseCallback
@@ -23,16 +22,16 @@ from dxlclient import DxlClientConfig
 from dxlclient import RequestCallback
 from dxlclient import Request
 from dxlclient._global_settings import *
-from nose.plugins.attrib import attr
+from dxlclient.test.base_test import BaseClientTest
 
 def topic_splitter(topic):
-    if topic is "":
+    if not topic:
         return "#"
     splitted = topic.split("/")
     if topic[-1] != "#":
         return "/".join(splitted[:-1]) + "/#"
     else:
-        if len(topic) is 2:
+        if len(topic) == 2:
             return "#"
         return "/".join(splitted[:-2]) + "/#"
 
@@ -48,7 +47,7 @@ class WilcardPerformanceTest(BaseClientTest):
             client.connect()
 
             without_wildcard = self.measure_performance(client, True, False)
-            with_wildcard =self.measure_performance(client, False, True)
+            with_wildcard = self.measure_performance(client, False, True)
             with_wildcard_topic_exists = self.measure_performance(client, True, True)
 
             print("without_wildcard: " + str(without_wildcard))
@@ -110,8 +109,8 @@ class WilcardPerformanceTest(BaseClientTest):
                 if current_event == event_count[0]:
                     self.fail("Event wait timeout")
 
-        self.assertEquals(SUB_COUNT * QUERY_MULTIPLIER, len(message_ids))
-        self.assertEquals(SUB_COUNT * QUERY_MULTIPLIER * (2 if with_wildcard and topic_exists else 1), event_count[0])
+        self.assertEqual(SUB_COUNT * QUERY_MULTIPLIER, len(message_ids))
+        self.assertEqual(SUB_COUNT * QUERY_MULTIPLIER * (2 if with_wildcard and topic_exists else 1), event_count[0])
 
         return time.time() - start_time
 
@@ -189,18 +188,18 @@ class WilcardPerformanceTest(BaseClientTest):
             start = time.time()
             with client_event_message_condition:
                 while (time.time() - start < max_wait) and \
-                        len(client_event_message) == 0:
+                        not client_event_message:
                     client_event_message_condition.wait(max_wait)
 
             # # Make sure the service received the request properly
-            # self.assertEquals(evt.message_id, service_request_message[0])
+            # self.assertEqual(evt.message_id, service_request_message[0])
             # # Make sure the service received the request payload from the event properly
-            # self.assertEquals(evt.payload, service_request_message_receive_payload[0])
+            # self.assertEqual(evt.payload, service_request_message_receive_payload[0])
             # Make sure the response we received was for the request message
-            # self.assertEquals(evt.message_id, client_response_message_request[0])
+            # self.assertEqual(evt.message_id, client_response_message_request[0])
             # Make sure we received the correct event
             self.assertGreater(len(client_event_message), 0)
-            self.assertEquals(evt.message_id, client_event_message[0])
+            self.assertEqual(evt.message_id, client_event_message[0])
 
 
 class WildcardTest(unittest.TestCase):
@@ -241,7 +240,7 @@ class WildcardTest(unittest.TestCase):
         wildcard_callback.on_next_wildcard = on_next_wildcard
 
         DxlUtils.iterate_wildcards(wildcard_callback, topic)
-        self.assertEquals(wildcard_number, len(wildcards))
+        self.assertEqual(wildcard_number, len(wildcards))
 
         for wildcard in wildcards:
             topic = topic_splitter(topic)

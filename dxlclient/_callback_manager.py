@@ -6,7 +6,6 @@
 from __future__ import absolute_import
 import inspect
 import threading
-import types
 
 from dxlclient import _BaseObject
 from dxlclient.callbacks import MessageCallback, RequestCallback, ResponseCallback, EventCallback
@@ -127,10 +126,10 @@ class _CallbackManager(_BaseObject):
             if callbacks is not None:
                 if callback in callbacks:
                     callbacks.remove(callback)
-                if len(callbacks) == 0:
-                    del callbacks_by_channel[channel]
-                else:
+                if callbacks:
                     callbacks_by_channel[channel] = callbacks
+                else:
+                    del callbacks_by_channel[channel]
                 rc = True  # pylint: disable=invalid-name
             #Determine if any wildcard exist
             if self.wildcarding_enabled:

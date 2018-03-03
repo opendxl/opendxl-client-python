@@ -28,7 +28,7 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
             test_service = TestService(client, 1)
 
             def empty_on_request(request):
-                pass
+                del request # unused
 
             test_service.on_request = empty_on_request
 
@@ -47,7 +47,7 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
             req_for_error = Request(destination_topic=missing_topic)
             client.async_request(req_for_error)
             async_callback_count = client._get_async_callback_count()
-            self.assertEquals(11, async_callback_count)
+            self.assertEqual(11, async_callback_count)
 
             for i in range(0, 20):
                 print("asyncCallbackCount = " + str(client._get_async_callback_count()))
@@ -55,6 +55,6 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
                 req = Request(destination_topic=req_topic)
                 client.async_request(req, cb)
 
-            self.assertEquals(1, async_callback_count)
+            self.assertEqual(1, async_callback_count)
 
         # TODO: Restore the value of SYSPROP_ASYNC_CALLBACK_CHECK_INTERVAL

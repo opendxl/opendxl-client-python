@@ -16,7 +16,7 @@ with open(os.path.join(cwd, "dxlclient", "_product_props.py")) as f:
     exec(f.read(), product_props)
 
 TEST_REQUIREMENTS = [
-    "futures",
+    'futures; python_version == "2.7"',
     "mock",
     "nose",
     "parameterized",
@@ -62,16 +62,17 @@ dist = setup(
         "requests"
     ],
 
-    tests_require=[
-        'futures; python_version == "2.7"',
-        "mock",
-        "nose",
-        "parameterized",
-        "requests-mock"
+    setup_requires=[
+        "nose>=1.0"
     ],
 
+    tests_require=TEST_REQUIREMENTS,
+
     extras_require={
-        "test": TEST_REQUIREMENTS
+        'dev': [
+            'pylint'
+        ],
+        'test': TEST_REQUIREMENTS
     },
 
     test_suite="nose.collector",

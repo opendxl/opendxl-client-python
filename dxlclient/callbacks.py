@@ -11,12 +11,7 @@ class MessageCallback(_BaseObject):  # pylint: disable=too-few-public-methods
     """
     Base class for the different callbacks
     """
-    def __init__(self):
-        super(MessageCallback, self).__init__()
-
-    def __del__(self):
-        super(MessageCallback, self).__del__()
-
+    pass
 
 class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
     """

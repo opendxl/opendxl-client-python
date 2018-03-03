@@ -93,7 +93,7 @@ class ServiceRegistrationInfo(_BaseObject):
     def __init__(self, client, service_type):
         """
         Constructor parameters:
-        
+
         :param client: The :class:`dxlclient.client.DxlClient` instance that will expose this service
         :param service_type: A textual name for the service. For example, "/mycompany/myservice"
         """
@@ -213,7 +213,7 @@ class ServiceRegistrationInfo(_BaseObject):
         """
         Registers a topic for the service to respond to along with the :class:`dxlclient.callbacks.RequestCallback`
         that will be invoked.
-        
+
         :param topic:  The topic for the service to respond to
         :param callback: The :class:`dxlclient.callbacks.RequestCallback` that will be invoked when a
             :class:`dxlclient.message.Request` message is received
@@ -273,7 +273,7 @@ class ServiceRegistrationInfo(_BaseObject):
     def _wait_for_registration(self, timeout):
         """
         Waits for the service to be registered with the broker for the first time.
-        
+
         :param timeout: The amount of time to wait for the registration to occur.
         :return: None.
         """
@@ -285,7 +285,7 @@ class ServiceRegistrationInfo(_BaseObject):
     def _notify_registration_succeeded(self):
         """
         Invoked when the service has been successfully registered with a broker.
-        
+
         :return: None.
         """
         with self._registration_sync:
@@ -297,7 +297,7 @@ class ServiceRegistrationInfo(_BaseObject):
     def _wait_for_unregistration(self, timeout):
         """
         Waits for the service to be unregistered with the broker for the first time.
-         
+
         :param timeout: The amount of time to wait for the unregistration to occur.
         :return: None.
         """
@@ -310,7 +310,7 @@ class ServiceRegistrationInfo(_BaseObject):
     def _notify_unregistration_succeeded(self):
         """
         Invoked when the service has been successfully unregistered with a broker.
-         
+
         :return: None.
         """
         with self._registration_sync:
@@ -323,7 +323,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def __init__(self, client, service):
         """
         Constructs the ServiceRegistrationHandler object.
-        
+
         :param client:  The internal client reference.
         :param service: The service registration info.
         :return: None.
@@ -387,9 +387,8 @@ class _ServiceRegistrationHandler(_BaseObject):
 
     def get_service(self):
         """
-
         Returns the service registration info.
-        
+
         :return The service registration info.
         """
         return self.service_weak_reference()
@@ -397,7 +396,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def is_invalid_reference(self):
         """
         Returns true if the service weak reference is invalid.
-        
+
         :return True if the service weak reference is invalid, otherwise false.
         """
         return self.get_service() and None
@@ -405,7 +404,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def send_register_service_request(self):
         """
         Send the registration request for the service.
-        
+
         :return: None.
         """
         if not self.client:
@@ -427,7 +426,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def send_unregister_service_event(self):
         """
         Send the unregister event for the service.
-        
+
         :return: None.
         """
         if not self.client:
@@ -456,7 +455,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def get_register_time(self):
         """
         Returns the last registration time in milliseconds.
-        
+
         :return The last registration time in milliseconds, or 0L if not registered.
         """
         with self.lock:
@@ -465,7 +464,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def update_register_time(self):
         """
         Updates the last registration time in milliseconds.
-        
+
         :return: None.
         """
         with self.lock:
@@ -474,7 +473,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def mark_for_deletion(self):
         """
         Marks the service for deletion.
-        
+
         :return: None.
         """
         self.deleted = True
@@ -482,7 +481,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def is_deleted(self):
         """
         Returns true if the service is marked for deletion.
-        
+
         :return True if the service is marked for deletion, otherwise false.
         """
         return self.deleted
@@ -509,7 +508,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def start_timer(self):
         """
         Starts the TTL timer task.
-        
+
         :return: None.
         """
         if not self.client:
@@ -523,7 +522,7 @@ class _ServiceRegistrationHandler(_BaseObject):
     def stop_timer(self):
         """
         Stops the TTL timer task.
-        
+
         :return: None.
         """
         if self.ttl_timer:
@@ -558,7 +557,7 @@ class _ServiceManager(RequestCallback):
     def __init__(self, client):
         """
         Creates the service manager.
-        
+
         :param client: client that the service manager is associated with.
         :return: None.
         """
@@ -582,7 +581,7 @@ class _ServiceManager(RequestCallback):
     def add_service(self, service_reg_info):
         """
         Adds the specified service.
-        
+
         :param service: The service to add.
         :return: None.
         """
@@ -617,7 +616,7 @@ class _ServiceManager(RequestCallback):
     def remove_service(self, service_id):
         """
         Removes the specified service.
-        
+
         :param instanceId: The instance ID of the service to remove.
         :return: None.
         """
@@ -646,7 +645,7 @@ class _ServiceManager(RequestCallback):
                     service_handler.send_unregister_service_event()
                 except Exception as ex:
                     logger.error("Error sending unregister service event for " +
-                         service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
+                                 service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
 
             # Remove the service handler from a copy of self.services. This
             # avoids causing issues with any readers using the current value of
@@ -659,7 +658,7 @@ class _ServiceManager(RequestCallback):
     def on_request(self, request):
         """
         Invoked when a {@link Request} has been received.
-        
+
         :param request: The request.
         :return: None.
         """
@@ -683,7 +682,7 @@ class _ServiceManager(RequestCallback):
     def send_service_not_found_error_message(self, request):
         """
         Sends a service not found error message response.
-        
+
         :param request: The request.
         :return: None.
         """
@@ -696,14 +695,15 @@ class _ServiceManager(RequestCallback):
         except Exception as ex:
             logger.error("Error sending service not found error message: " + str(ex))
 
-    def _on_request(self, service_handler, request):
+    @staticmethod
+    def _on_request(service_handler, request):
         service_handler.request_callbacks.fire_message(request)
 
     def on_connect(self):
         """
         On connect, check for deleted and/or rogue services and send unregister event, if necessary.
         Start timer threads for all active services.
-        
+
         :return: None
         """
         with self.lock:
@@ -729,9 +729,9 @@ class _ServiceManager(RequestCallback):
 
     def on_disconnect(self):
         """
-         On disconnect, send unregister event for all active services as long as still connected.
+        On disconnect, send unregister event for all active services as long as still connected.
         Stop all timer threads.
-        
+
         :return: None.
         """
         with self.lock:

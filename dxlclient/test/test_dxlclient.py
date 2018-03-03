@@ -6,17 +6,12 @@
 # Run with python -m unittest dxlclient.test.test_dxlclient
 
 from __future__ import absolute_import
-import unittest
-import time
-import sys
-import threading
-
-from .base_test import BaseClientTest
 import io
-from nose.plugins.attrib import attr
-from parameterized import parameterized
-from mock import Mock, patch
+import sys
 from textwrap import dedent
+import time
+import threading
+import unittest
 
 if sys.version_info[0] > 2:
     import builtins
@@ -24,6 +19,12 @@ else:
     import __builtin__
     builtins = __builtin__
 import paho.mqtt.client as mqtt # pylint: disable=import-error
+
+from configobj import ConfigObj
+from nose.plugins.attrib import attr
+from parameterized import parameterized
+from mock import Mock, patch
+
 
 import dxlclient._global_settings
 from dxlclient import Request
@@ -39,6 +40,8 @@ from dxlclient import RequestCallback
 from dxlclient import ResponseCallback
 from dxlclient import DxlException, WaitTimeoutException
 from dxlclient._global_settings import *
+
+from .base_test import BaseClientTest
 
 CONFIG_DATA_NO_CERTS_SECTION = """
 [no_certs]
@@ -116,8 +119,6 @@ class DxlClientConfigTest(unittest.TestCase):
         slow_broker = Mock()
 
         def connect_to_broker_slow():
-            import time
-
             semaphore.acquire()
             time.sleep(0.1)
             return
@@ -528,8 +529,8 @@ class DxlClientTest(unittest.TestCase):
         self.client.register_service_async(service_info)
         # Check subscribed channels
         subscriptions = self.client.subscriptions
-        assert channel1 in subscriptions, "Client wasn't subscribed to service channel"
-        assert channel2 in subscriptions, "Client wasn't subscribed to service channel"
+        self.assertIn(channel1, subscriptions, "Client wasn't subscribed to service channel")
+        self.assertIn(channel2, subscriptions, "Client wasn't subscribed to service channel")
 
     def test_client_wont_register_the_same_service_twice(self):
         service_info = dxlclient.service.ServiceRegistrationInfo(
@@ -567,13 +568,13 @@ class DxlClientTest(unittest.TestCase):
         self.client.register_service_async(service_info)
         # Check subscribed channels
         subscriptions = self.client.subscriptions
-        assert channel1 in subscriptions, "Client wasn't subscribed to service channel"
-        assert channel2 in subscriptions, "Client wasn't subscribed to service channel"
+        self.assertIn(channel1, subscriptions, "Client wasn't subscribed to service channel")
+        self.assertIn(channel2, subscriptions, "Client wasn't subscribed to service channel")
 
         self.client.unregister_service_async(service_info)
         subscriptions = self.client.subscriptions
-        assert channel1 not in subscriptions, "Client wasn't unsubscribed to service channel"
-        assert channel2 not in subscriptions, "Client wasn't unsubscribed to service channel"
+        self.assertNotIn(channel1, subscriptions, "Client wasn't unsubscribed to service channel")
+        self.assertNotIn(channel2, subscriptions, "Client wasn't unsubscribed to service channel")
 
     def test_client_register_service_unsuscribes_from_channel_by_guid(self):
         channel1 = '/mcafee/service/unittest/one'
@@ -597,13 +598,13 @@ class DxlClientTest(unittest.TestCase):
 
         # Check subscribed channels
         subscriptions = self.client.subscriptions
-        assert channel1 in subscriptions, "Client wasn't subscribed to service channel"
-        assert channel2 in subscriptions, "Client wasn't subscribed to service channel"
+        self.assertIn(channel1, subscriptions, "Client wasn't subscribed to service channel")
+        self.assertIn(channel2, subscriptions, "Client wasn't subscribed to service channel")
 
         self.client.unregister_service_async(service_info2)
         subscriptions = self.client.subscriptions
-        assert channel1 not in subscriptions, "Client wasn't unsubscribed to service channel"
-        assert channel2 not in subscriptions, "Client wasn't unsubscribed to service channel"
+        self.assertNotIn(channel1, subscriptions, "Client wasn't unsubscribed to service channel")
+        self.assertNotIn(channel2, subscriptions, "Client wasn't unsubscribed to service channel")
 
 
 @attr('system')
@@ -612,15 +613,14 @@ class DxlClientSystemClientTest(BaseClientTest):
     def test_client_connects_to_broker_and_sets_current_broker(self):
 
         with self.create_client() as client:
+            broker_ids = [broker.unique_id for broker in client.config.brokers]
             client.connect()
-            broker_id = "unique_broker_id_1"
-
             self.assertTrue(client.connected)
-            self.assertEqual(client.current_broker.unique_id, broker_id)
+            self.assertIn(client.current_broker.unique_id, broker_ids)
 
     def test_client_raises_exception_when_cannot_sync_connect_to_broker(self):
 
-        with self.create_client() as client:
+        with self.create_client(max_retries=0) as client:
             broker = Broker("localhost", UuidGenerator.generate_id_as_string(),
                             "127.0.0.255", 58883)
             client._config.brokers = [broker]
@@ -671,7 +671,6 @@ class DxlClientSystemClientTest(BaseClientTest):
         with self.create_client() as client:
             test_topic = '/test/doesntexists/' + client.config._client_id
             client.connect()
-            time.sleep(2)
             self.assertTrue(client.connected)
 
             # Send request thru dxl fabric to a service which doesn't exists

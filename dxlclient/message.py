@@ -40,9 +40,9 @@ the client should use the asynchronous form for sending requests,
 """
 
 from __future__ import absolute_import
-import msgpack  # pylint: disable=import-error
 from io import BytesIO
 from abc import ABCMeta, abstractproperty, abstractmethod
+import msgpack  # pylint: disable=import-error
 
 from dxlclient import _BaseObject
 from dxlclient._uuid_generator import UuidGenerator
@@ -108,10 +108,6 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         self._source_tenant_guid = ""
         # The set of tenant GUIDs to deliver the message to
         self._destination_tenant_guids = []
-
-    def __del__(self):
-        """destructor"""
-        super(Message, self).__del__()
 
     @property
     def version(self):
@@ -331,7 +327,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         packer = msgpack.Packer()
         buf.write(packer.pack(self.version))
         buf.write(packer.pack(self.message_type))
-        # Version 0 
+        # Version 0
         self._pack_message(packer, buf)
         # Version 1
         if self._version > 0:
@@ -375,7 +371,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
                 message._unpack_message_v1(unpacker)
             # Version 2
             if message._version > 1:
-                message._unpack_message_v2(unpacker)            
+                message._unpack_message_v2(unpacker)
             return message
 
         raise DxlException("Unknown message type: " + message_type)
@@ -490,10 +486,10 @@ class Response(Message):
 
             self._service_id = request.service_id
             id = request.source_client_id
-            if id is not None and len(id) > 0:
+            if id:
                 self.client_ids = [id]
             id = request.source_broker_id
-            if id is not None and len(id) > 0:
+            if id:
                 self.broker_ids = [id]
         else:
             super(Response, self).__init__(destination_topic="")

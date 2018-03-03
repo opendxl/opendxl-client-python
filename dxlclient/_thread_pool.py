@@ -47,8 +47,8 @@ class ThreadPoolWorker(Thread):
                     # Exit the thread
                     return
                 else:
-                    func(*args, **kargs)  # pylint: disable=star-args
-            except Exception as ex:  # pylint: disable=broad-except
+                    func(*args, **kargs)
+            except Exception:  # pylint: disable=broad-except
                 logger.exception("Error in worker thread")
             del func
             self.tasks.task_done()
@@ -69,10 +69,6 @@ class ThreadPool(_BaseObject):
         for _ in range(num_threads):
             t = ThreadPoolWorker(self._tasks, thread_prefix)
             self._threads.append(t)
-
-    def __del__(self):
-        """destructor"""
-        super(ThreadPool, self).__del__()
 
     def add_task(self, func, *args, **kargs):
         """Add a task to the queue"""
@@ -96,4 +92,3 @@ class ThreadPool(_BaseObject):
         if wait_complete:
             for t in self._threads:
                 t.join()
-

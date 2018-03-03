@@ -105,7 +105,7 @@ class BrokerTest(unittest.TestCase):
         self.connection_mock.side_effect = [socket.error, self.socket_mock]
         self.broker._parse("broker_guid;8883;broker.fake.com;1.2.3.4")
         self.broker._connect_to_broker()
-        self.assertEquals(2, self.connection_mock.call_count)
+        self.assertEqual(2, self.connection_mock.call_count)
         self.assertTrue(self.broker._response_from_ip_address)
         self.assertIsNotNone(self.broker._response_time)
         self.connection_mock.assert_called_with(('1.2.3.4', 8883), timeout=ANY)
@@ -113,10 +113,10 @@ class BrokerTest(unittest.TestCase):
     def test_close_once(self):
         self.broker._parse("broker_guid;8883;broker.fake.com;1.2.3.4")
         self.broker._connect_to_broker()
-        self.assertEquals(1, self.socket_mock.close.call_count)
+        self.assertEqual(1, self.socket_mock.close.call_count)
 
     def test_close_once_when_errors(self):
         self.connection_mock.side_effect = [socket.error, self.socket_mock]
         self.broker._parse("broker_guid;8883;broker.fake.com;1.2.3.4")
         self.broker._connect_to_broker()
-        self.assertEquals(1, self.socket_mock.close.call_count)
+        self.assertEqual(1, self.socket_mock.close.call_count)

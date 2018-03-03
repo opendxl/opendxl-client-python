@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
+from nose.plugins.attrib import attr
 from dxlclient.test.test_service import TestService
 from dxlclient import UuidGenerator, Request, ResponseCallback, ServiceRegistrationInfo
 from dxlclient.test.base_test import BaseClientTest, atomize
-from nose.plugins.attrib import attr
 
 
 class AsyncRequestTests(BaseClientTest):

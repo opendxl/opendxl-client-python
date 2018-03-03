@@ -180,7 +180,7 @@ def _on_message(client, userdata, msg): # pylint: disable=invalid-name
 
     try:
         self._thread_pool.add_task(self._handle_message, channel=msg.topic, payload=msg.payload)
-    except Exception as ex:  # pylint: disable=broad-except
+    except Exception:  # pylint: disable=broad-except
         logger.exception("Error handling message")
 
 
@@ -205,7 +205,7 @@ def _on_log(client, userdata, level, buf):
     elif level == mqtt.MQTT_LOG_NOTICE:
         logger.info("MQTT: %s", str(buf))
     elif level == mqtt.MQTT_LOG_WARNING:
-        logger.warn("MQTT: %s", str(buf))
+        logger.warning("MQTT: %s", str(buf))
     elif level == mqtt.MQTT_LOG_ERR:
         logger.error("MQTT: %s", str(buf))
     elif level == mqtt.MQTT_LOG_DEBUG:
@@ -381,9 +381,9 @@ class DxlClient(_BaseObject):
 
         # The underlying MQTT client instance
         self._client = mqtt.Client(client_id=self._config._client_id,
-                                  clean_session=True,
-                                  userdata=self,
-                                  protocol=mqtt.MQTTv31)
+                                   clean_session=True,
+                                   userdata=self,
+                                   protocol=mqtt.MQTTv31)
 
         # The MQTT client connect callback
         self._client.on_connect = _on_connect
@@ -403,11 +403,11 @@ class DxlClient(_BaseObject):
         # pylint: disable=no-member
         # The MQTT client TLS configuration
         self._client.tls_set(config.broker_ca_bundle,
-                            certfile=config.cert_file,
-                            keyfile=config.private_key,
-                            cert_reqs=ssl.CERT_REQUIRED,
-                            tls_version=ssl.PROTOCOL_SSLv23,
-                            ciphers=None)
+                             certfile=config.cert_file,
+                             keyfile=config.private_key,
+                             cert_reqs=ssl.CERT_REQUIRED,
+                             tls_version=ssl.PROTOCOL_SSLv23,
+                             ciphers=None)
         # The MQTT client TLS configuration to bypass hostname validation
         self._client.tls_insecure_set(True)
 
@@ -418,7 +418,7 @@ class DxlClient(_BaseObject):
         self._thread_pool = ThreadPool(
             num_threads=config.incoming_message_thread_pool_size,
             queue_size=config.incoming_message_queue_size,
-            thread_prefix = self._message_pool_prefix)
+            thread_prefix=self._message_pool_prefix)
 
         # Subscribe to the client reply channel
         self.subscribe(self._reply_to_topic)
@@ -567,7 +567,7 @@ class DxlClient(_BaseObject):
 
                 self._config = None
 
-                self._client.user_data_set( None )
+                self._client.user_data_set(None)
                 self._client = None
 
                 self._destroyed = True
@@ -716,9 +716,9 @@ class DxlClient(_BaseObject):
         logger.info("Waiting for broker list...")
         self._config_lock.acquire()
         try:
-            while not self._thread_terminate and len(self._config.brokers) == 0:
+            while not self._thread_terminate and not self._config.brokers:
                 self._config_lock_condition.wait(self._wait_for_policy_delay)
-                if len(self._config.brokers) == 0:
+                if self._config.brokers:
                     logger.debug("No broker defined. Waiting for broker list...")
         finally:
             self._config_lock.release()
@@ -789,10 +789,7 @@ class DxlClient(_BaseObject):
         if the client is not currently connected to a :class:`dxlclient.broker.Broker`.
         """
         with self._current_broker_lock:
-            if self.connected:
-                return self._current_broker
-            else:
-                return None
+            return self._current_broker if self.connected else None
 
     def _set_current_broker(self, current_broker):
         """
@@ -1175,7 +1172,7 @@ class DxlClient(_BaseObject):
             self._fire_event(message)
         elif isinstance(message, Request):
             self._fire_request(message)
-        elif isinstance(message, Response) or isinstance(message, ErrorResponse):
+        elif isinstance(message, (Response, ErrorResponse)):
             self._fire_response(message)
         else:
             raise ValueError("Unknown message type")
@@ -1195,7 +1192,8 @@ class DxlClient(_BaseObject):
         :param service_reg_info: A :class:`dxlclient.service.ServiceRegistrationInfo` instance containing information
             about the service that is to be registered.
         """
-        if self._service_manager: self._service_manager.add_service(service_reg_info)
+        if self._service_manager:
+            self._service_manager.add_service(service_reg_info)
 
     def unregister_service_async(self, service_reg_info):
         """
@@ -1212,7 +1210,8 @@ class DxlClient(_BaseObject):
         :param service_reg_info: A :class:`dxlclient.service.ServiceRegistrationInfo` instance containing information
             about the service that is to be unregistered.
         """
-        if self._service_manager: self._service_manager.remove_service(service_reg_info.service_id)
+        if self._service_manager:
+            self._service_manager.remove_service(service_reg_info.service_id)
 
     def register_service_sync(self, service_req_info, timeout):
         """

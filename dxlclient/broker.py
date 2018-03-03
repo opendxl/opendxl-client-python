@@ -62,10 +62,6 @@ class Broker(_BaseObject):
         # The broker response time in nanoseconds, or None if no response or not tested
         self._response_time = None
 
-    def __del__(self):
-        """Destructor"""
-        super(Broker, self).__del__()
-
     @property
     def unique_id(self):
         """
@@ -173,7 +169,7 @@ class Broker(_BaseObject):
         broker.host_name = host_name
         broker.port = port
 
-        if protocol and not protocol.lower() == Broker._SSL_PROTOCOL.lower():
+        if protocol and protocol.lower() != Broker._SSL_PROTOCOL.lower():
             raise MalformedBrokerUriException("Unknown protocol: " + protocol)
 
         return broker
@@ -258,17 +254,17 @@ class Broker(_BaseObject):
                 broker_s.close()
 
     @staticmethod
-    def _is_port_number(input):
+    def _is_port_number(port):
         """
         Indicates if the input is a valid port number.
-        :param input: Port number to check.
+        :param port: Port number to check.
         :return: True if the input is a valid port number, false otherwise.
         """
         res = True
         try:
-            port = int(input)
-            if port < 1 or port > 65535:
+            port_int = int(port)
+            if port_int < 1 or port_int > 65535:
                 res = False
-        except Exception as e:
+        except (TypeError, ValueError):
             res = False
         return res

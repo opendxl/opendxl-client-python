@@ -502,7 +502,8 @@ class DxlClientConfig(_BaseObject):
     def reconnect_when_disconnected(self, reconnect):
         self._reconnect_when_disconnected = reconnect
 
-    def _get_sorted_broker_list_worker(self, broker):
+    @staticmethod
+    def _get_sorted_broker_list_worker(broker):
         """Returns a sorted list of the brokers in this config."""
         broker._connect_to_broker()
 
