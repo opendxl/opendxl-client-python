@@ -140,9 +140,8 @@ def _on_disconnect_run(client, userdata, rc):  # pylint: disable=invalid-name
 
     with self._connected_lock:
         self._connected = False
+        self._reset_current_broker()
         self._connected_wait_condition.notify_all()
-
-    self._reset_current_broker()
 
     if rc == 0:
         logger.debug("Disconnected with result code %s", str(rc))
@@ -515,7 +514,7 @@ class DxlClient(_BaseObject):
         # Wait for the callback to be invoked
         with self._connected_lock:
             if not self.connected:
-                self._connected_wait_condition.wait(5)
+                self._connected_wait_condition.wait(self._DEFAULT_CONNECT_WAIT)
 
         # Check if we were connected
         if not self.connected:
@@ -614,6 +613,15 @@ class DxlClient(_BaseObject):
                 self._thread.join(1)
             self._thread = None
             logger.debug("Thread terminated.")
+
+        # Wait for the callback to be invoked
+        with self._connected_lock:
+            if self.connected:
+                self._connected_wait_condition.wait(self._DEFAULT_CONNECT_WAIT)
+
+        # Check if we were disconnected
+        if self.connected:
+            raise DxlException("Failed to disconnect")
 
     def _connect_thread_main(self, connect_retries):
         """

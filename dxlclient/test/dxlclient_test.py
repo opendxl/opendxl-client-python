@@ -14,16 +14,12 @@ class DxlClientTest (BaseClientTest):
     # Tests the connect and disconnect methods of the DxlClient
     #
     @attr('system')
-    def test_dxl_client_connection(self):
-        self.execute_con_disc_test()
-
-    def execute_con_disc_test(self):
+    def test_connect_and_disconnect(self):
         with self.create_client(max_retries=0) as client:
-            try:
-                client.connect()
-                client.disconnect()
-            except Exception, e:
-                print e.message
+            client.connect()
+            self.assertTrue(client.connected)
+            client.disconnect()
+            self.assertFalse(client.connected)
 
     #
     # Tests the subscribe and unsubscribe methods of the DxlClient
