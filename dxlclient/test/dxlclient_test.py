@@ -29,20 +29,14 @@ class DxlClientTest (BaseClientTest):
     # Tests the subscribe and unsubscribe methods of the DxlClient
     #
     @attr('system')
-    def test_dxlclient_subscription(self):
-        self.execute_subs__unsubs_test()
-
-    def execute_subs__unsubs_test(self):
+    def test_subscribe_and_unsubscribe(self):
         with self.create_client(max_retries=0) as client:
-            try:
-                client.connect()
-                topic = UuidGenerator.generate_id_as_string()
-                client.subscribe(topic)
-                time.sleep(0.5)
-                client.unsubscribe(topic)
-                client.disconnect()
-            except Exception, e:
-                print e.message
+            client.connect()
+            topic = UuidGenerator.generate_id_as_string()
+            client.subscribe(topic)
+            self.assertIn(topic, client.subscriptions)
+            client.unsubscribe(topic)
+            self.assertNotIn(topic, client.subscriptions)
 
     #
     # Test to ensure that ErrorResponse messages can be successfully delivered
