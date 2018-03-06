@@ -16,6 +16,7 @@ from parameterized import parameterized
 from mock import Mock, patch
 from textwrap import dedent
 import __builtin__
+import paho.mqtt.client as mqtt # pylint: disable=import-error
 
 import dxlclient._global_settings
 from dxlclient import Request
@@ -29,7 +30,7 @@ from dxlclient import UuidGenerator
 from dxlclient import EventCallback
 from dxlclient import RequestCallback
 from dxlclient import ResponseCallback
-from dxlclient import DxlException
+from dxlclient import DxlException, WaitTimeoutException
 from dxlclient._global_settings import *
 
 CONFIG_DATA_NO_CERTS_SECTION = """
@@ -388,8 +389,10 @@ class DxlClientTest(unittest.TestCase):
 
     def test_client_subscribe_doesnt_add_twice_same_channel(self):
         # Mock client.subscribe and is_connected
-        self.client._client.subscribe = Mock(return_value=None)
+        self.client._client.subscribe = Mock(
+            return_value=(mqtt.MQTT_ERR_SUCCESS, 2))
         self.client._connected = Mock(return_value=True)
+        self.client._wait_packet_acked = Mock(return_value=None)
 
         # We always have the default (myself) channel
         self.assertEqual(len(self.client.subscriptions), 1)
@@ -462,6 +465,28 @@ class DxlClientTest(unittest.TestCase):
         self.client._handle_message(self.test_channel, payload)
         # Check that message response was properly delivered to handler
         self.assertEqual(self.client._fire_response.call_count, 1)
+
+    def test_client_subscribe_no_ack_raises_timeout(self):
+        self.client._client.subscribe = Mock(
+            return_value=(mqtt.MQTT_ERR_SUCCESS, 2))
+        self.client._connected = Mock(return_value=True)
+        with patch.object(DxlClient, '_MAX_PACKET_ACK_WAIT', 0.01):
+            with self.assertRaises(WaitTimeoutException):
+                self.client.subscribe(self.test_channel)
+
+    def test_client_unsubscribe_no_ack_raises_timeout(self):
+        self.client._client.subscribe = Mock(
+            return_value=(mqtt.MQTT_ERR_SUCCESS, 2))
+        self.client._client.unsubscribe = Mock(
+            return_value=(mqtt.MQTT_ERR_SUCCESS, 3))
+        self.client._connected = Mock(return_value=True)
+        original_wait_packet_acked_func = self.client._wait_packet_acked
+        self.client._wait_packet_acked = Mock(return_value=None)
+        self.client.subscribe(self.test_channel)
+        self.client._wait_packet_acked = original_wait_packet_acked_func
+        with patch.object(DxlClient, '_MAX_PACKET_ACK_WAIT', 0.01):
+            with self.assertRaises(WaitTimeoutException):
+                self.client.unsubscribe(self.test_channel)
 
     """
     Service unit tests
@@ -589,7 +614,6 @@ class DxlClientSystemClientTest(BaseClientTest):
         with self.create_client() as client:
             test_topic = '/test/whatever/' + client.config._client_id
             client.connect()
-            time.sleep(2)
             self.assertTrue(client.connected)
 
             # Set request callback (use mock to easily check when it was called)
@@ -607,7 +631,6 @@ class DxlClientSystemClientTest(BaseClientTest):
 
             # Subscribe to topic
             client.subscribe(test_topic)
-            time.sleep(1)
 
             # Send event thru dxl fabric again to that topic
             msg = Event(destination_topic=test_topic)
