@@ -3,11 +3,14 @@ from __future__ import print_function
 from io import BytesIO
 import time
 from threading import Condition
+
+import msgpack
 from nose.plugins.attrib import attr
+
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from dxlclient._vendor.msgpack.fallback import Packer, Unpacker
+
 
 
 @attr('system')
@@ -56,7 +59,7 @@ class MessagePayloadTest(BaseClientTest):
 
             with self.create_client() as client:
                 client.connect()
-                packer = Packer()
+                packer = msgpack.Packer()
 
                 # Send a request to the server with information contained
                 # in the payload
@@ -74,7 +77,7 @@ class MessagePayloadTest(BaseClientTest):
                         self.request_complete_condition.wait(self.MAX_WAIT)
 
                 self.assertIsNotNone(self.request_received)
-                unpacker = Unpacker(file_like=BytesIO(request.payload))
+                unpacker = msgpack.Unpacker(file_like=BytesIO(request.payload))
                 self.assertEqual(next(unpacker).decode('utf8'),
                                   self.TEST_STRING)
                 self.assertEqual(next(unpacker), self.TEST_BYTE)

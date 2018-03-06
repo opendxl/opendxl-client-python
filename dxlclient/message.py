@@ -42,7 +42,8 @@ the client should use the asynchronous form for sending requests,
 from __future__ import absolute_import
 from io import BytesIO
 from abc import ABCMeta, abstractproperty, abstractmethod
-import msgpack  # pylint: disable=import-error
+
+import msgpack
 
 from dxlclient import _BaseObject
 from dxlclient._uuid_generator import UuidGenerator

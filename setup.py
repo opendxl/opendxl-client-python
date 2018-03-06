@@ -49,7 +49,6 @@ dist = setup(
 
     package_data={
         "dxlclient": [
-            "_vendor/msgpack/*",
             "_vendor/paho/*.*",
             "_vendor/paho/mqtt/*.*",
         ],
@@ -58,6 +57,7 @@ dist = setup(
     install_requires=[
         "asn1crypto",
         "configobj",
+        "msgpack",
         "oscrypto",
         "requests"
     ],
