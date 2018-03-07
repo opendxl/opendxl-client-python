@@ -258,11 +258,12 @@ class CliTest(unittest.TestCase):
             self.assertTrue(os.path.exists(private_key_file))
 
             # Validate that supplying no password raises an exception
-            self.assertRaises(OSError, _PrivateKey, private_key_file)
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file)
 
             # Validate that supplying a bad password raises an exception
-            self.assertRaises(OSError, _PrivateKey, private_key_file,
-                              "wrongpass")
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file, "wrongpass")
 
             # Validate that supplying the right password is successful
             key = _PrivateKey(private_key_file, "itsasecret")
