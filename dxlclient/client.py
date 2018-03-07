@@ -10,7 +10,7 @@ import traceback
 import random
 import time
 
-import paho.mqtt.client as mqtt # pylint: disable=import-error
+import paho.mqtt.client as mqtt
 
 from dxlclient import _BaseObject
 from dxlclient.client_config import DxlClientConfig
@@ -49,7 +49,7 @@ DXL_ERR_INTERRUPT = 2
 ################################################################################
 
 
-def _on_connect(client, userdata, rc): # pylint: disable=invalid-name
+def _on_connect(client, userdata, flags, rc): # pylint: disable=invalid-name
     """
     Called when the client connects to the broker.
 
@@ -58,6 +58,7 @@ def _on_connect(client, userdata, rc): # pylint: disable=invalid-name
     :param rc: The result code
     :return: None
     """
+    del flags # unused
     t = threading.Thread(target=_on_connect_run, args=[client, userdata, rc])
     t.daemon = True
     t.start()

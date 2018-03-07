@@ -47,18 +47,12 @@ dist = setup(
     # Include additional files into the package
     include_package_data=True,
 
-    package_data={
-        "dxlclient": [
-            "_vendor/paho/*.*",
-            "_vendor/paho/mqtt/*.*",
-        ],
-    },
-
     install_requires=[
         "asn1crypto",
         "configobj",
         "msgpack",
         "oscrypto",
+        "paho-mqtt",
         "requests"
     ],
 

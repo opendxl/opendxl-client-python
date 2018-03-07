@@ -3,16 +3,9 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
-# In order to bundle our own version of some libraries, we use the _vendor
-# folder as an immutable source of external dependencies
 from __future__ import absolute_import
-import os
-import sys
 import logging
 from threading import RLock
-
-# Insert _vendor folder as the first folder when looking a library
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '_vendor'))
 
 from dxlclient._global_settings import *
 from dxlclient._product_props import *
