@@ -3,6 +3,11 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Contains the :class:`RequestManager` class, which handles outgoing requests to
+the DXL fabric.
+"""
+
 from __future__ import absolute_import
 import threading
 import time

@@ -486,12 +486,10 @@ class Response(Message):
             self._request_message_id = request.message_id
 
             self._service_id = request.service_id
-            id = request.source_client_id
-            if id:
-                self.client_ids = [id]
-            id = request.source_broker_id
-            if id:
-                self.broker_ids = [id]
+            if request.source_client_id:
+                self.client_ids = [request.source_client_id]
+            if request.source_broker_id:
+                self.broker_ids = [request.source_broker_id]
         else:
             super(Response, self).__init__(destination_topic="")
             # The request (only available when sending the response)
@@ -561,13 +559,6 @@ class Event(Message):
     Event messages are sent by one publisher and received by one or more recipients that are currently
     subscribed to the :attr:`Message.destination_topic` associated with the event (otherwise known as one-to-many).
     """
-    def __init__(self, destination_topic):
-        """
-        Constructor parameters:
-
-        :param destination_topic: The topic to publish the event to
-        """
-        super(Event, self).__init__(destination_topic)
 
     @property
     def message_type(self):
@@ -576,6 +567,7 @@ class Event(Message):
         """
         return Message.MESSAGE_TYPE_EVENT
 
+    # pylint: disable=useless-super-delegation
     def _pack_message(self, packer, buf):
         """
         Converts the message to an array of bytes and writes them to buf.
@@ -592,7 +584,7 @@ class Event(Message):
         :param unpacker: Unpacker object.
         """
         super(Event, self)._unpack_message(unpacker)
-
+    # pylint: enable=useless-super-delegation
 
 class ErrorResponse(Response):
     """

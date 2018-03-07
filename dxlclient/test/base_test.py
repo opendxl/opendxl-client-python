@@ -1,8 +1,12 @@
+""" Base class for the various client tests. """
+
 from __future__ import absolute_import
 from functools import wraps
 import os
 from unittest import TestCase
 from dxlclient import DxlClientConfig, DxlClient
+
+# pylint: disable=missing-docstring, no-self-use
 
 
 def atomize(lock):

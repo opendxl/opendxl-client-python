@@ -3,6 +3,10 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Contains the :class:`Broker` class, which represents a DXL message broker.
+"""
+
 from __future__ import absolute_import
 import re
 import socket
@@ -15,6 +19,7 @@ from dxlclient.exceptions import MalformedBrokerUriException
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=attribute-defined-outside-init, too-many-instance-attributes
 class Broker(_BaseObject):
     """
     The class :class:`Broker` represents a DXL message broker.
@@ -70,7 +75,7 @@ class Broker(_BaseObject):
         return self._unique_id
 
     @unique_id.setter
-    def unique_id(self, id):
+    def unique_id(self, id): # pylint: disable=invalid-name, redefined-builtin
         if id:
             self._unique_id = id
         else:
@@ -104,10 +109,8 @@ class Broker(_BaseObject):
     def ip_address(self, ip_address):
         if ip_address:
             # Remove brackets around IPv6 address
-            ip = re.sub(r"[\[\]]", "", ip_address)
-        else:
-            ip = ip_address
-        self._ip_address = ip
+            ip_address = re.sub(r"[\[\]]", "", ip_address)
+        self._ip_address = ip_address
 
     @property
     def port(self):
@@ -244,11 +247,13 @@ class Broker(_BaseObject):
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
                 except socket.error as msg:
-                    logger.error("Socket could not be created. Error Code: " +
-                                 str(msg.errno) + ". Message: " + str(msg) + ".")
+                    logger.error(
+                        "Socket could not be created. Error Code: %s. Message: %s.",
+                        msg.errno, msg)
             else:
-                logger.error("Socket could not be created. Error Code: " +
-                             str(msg.errno) + ". Message: " + str(msg) + ".")
+                logger.error(
+                    "Socket could not be created. Error Code: %s. Message: %s.",
+                    msg.errno, msg)
         finally:
             if broker_s is not None:
                 broker_s.close()

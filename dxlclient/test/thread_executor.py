@@ -1,5 +1,12 @@
+"""
+Class which executes the specified command a specified number of times, using a
+new thread for each execution.
+"""
+
 from __future__ import absolute_import
 from concurrent.futures import ThreadPoolExecutor
+
+# pylint: disable=missing-docstring
 
 
 class ThreadRunExecutor(object):
@@ -12,5 +19,5 @@ class ThreadRunExecutor(object):
 
     def execute(self, command):
         with self.executor as executor:
-            for i in range(0, self.run_count):
+            for _ in range(0, self.run_count):
                 self.futures.append(executor.submit(command))

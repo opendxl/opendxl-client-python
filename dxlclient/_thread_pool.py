@@ -3,6 +3,11 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Classes which provide a thread pool implementation, e.g., for use in
+concurrent processing of incoming DXL messages by registered callbacks.
+"""
+
 from __future__ import absolute_import
 from threading import Thread
 import logging

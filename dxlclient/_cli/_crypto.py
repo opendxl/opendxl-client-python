@@ -32,7 +32,7 @@ def _bytes_to_unicode(obj):
     return obj.decode() if isinstance(obj, bytes) else obj
 
 
-class X509Name(object):
+class X509Name(object): # pylint: disable=too-many-instance-attributes
     """
     Holder for an X.509 distinguished name, e.g., /C=US/CN=myname.
     """

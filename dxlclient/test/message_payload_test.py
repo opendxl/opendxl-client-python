@@ -1,16 +1,22 @@
+"""
+Tests whether payloads can be successfully delivered from a client to the server.
+Payloads are simply bytes of data that are used to provide application-specific
+information.
+"""
+
 from __future__ import absolute_import
 from __future__ import print_function
 from io import BytesIO
 import time
 from threading import Condition
 
-import msgpack
 from nose.plugins.attrib import attr
+import msgpack
 
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
-from dxlclient.test.test_service import TestService
 
+# pylint: disable=missing-docstring
 
 
 @attr('system')
@@ -35,11 +41,10 @@ class MessagePayloadTest(BaseClientTest):
 
         # Create a server that handles a request, unpacks the payload, and
         # asserts that the information in the payload was delivered successfully.
-        with self.create_client(max_retries=0) as server:
-            test_service = TestService(server, 1)
-            server.connect()
+        with self.create_client(max_retries=0) as client:
+            client.connect()
             topic = UuidGenerator.generate_id_as_string()
-            reg_info = ServiceRegistrationInfo(server,
+            reg_info = ServiceRegistrationInfo(client,
                                                "message_payload_runner_service")
 
             # callback definition
@@ -47,15 +52,15 @@ class MessagePayloadTest(BaseClientTest):
                 with self.request_complete_condition:
                     try:
                         self.request_received = request
-                    except Exception as e:
-                        print(e)
+                    except Exception as ex: # pylint: disable=broad-except
+                        print(ex)
                     self.request_complete_condition.notify_all()
 
             request_callback = RequestCallback()
             request_callback.on_request = on_request
             reg_info.add_topic(topic, request_callback)
             # Register the service
-            server.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
+            client.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
 
             with self.create_client() as client:
                 client.connect()
@@ -79,6 +84,6 @@ class MessagePayloadTest(BaseClientTest):
                 self.assertIsNotNone(self.request_received)
                 unpacker = msgpack.Unpacker(file_like=BytesIO(request.payload))
                 self.assertEqual(next(unpacker).decode('utf8'),
-                                  self.TEST_STRING)
+                                 self.TEST_STRING)
                 self.assertEqual(next(unpacker), self.TEST_BYTE)
                 self.assertEqual(next(unpacker), self.TEST_INT)

@@ -1,3 +1,8 @@
+"""
+Tests the broker/subs topic on the broker in conjunction with service
+registrations made from the client.
+"""
+
 from __future__ import absolute_import
 from __future__ import print_function
 import json
@@ -5,6 +10,9 @@ import time
 from nose.plugins.attrib import attr
 from dxlclient import Request, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest
+
+# pylint: disable=missing-docstring, too-many-locals
+
 
 @attr('system')
 class SubsCountTest(BaseClientTest):
@@ -17,10 +25,10 @@ class SubsCountTest(BaseClientTest):
         with self.create_client() as client:
             client.connect()
 
-            for i in range(6):
-                c = self.create_client()
-                c.connect()
-                clients.append(c)
+            for _ in range(6):
+                _client = self.create_client()
+                _client.connect()
+                clients.append(_client)
 
             random1 = UuidGenerator.generate_id_as_string()
             random2 = UuidGenerator.generate_id_as_string()

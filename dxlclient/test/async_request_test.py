@@ -1,3 +1,5 @@
+""" Tests the asynchronous request methods of the DxlClient """
+
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
@@ -5,6 +7,8 @@ from nose.plugins.attrib import attr
 from dxlclient.test.test_service import TestService
 from dxlclient import UuidGenerator, Request, ResponseCallback, ServiceRegistrationInfo
 from dxlclient.test.base_test import BaseClientTest, atomize
+
+# pylint: disable=missing-docstring, no-self-use
 
 
 class AsyncRequestTests(BaseClientTest):
@@ -46,8 +50,8 @@ class AsyncRequestTests(BaseClientTest):
                 self.remove_outstanding_request(response.request_message_id)
                 # Notify that a response has been received (are we done yet?)
                 self.response_condition.notify_all()
-        rc = ResponseCallback()
-        rc.on_response = my_response
+        callback = ResponseCallback()
+        callback.on_response = my_response
 
         with self.create_client(max_retries=0) as client:
             try:
@@ -60,9 +64,9 @@ class AsyncRequestTests(BaseClientTest):
                 # Register the service
                 client.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
                 # Add a response callback (not channel-specific)
-                client.add_response_callback("", rc)
+                client.add_response_callback("", callback)
 
-                for i in range(0, self.REQ_COUNT):
+                for _ in range(0, self.REQ_COUNT):
                     # Send a request without specifying a callback for the current request
                     req = Request(topic)
                     self.append_outstanding_request(req.message_id)
@@ -72,7 +76,7 @@ class AsyncRequestTests(BaseClientTest):
                     # The response will be received by two callbacks.
                     req = Request(topic)
                     self.append_outstanding_request(req.message_id)
-                    client.async_request(req, response_callback=rc)
+                    client.async_request(req, response_callback=callback)
 
                 # Wait until all the responses are received via the response callbacks.
                 # The "times 3" is due to the fact that 20000 requests were sent in total.

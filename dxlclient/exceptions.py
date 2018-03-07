@@ -3,6 +3,7 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" Classes for the different exceptions that the dxlclient APIs can raise. """
 
 class DxlException(Exception):
     """

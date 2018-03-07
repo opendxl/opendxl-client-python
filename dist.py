@@ -3,26 +3,31 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" Builds documentation and packages for release """
+
 from __future__ import absolute_import
 from __future__ import print_function
 import os
 import re
 import subprocess
+
+# pylint: disable=no-name-in-module, import-error, missing-docstring
 from distutils.dir_util import copy_tree, remove_tree
 from distutils.file_util import copy_file, move_file
 from distutils.core import run_setup
 from distutils.archive_util import make_archive
+
 from tempfile import mkstemp
 from shutil import move
 
 def replace(file_path, pattern, subst):
     # Create temp file
-    fh, abs_path = mkstemp()
-    with open(abs_path,'w') as new_file:
+    handle, abs_path = mkstemp()
+    with open(abs_path, "w") as new_file:
         with open(file_path) as old_file:
             for line in old_file:
                 new_file.write(line.replace(pattern, subst))
-    os.close(fh)
+    os.close(handle)
     # Remove original file
     os.remove(file_path)
     # Move new file
@@ -73,9 +78,9 @@ subprocess.check_call(["sphinx-build", "-b", "html", DIST_DOCTMP_DIR, os.path.jo
 replace(os.path.join(DIST_DIRECTORY, "doc", "_static", "classic.css"), "text-align: justify", "text-align: none")
 
 # Delete .doctrees
-remove_tree(os.path.join(os.path.join( DIST_DIRECTORY, "doc"), ".doctrees"), verbose=1)
+remove_tree(os.path.join(os.path.join(DIST_DIRECTORY, "doc"), ".doctrees"), verbose=1)
 # Delete .buildinfo
-os.remove(os.path.join(os.path.join( DIST_DIRECTORY, "doc"), ".buildinfo"))
+os.remove(os.path.join(os.path.join(DIST_DIRECTORY, "doc"), ".buildinfo"))
 
 # Move README.html to root of dist directory
 print("\nMoving README.html\n")

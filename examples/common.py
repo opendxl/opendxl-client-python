@@ -24,6 +24,7 @@ logger = logging.getLogger()
 logger.addHandler(console_handler)
 logger.setLevel(logging.INFO)
 
+# pylint: disable=unused-import
 try:
     from builtins import input as prompt
 except ImportError:

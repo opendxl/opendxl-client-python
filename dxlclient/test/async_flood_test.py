@@ -1,3 +1,12 @@
+"""
+Slams a service with a flood of asynchronous tests. The PAHO library by default will
+deadlock when it is waiting to complete a publish and at the same time receives an
+incoming message.
+
+This test ensures that the changes we made to the PAHO library now work in this particular
+scenario.
+"""
+
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
@@ -7,15 +16,9 @@ from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 
+# pylint: disable=missing-docstring
 
-#
-# Slams a service with a flood of asynchronous tests. The PAHO library by default will
-# deadlock when it is waiting to complete a publish and at the same time receives an
-# incoming message.
-#
-# This test ensures that the changes we made to the PAHO library now work in this particular
-# scenario.
-#
+
 @attr('system')
 class AsyncFloodTest(BaseClientTest):
     # The count of requests to send
@@ -42,15 +45,14 @@ class AsyncFloodTest(BaseClientTest):
             client.connect()
             client.subscribe(channel)
 
-            def my_request_callback(rq):
-                # print "request: " + str(rq.version)
+            def my_request_callback(request):
                 try:
                     time.sleep(0.05)
-                    resp = Response(rq)
-                    resp.payload = rq.payload
+                    resp = Response(request)
+                    resp.payload = request.payload
                     client.send_response(resp)
-                except Exception as e:
-                    print(e)
+                except Exception as ex: # pylint: disable=broad-except
+                    print(ex)
 
             req_callback = RequestCallback()
             req_callback.on_request = my_request_callback
@@ -85,8 +87,7 @@ class AsyncFloodTest(BaseClientTest):
                         print("Sent: " + str(i))
 
                     request = Request(channel)
-                    pl = str(i)
-                    request.payload = pl
+                    request.payload = str(i)
                     client2.async_request(request)
 
                     if self.error_count > 0:

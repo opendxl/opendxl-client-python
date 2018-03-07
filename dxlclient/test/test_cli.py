@@ -3,6 +3,11 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ###############################################################################
 
+"""
+Test cases for the CLI subcommands (generatecsr, provisionconfig, and
+updateconfig.
+"""
+
 # Run with nosetests dxlclient.test.test_cli
 
 from __future__ import absolute_import
@@ -16,11 +21,15 @@ import tempfile
 import unittest
 import uuid
 
+# pylint: disable=missing-docstring, too-many-locals
+
+
 if sys.version_info[0] > 2:
     from io import StringIO as NativeStringIO
 else:
     from io import BytesIO as NativeStringIO
 
+# pylint: disable=wrong-import-position
 from asn1crypto import csr, pem, x509, algos
 from mock import patch
 from parameterized import parameterized
@@ -174,7 +183,7 @@ class CliTest(unittest.TestCase):
         stderr_bytes.seek(0)
         stderr_string = stderr_bytes.read()
         self.assertIn("invalid choice", stderr_string)
-        self.assertNotEquals(0, context.exception.code)
+        self.assertNotEqual(0, context.exception.code)
 
     @parameterized.expand([
         ("client1",),

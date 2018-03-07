@@ -2,6 +2,12 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+
+"""
+Contains the :class:`DxlClientConfig` class, which holds the information
+necessary to connect a :class:`dxlclient.client.DxlClient` to the DXL fabric.
+"""
+
 from __future__ import absolute_import
 from collections import OrderedDict
 import logging
@@ -66,7 +72,7 @@ def _get_brokers(broker_list_json):
 ################################################################################
 
 
-class DxlClientConfig(_BaseObject):
+class DxlClientConfig(_BaseObject): # pylint: disable=too-many-instance-attributes
     """
     The Data Exchange Layer (DXL) client configuration contains the information necessary to connect
     a :class:`dxlclient.client.DxlClient` to the DXL fabric.

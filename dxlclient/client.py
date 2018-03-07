@@ -2,6 +2,12 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+
+"""
+Contains the :class:`DxlClient` class, which is responsible for all
+communication with the Data Exchange Layer (DXL) fabric.
+"""
+
 from __future__ import absolute_import
 import threading
 import logging
@@ -93,7 +99,7 @@ def _on_connect_run(client, userdata, rc): # pylint: disable=invalid-name
                         self._wait_packet_acked(result, mid,
                                                 "subscription to " +
                                                 subscription)
-                    except Exception as ex:
+                    except Exception as ex: # pylint: disable=broad-except
                         logger.error("Error during subscribe: %s", str(ex))
                         logger.debug(traceback.format_exc())
 
@@ -133,8 +139,7 @@ def _on_disconnect_run(client, userdata, rc):  # pylint: disable=invalid-name
     :param rc: The result code
     :return: None
     """
-    # Remove unused parameter
-    del client
+    del client # unused
     # Check userdata; this needs to be an instance of the DxlClient
     if not isinstance(userdata, DxlClient):
         raise ValueError("User data object not specified")
@@ -166,8 +171,7 @@ def _on_message(client, userdata, msg): # pylint: disable=invalid-name
     :param msg: The message object
     :return: None
     """
-    # Remove unused parameter
-    del client
+    del client # unused
     # Check userdata; this needs to be an instance of the DxlClient
     if userdata is None or not isinstance(userdata, DxlClient):
         raise ValueError("Client reference not specified")
@@ -198,9 +202,7 @@ def _on_log(client, userdata, level, buf):
     :param buf: The message itself
     :return: None
     """
-    # Remove unused parameter
-    del client, userdata
-
+    del client, userdata # unused
     if level == mqtt.MQTT_LOG_INFO:
         logger.info("MQTT: %s", str(buf))
     elif level == mqtt.MQTT_LOG_NOTICE:
@@ -225,8 +227,7 @@ def _on_subscribe(client, userdata, mid, granted_qos):
         broker has granted for the subscription request.
     :return: None
     """
-    del client
-    del granted_qos
+    del client, granted_qos # unused
     # Check userdata; this needs to be an instance of the DxlClient
     if not isinstance(userdata, DxlClient):
         raise ValueError("Client reference not specified")
@@ -244,7 +245,7 @@ def _on_unsubscribe(client, userdata, mid):
         corresponds to the ack packet.
     :return: None
     """
-    del client
+    del client # unused
     # Check userdata; this needs to be an instance of the DxlClient
     if not isinstance(userdata, DxlClient):
         raise ValueError("Client reference not specified")
@@ -258,8 +259,8 @@ def _on_unsubscribe(client, userdata, mid):
 ################################################################################
 
 
-# pylint: disable=too-many-instance-attributes, invalid-name, too-many-public-methods
-class DxlClient(_BaseObject):
+class DxlClient(_BaseObject): # pylint: disable=too-many-instance-attributes, too-many-public-methods
+
     """
     The :class:`DxlClient` class is responsible for all communication with the Data Exchange Layer (DXL)
     fabric (it can be thought of as the "main" class). All other classes exist to support the functionality
@@ -459,7 +460,7 @@ class DxlClient(_BaseObject):
         """Enter with"""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, trace):
         """Exit with"""
         self.destroy()
 
@@ -638,7 +639,7 @@ class DxlClient(_BaseObject):
         self._thread_terminate = False
         self._loop_until_connected(connect_retries)
 
-    def _connect(self, brokers):
+    def _connect(self, brokers): # pylint: disable=too-many-branches
         """
         Internal function that attempts to connect to one of the given brokers.
 
@@ -708,7 +709,7 @@ class DxlClient(_BaseObject):
                 raise latest_ex  # pylint: disable=raising-bad-type
 
     def _loop_until_connected(self, connect_retries):
-
+        # pylint: disable=too-many-branches
         # The client is already connected
         if self.connected:
             logger.error("Already connected")
@@ -759,7 +760,7 @@ class DxlClient(_BaseObject):
             try:
                 self._connect(brokers)
                 break
-            except Exception as ex:
+            except Exception as ex: # pylint: disable=broad-except
                 # Track latest exception
                 latest_ex = ex
                 latest_ex_traceback = traceback.format_exc()

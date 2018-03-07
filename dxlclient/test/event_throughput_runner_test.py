@@ -1,3 +1,5 @@
+""" Measures the throughput of DXL events. """
+
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
@@ -7,6 +9,8 @@ from nose.plugins.attrib import attr
 from dxlclient import EventCallback, Event, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest, atomize
 from dxlclient.test.thread_executor import ThreadRunExecutor
+
+# pylint: disable=missing-docstring, too-many-instance-attributes
 
 
 class EventThroughputRunner(BaseClientTest):
@@ -104,7 +108,7 @@ class EventThroughputRunner(BaseClientTest):
                                 self.connect_time_start = time.time()
                                 client.connect()
                                 connected = True
-                            except Exception:
+                            except Exception: # pylint: disable=broad-except
                                 if retries > 0:
                                     retries -= 1
                                     self.connect_retries += 1
@@ -177,9 +181,9 @@ class EventThroughputRunner(BaseClientTest):
                             if self.requests_end_time == 0:
                                 self.requests_end_time = time.time()
 
-                except Exception as e:
-                    logging.error(e)
-                    raise e
+                except Exception as ex:
+                    logging.error(ex)
+                    raise ex
 
             executor.execute(run)
 

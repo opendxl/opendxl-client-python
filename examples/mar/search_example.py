@@ -50,7 +50,8 @@ def execute_mar_search_api(client, payload_dict):
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
         resp_dict = json.loads(res.payload.decode(encoding="UTF-8"))
         # Display the response
-        print("Response:\n" + json.dumps(resp_dict, sort_keys=True, indent=4, separators=(',', ': ')))
+        print("Response:\n" + json.dumps(resp_dict, sort_keys=True,
+                                         indent=4, separators=(',', ': ')))
         if "code" in resp_dict:
             code = resp_dict['code']
             if code < 200 or code >= 300:
@@ -74,7 +75,8 @@ with DxlClient(config) as client:
     client.connect()
 
     # Create the search
-    response_dict = execute_mar_search_api(client,
+    response_dict = execute_mar_search_api(
+        client,
         {
             "target": "/v1/simple",
             "method": "POST",
@@ -95,7 +97,8 @@ with DxlClient(config) as client:
     search_id = response_dict["body"]["id"]
 
     # Start the search
-    execute_mar_search_api(client,
+    execute_mar_search_api(
+        client,
         {
             "target": "/v1/" + search_id + "/start",
             "method": "PUT",
@@ -107,7 +110,8 @@ with DxlClient(config) as client:
     # Wait until the search finishes
     finished = False
     while not finished:
-        response_dict = execute_mar_search_api(client,
+        response_dict = execute_mar_search_api(
+            client,
             {
                 "target": "/v1/" + search_id + "/status",
                 "method": "GET",
@@ -121,7 +125,8 @@ with DxlClient(config) as client:
 
     # Get the search results
     # Results limited to 10, the API does support paging
-    response_dict = execute_mar_search_api(client,
+    response_dict = execute_mar_search_api(
+        client,
         {
             "target": "/v1/" + search_id + "/results",
             "method": "GET",

@@ -36,15 +36,10 @@ try:
         while True:
             print("   Enter 1 to publish a DXL Event")
             print("   Enter 9 to quit")
-            input = prompt("   Enter value: ")
-
-            try:
-                option = int(input)
-            except:
-                option = input
+            option = prompt("   Enter value: ").strip()
 
             # Option: DXL Event
-            if option == 1:
+            if option == "1":
                 # Create the Event
                 logger.info("Event Publisher - Creating Event for Topic %s", EVENT_TOPIC)
                 event = Event(EVENT_TOPIC)
@@ -57,7 +52,7 @@ try:
                 client.send_event(event)
 
             # Option: Exit the loop
-            elif option == 9:
+            elif option == "9":
                 break
 
             # Invalid input

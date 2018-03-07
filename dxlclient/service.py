@@ -2,6 +2,9 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+
+""" Classes used for registering and exposing services to a DXL fabric. """
+
 from __future__ import absolute_import
 import json
 import logging
@@ -21,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class ServiceRegistrationInfo(_BaseObject):
+    # pylint: disable=too-many-instance-attributes
     """
     Service Registration instances are used to register and expose services onto a DXL fabric.
 
@@ -154,7 +158,7 @@ class ServiceRegistrationInfo(_BaseObject):
                 if unregister and self._dxl_client:
                     try:
                         self._dxl_client.unregister_service_async(self)
-                    except Exception:
+                    except Exception: # pylint: disable=broad-except
                         # Currently ignoring this as it can occur due to the fact that we are
                         # attempting to unregister a service that was never registered
                         pass
@@ -256,12 +260,11 @@ class ServiceRegistrationInfo(_BaseObject):
             tenant_guids = []
         self._destination_tenant_guids = tenant_guids
 
-    def _wait_for_registration_notification(self, wait_time, is_register):
+    def _wait_for_registration_notification(self, wait_time):
         """
         Waits for a registration notification (register or unregister).
-        
+
         :param waitTime:   The amount of time to wait.
-        :param isRegister Whether we are waiting for a register or unregister notification.
         :return: None.
         """
         with self._registration_sync:
@@ -280,7 +283,7 @@ class ServiceRegistrationInfo(_BaseObject):
         with self._registration_sync:
             end_time = int(time.time()) + timeout
             while not self._registration_occurred:
-                self._wait_for_registration_notification(end_time - int(time.time()), True)
+                self._wait_for_registration_notification(end_time - int(time.time()))
 
     def _notify_registration_succeeded(self):
         """
@@ -304,7 +307,7 @@ class ServiceRegistrationInfo(_BaseObject):
         end_time = int(time.time()) + timeout
         with self._registration_sync:
             while not self._unregistration_occurred:
-                self._wait_for_registration_notification(end_time - int(time.time()), False)
+                self._wait_for_registration_notification(end_time - int(time.time()))
 
     #@synchronized
     def _notify_unregistration_succeeded(self):
@@ -320,6 +323,7 @@ class ServiceRegistrationInfo(_BaseObject):
 
 
 class _ServiceRegistrationHandler(_BaseObject):
+    # pylint: disable=broad-except, too-many-instance-attributes
     def __init__(self, client, service):
         """
         Constructs the ServiceRegistrationHandler object.
@@ -444,6 +448,7 @@ class _ServiceRegistrationHandler(_BaseObject):
                     raise DxlException("Unregister service request timed out")
             else:
                 if last_register_time > 0:
+                    # pylint: disable=logging-not-lazy
                     logger.info(
                         "TTL expired, unregister service event omitted for " +
                         self.service_type + " (" + self.instance_id +
@@ -530,6 +535,12 @@ class _ServiceRegistrationHandler(_BaseObject):
             self.ttl_timer = None
 
     def json_register_service(self):  # instanceId or service guid?
+        """
+        Formats the JSON payload to be sent in a service registration request
+        to the broker.
+
+        :return: The request payload.
+        """
         return json.dumps({
             'serviceType': self.service_type,
             'metaData': self.metadata,
@@ -539,6 +550,12 @@ class _ServiceRegistrationHandler(_BaseObject):
         })
 
     def json_unregister_service(self):
+        """
+        Formats the JSON payload to be sent in a service unregistration request
+        to the broker.
+
+        :return: The request payload.
+        """
         return json.dumps({
             'serviceGuid': self.instance_id
         })
@@ -643,7 +660,7 @@ class _ServiceManager(RequestCallback):
             if self.__client.connected:
                 try:
                     service_handler.send_unregister_service_event()
-                except Exception as ex:
+                except Exception as ex: # pylint: disable=broad-except
                     logger.error("Error sending unregister service event for " +
                                  service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
 
@@ -676,7 +693,9 @@ class _ServiceManager(RequestCallback):
             if service_registration_handler:
                 self._on_request(service_registration_handler, request)
             else:
-                logger.warning("No service with GUID " + service_instance_id + " registered. Ignoring request.")
+                logger.warning(
+                    "No service with GUID %s registered. Ignoring request.",
+                    service_instance_id)
                 self.send_service_not_found_error_message(request)
 
     def send_service_not_found_error_message(self, request):
@@ -692,8 +711,9 @@ class _ServiceManager(RequestCallback):
 
         try:
             self.__client.send_response(error_response)
-        except Exception as ex:
-            logger.error("Error sending service not found error message: " + str(ex))
+        except Exception as ex: # pylint: disable=broad-except
+            logger.error(
+                "Error sending service not found error message: %s", ex)
 
     @staticmethod
     def _on_request(service_handler, request):
@@ -713,7 +733,7 @@ class _ServiceManager(RequestCallback):
                 if service_handler.is_deleted() or service_handler.is_invalid_reference():
                     try:
                         service_handler.send_unregister_service_event()
-                    except Exception as ex:
+                    except Exception as ex: # pylint: disable=broad-except
                         logger.error("Error sending unregister service event for " +
                                      service_handler.service_type + " (" +
                                      service_handler.instance_id + "): " + str(ex))
@@ -721,7 +741,7 @@ class _ServiceManager(RequestCallback):
                     services[service_id] = service_handler
                     try:
                         service_handler.start_timer()
-                    except Exception as ex:
+                    except Exception as ex: # pylint: disable=broad-except
                         logger.error("Failed to start timer thread for service " +
                                      service_handler.service_type + " (" +
                                      service_handler.instance_id + "): " + str(ex))
@@ -740,7 +760,7 @@ class _ServiceManager(RequestCallback):
                 if self.__client.connected:
                     try:
                         service_handler.send_unregister_service_event()
-                    except Exception as ex:
+                    except Exception as ex: # pylint: disable=broad-except
                         logger.error("Error sending unregister service event for " +
                                      service_handler.service_type + " (" +
                                      service_handler.instance_id + "): " + str(ex))

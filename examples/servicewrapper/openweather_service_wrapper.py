@@ -80,7 +80,8 @@ with DxlClient(config) as client:
             except Exception as ex:
                 print(str(ex))
                 # Send error response
-                client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
+                client.send_response(ErrorResponse(
+                    request, error_message=str(ex).encode(encoding="UTF-8")))
 
     # Create service registration object
     info = ServiceRegistrationInfo(client, SERVICE_NAME)

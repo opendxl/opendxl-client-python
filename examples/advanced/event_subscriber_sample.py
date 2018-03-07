@@ -35,7 +35,8 @@ try:
         # Event callback class to handle incoming DXL Events
         class MyEventCallback(EventCallback):
             def on_event(self, event):
-                # Extract information from Event payload, in this sample we expect it is UTF-8 encoded
+                # Extract information from Event payload, in this sample we
+                # expect it is UTF-8 encoded
                 logger.info("Event Subscriber - Event received:\n   Topic: %s\n   Payload: %s",
                             event.destination_topic, event.payload.decode())
 
@@ -46,15 +47,10 @@ try:
         # Wait for DXL Events
         while True:
             print("   Enter 9 to quit")
-            input = prompt("   Enter value: ")
-
-            try:
-                option = int(input)
-            except:
-                option = input
+            option = prompt("   Enter value: ").strip()
 
             # Option: Exit the loop
-            if option == 9:
+            if option == "9":
                 break
 
             # Invalid input

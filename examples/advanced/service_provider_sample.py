@@ -37,23 +37,28 @@ try:
         # Response callback class to handle DXL Responses to our Asynchronous Requests
         class MyRequestCallback(RequestCallback):
             def on_request(self, request):
-                # Extract information from Response payload, in this sample we expect it is UTF-8 encoded
-                logger.info("Service Provider - Request received:\n   Topic: %s\n   Request ID: %s\n   Payload: %s",
-                            request.destination_topic,
-                            request.message_id,
-                            request.payload.decode())
+                # Extract information from Response payload, in this sample we
+                # expect it is UTF-8 encoded
+                logger.info(
+                    "Service Provider - Request received:\n   " +
+                    "Topic: %s\n   Request ID: %s\n   Payload: %s",
+                    request.destination_topic,
+                    request.message_id,
+                    request.payload.decode())
 
                 # Create the Response message
-                logger.info("Service Provider - Creating Response for Request ID %s on %s",
-                            request.message_id, request.destination_topic)
+                logger.info(
+                    "Service Provider - Creating Response for Request ID %s on %s",
+                    request.message_id, request.destination_topic)
                 response = Response(request)
 
                 # Encode string payload as UTF-8
                 response.payload = "Sample Response Payload".encode()
 
                 # Send the Response back
-                logger.info("Service Provider - Sending Response to Request ID: %s on %s",
-                            response.request_message_id, request.destination_topic)
+                logger.info(
+                    "Service Provider - Sending Response to Request ID: %s on %s",
+                    response.request_message_id, request.destination_topic)
                 client.send_response(response)
 
         # Create DXL Service Registration object
@@ -62,22 +67,18 @@ try:
         # Add a topic for the service to respond to
         service_registration_info.add_topic(SERVICE_TOPIC, MyRequestCallback())
 
-        # Register the service with the DXL fabric (with a wait up to 10 seconds for registration to complete)
+        # Register the service with the DXL fabric (with a wait up to 10 seconds
+        # for registration to complete)
         logger.info("Registering service.")
         client.register_service_sync(service_registration_info, 10)
 
         # Wait for DXL Requests
         while True:
             print("   Enter 9 to quit")
-            input = prompt("   Enter value: ")
-
-            try:
-                option = int(input)
-            except:
-                option = input
+            option = prompt("   Enter value: ").strip()
 
             # Option: Exit the loop
-            if option == 9:
+            if option == "9":
                 break
 
             # Invalid input

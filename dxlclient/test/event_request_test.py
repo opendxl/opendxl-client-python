@@ -1,9 +1,14 @@
+""" Tests the event-related methods of the DxlClient. """
+
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
 from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest, atomize
+
+# pylint: disable=missing-docstring
+
 
 @attr('system')
 class EventTests(BaseClientTest):
@@ -48,18 +53,18 @@ class EventTests(BaseClientTest):
                         # Notify that a response has been received (are we done yet?)
                         self.event_condition.notify_all()
 
-                ec = EventCallback()
-                ec.on_event = event_callback
+                callback = EventCallback()
+                callback.on_event = event_callback
 
-                client.add_event_callback(topic, ec)
+                client.add_event_callback(topic, callback)
 
-                for i in range(0, self.EVENT_COUNT):
-                    e = Event(topic)
-                    self.append_outstanding_event(e.message_id)
-                    client.send_event(e)
+                for _ in range(0, self.EVENT_COUNT):
+                    event = Event(topic)
+                    self.append_outstanding_event(event.message_id)
+                    client.send_event(event)
 
                 with self.event_condition:
-                    while self.event_count != self.EVENT_COUNT:                    
+                    while self.event_count != self.EVENT_COUNT:
                         current_count = self.event_count
                         self.event_condition.wait(self.MAX_EVENT_WAIT)
                         if current_count == self.event_count:

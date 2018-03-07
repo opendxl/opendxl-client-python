@@ -3,10 +3,13 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" dxlclient APIs """
+
 from __future__ import absolute_import
 import logging
 from threading import RLock
 
+# pylint: disable=wildcard-import
 from dxlclient._global_settings import *
 from dxlclient._product_props import *
 
@@ -44,29 +47,29 @@ class _ObjectTracker(object):
     def enabled(self, val):
         self._enabled = val
 
-    def obj_constructed(self, object):
+    def obj_constructed(self, obj):
         """
         Tracks that the specified object was constructed
 
-        :param object: The object that was constructed
+        :param obj: The object that was constructed
         """
         if self._enabled:
             with self._lock:
                 self._obj_count += 1
-                self._logger.debug("Constructed: " + object.__module__ + "." + object.__class__.__name__ \
-                      + " objCount=" + str(self._obj_count))
+                self._logger.debug("Constructed: " + obj.__module__ + "." + obj.__class__.__name__ \
+                                   + " objCount=" + str(self._obj_count))
 
-    def obj_destructed(self, object):
+    def obj_destructed(self, obj):
         """
         Tracks that the specified object was destructed
 
-        :param object: The object that was destructed
+        :param obj: The object that was destructed
         """
         if self._enabled:
             with self._lock:
                 self._obj_count -= 1
-                self._logger.debug("Destructed: " + object.__module__ + "." + object.__class__.__name__ \
-                    + " objCount=" + str(self._obj_count))
+                self._logger.debug("Destructed: " + obj.__module__ + "." + obj.__class__.__name__ \
+                                   + " objCount=" + str(self._obj_count))
 
     @property
     def obj_count(self):
@@ -104,6 +107,7 @@ class _BaseObject(object):
         _ObjectTracker.get_instance().obj_destructed(self)
 
 # make all classes accessible from dxlclient package
+# pylint: disable=wrong-import-position
 from dxlclient._uuid_generator import *
 from dxlclient.broker import *
 from dxlclient._request_manager import *
@@ -117,5 +121,3 @@ from dxlclient.client_config import *
 from dxlclient.client import *
 from dxlclient._dxl_utils import *
 from dxlclient.service import *
-
-

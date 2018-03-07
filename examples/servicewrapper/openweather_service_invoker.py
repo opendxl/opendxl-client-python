@@ -60,4 +60,4 @@ with DxlClient(config) as client:
         print("Client received response payload: \n" + \
           json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')))
     else:
-        logger.error("Error: " + res.error_message + " (" + str(res.error_code) + ")")
+        logger.error("Error: %s (%s)", res.error_message, res.error_code)

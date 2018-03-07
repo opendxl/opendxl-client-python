@@ -1,3 +1,5 @@
+""" Tests the synchronous request methods of the DxlClient. """
+
 from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
@@ -6,6 +8,9 @@ from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
 from dxlclient import ServiceRegistrationInfo, Request, ErrorResponse
 from .thread_executor import ThreadRunExecutor
+
+# pylint: disable=missing-docstring
+
 
 @attr('system')
 class SyncRequestTests(BaseClientTest):
@@ -54,9 +59,9 @@ class SyncRequestTests(BaseClientTest):
                         if self.response_count % 100 == 0:
                             print(self.response_count)
                         self.response_count_condition.notify_all()
-                except Exception as e:
-                    print(e)
-                    raise e
+                except Exception as ex:
+                    print(ex)
+                    raise ex
 
             executor.execute(run)
 

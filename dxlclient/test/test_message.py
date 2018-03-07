@@ -3,6 +3,10 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Test cases for derivatives of the Message class
+"""
+
 # Run with python -m unittest dxlclient.test.test_message
 
 from __future__ import absolute_import
@@ -16,11 +20,13 @@ from dxlclient import Response
 from dxlclient import ErrorResponse
 from dxlclient import UuidGenerator
 
+# pylint: disable=missing-docstring
+
 
 #
 # Configure pretty printer
 #
-pp = PrettyPrinter(indent=2, width=120)
+PP = PrettyPrinter(indent=2, width=120)
 
 
 class MessageTest(unittest.TestCase):
@@ -45,12 +51,12 @@ class MessageTest(unittest.TestCase):
         event.client_ids = source_client_ids
         event.payload = source_payload
 
-        pp.pprint(vars(event))
+        PP.pprint(vars(event))
         message = event._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
 
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         self.assertEqual(source_client_guid, result.source_client_id)
         self.assertEqual(source_broker_guid, result.source_broker_id)
@@ -68,12 +74,12 @@ class MessageTest(unittest.TestCase):
         event._source_broker_id = source_broker_guid
         event.payload = "EVENT".encode()
 
-        pp.pprint(vars(event))
+        PP.pprint(vars(event))
         message = event._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
 
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         self.assertTrue(isinstance(result.broker_ids, list))
         self.assertTrue(isinstance(result.client_ids, list))
@@ -100,12 +106,12 @@ class MessageTest(unittest.TestCase):
         request.client_ids = source_client_ids
         request.payload = source_payload
 
-        pp.pprint(vars(request))
+        PP.pprint(vars(request))
         message = request._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
 
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         self.assertEqual(reply_to_channel, result.reply_to_topic)
         self.assertEqual(service_guid, result.service_id)
@@ -135,23 +141,23 @@ class MessageTest(unittest.TestCase):
                               "{25000000-0000-0000-0000-000000000003}"]
         request.payload = "REQUEST".encode()
 
-        pp.pprint(vars(request))
+        PP.pprint(vars(request))
         message = request._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
 
         self.assertEqual(source_client_guid, request.source_client_id)
 
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         response = Response(request=request)
         response.payload = "RESPONSE".encode()
 
-        pp.pprint(vars(response))
+        PP.pprint(vars(response))
         message = response._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         self.assertEqual(Message.MESSAGE_TYPE_RESPONSE, result.message_type)
 
@@ -163,12 +169,12 @@ class MessageTest(unittest.TestCase):
                                  error_code=error_code,
                                  error_message=error_message)
 
-        pp.pprint(vars(response))
+        PP.pprint(vars(response))
         message = response._to_bytes()
-        pp.pprint(message)
+        PP.pprint(message)
 
         result = Message._from_bytes(message)
-        pp.pprint(vars(result))
+        PP.pprint(vars(result))
 
         self.assertEqual(error_code, result.error_code)
         self.assertEqual(error_message, result.error_message)

@@ -3,6 +3,10 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Test cases for the Broker class
+"""
+
 # Run with python -m unittest dxlclient.test.test_broker
 
 from __future__ import absolute_import
@@ -14,6 +18,8 @@ from parameterized import parameterized
 
 from dxlclient import Broker
 from dxlclient.exceptions import MalformedBrokerUriException
+
+# pylint: disable=missing-docstring
 
 
 class BrokerTest(unittest.TestCase):

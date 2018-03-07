@@ -3,6 +3,10 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Test cases for the DxlClient class
+"""
+
 # Run with python -m unittest dxlclient.test.test_dxlclient
 
 from __future__ import absolute_import
@@ -14,17 +18,16 @@ import threading
 import unittest
 
 if sys.version_info[0] > 2:
-    import builtins
+    import builtins # pylint: disable=import-error
 else:
-    import __builtin__
-    builtins = __builtin__
-import paho.mqtt.client as mqtt # pylint: disable=import-error
+    import __builtin__ # pylint: disable=import-error
+    builtins = __builtin__ # pylint: disable=invalid-name
 
-from configobj import ConfigObj
+# pylint: disable=wrong-import-position
+import paho.mqtt.client as mqtt
 from nose.plugins.attrib import attr
 from parameterized import parameterized
 from mock import Mock, patch
-
 
 import dxlclient._global_settings
 from dxlclient import Request
@@ -39,9 +42,13 @@ from dxlclient import EventCallback
 from dxlclient import RequestCallback
 from dxlclient import ResponseCallback
 from dxlclient import DxlException, WaitTimeoutException
+
+# pylint: disable=wildcard-import, unused-wildcard-import
 from dxlclient._global_settings import *
 
 from .base_test import BaseClientTest
+
+# pylint: disable=missing-docstring, too-many-locals, too-many-public-methods
 
 CONFIG_DATA_NO_CERTS_SECTION = """
 [no_certs]
@@ -153,17 +160,18 @@ class DxlClientConfigTest(unittest.TestCase):
                                  private_key=get_dxl_private_key(),
                                  brokers=[])
         # Create mocked brokers
-        b1 = Broker('b1host')
-        b2 = Broker('b2host')
-        b1._connect_to_broker = b2._connect_to_broker = Mock(return_value=True)
+        broker1 = Broker('b1host')
+        broker2 = Broker('b2host')
+        broker1._connect_to_broker = broker2._connect_to_broker = Mock(
+            return_value=True)
         # Add them to config
-        config.brokers.append(b1)
-        config.brokers.append(b2)
+        config.brokers.append(broker1)
+        config.brokers.append(broker2)
         # Get all brokers
-        l = config._get_sorted_broker_list()
+        broker_list = config._get_sorted_broker_list()
         # Check all brokers are in the list
-        self.assertTrue(b1 in l)
-        self.assertTrue(b2 in l)
+        self.assertTrue(broker1 in broker_list)
+        self.assertTrue(broker2 in broker_list)
 
     def test_set_config_from_file_generates_dxl_config(self):
         read_data = """
@@ -512,9 +520,7 @@ class DxlClientTest(unittest.TestCase):
             with self.assertRaises(WaitTimeoutException):
                 self.client.unsubscribe(self.test_channel)
 
-    """
-    Service unit tests
-    """
+    # Service unit tests
 
     def test_client_register_service_subscribes_client_to_channel(self):
         channel1 = '/mcafee/service/unittest/one'

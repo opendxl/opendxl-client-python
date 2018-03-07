@@ -3,6 +3,8 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" Test cases for wildcarding support. """
+
 # Run with python -m unittest dxlclient.test.test_dxlclient
 
 from __future__ import absolute_import
@@ -21,8 +23,11 @@ from dxlclient import DxlUtils, WildcardCallback
 from dxlclient import DxlClientConfig
 from dxlclient import RequestCallback
 from dxlclient import Request
+# pylint: disable=wildcard-import, unused-wildcard-import
 from dxlclient._global_settings import *
 from dxlclient.test.base_test import BaseClientTest
+
+# pylint: disable=missing-docstring, too-many-locals
 
 def topic_splitter(topic):
     if not topic:
@@ -61,56 +66,56 @@ class WilcardPerformanceTest(BaseClientTest):
     # subscribing to channel (with a lot of subscriptions) using wildcards" has been fixed.
     #
     def measure_performance(self, client, with_wildcard, topic_exists):
-        SUB_COUNT = 10000
-        QUERY_MULTIPLIER = 10
-        TOPIC_PREFIX = "/topic/" + UuidGenerator.generate_id_as_string() + "/"
+        sub_count = 10000
+        query_multiplier = 10
+        topic_prefix = "/topic/" + UuidGenerator.generate_id_as_string() + "/"
         event_count = [0]
         message_ids = set()
-        PAYLOAD = UuidGenerator.generate_id_as_string()
-        PAYLOAD_AS_BYTES = PAYLOAD.encode()
+        payload = UuidGenerator.generate_id_as_string()
+        payload_as_bytes = payload.encode()
         message_id_condition = Condition()
 
-        cb = EventCallback()
+        callback = EventCallback()
 
         def on_event(event):
-            if event.payload == PAYLOAD_AS_BYTES:
+            if event.payload == payload_as_bytes:
                 with message_id_condition:
                     event_count[0] += 1
                     message_ids.add(event.message_id)
                     message_id_condition.notify()
-                    if len(message_ids) % SUB_COUNT == 0:
+                    if len(message_ids) % sub_count == 0:
                         print("Messages size: " + str(len(message_ids)))
 
-        cb.on_event = on_event
-        client.add_event_callback("#", cb, False)
+        callback.on_event = on_event
+        client.add_event_callback("#", callback, False)
 
         if with_wildcard:
-            client.subscribe(TOPIC_PREFIX + "#")
+            client.subscribe(topic_prefix + "#")
 
-        for i in range(SUB_COUNT):
+        for i in range(sub_count):
             if i % 1000 == 0:
                 print("Subscribed: " + str(i))
-            client.subscribe(TOPIC_PREFIX + str(i))
+            client.subscribe(topic_prefix + str(i))
 
         print("Subscribed.")
 
         start_time = time.time()
 
-        for j in range(SUB_COUNT * QUERY_MULTIPLIER):
-            evt = Event(TOPIC_PREFIX + str(j % SUB_COUNT + (SUB_COUNT if not topic_exists else 0)))
-            evt.payload = PAYLOAD
+        for j in range(sub_count * query_multiplier):
+            evt = Event(topic_prefix + str(j % sub_count + (sub_count if not topic_exists else 0)))
+            evt.payload = payload
             client.send_event(evt)
 
         with message_id_condition:
-            while len(message_ids) != SUB_COUNT * QUERY_MULTIPLIER \
-                    or event_count[0] != SUB_COUNT * QUERY_MULTIPLIER * (2 if with_wildcard and topic_exists else 1):
+            while len(message_ids) != sub_count * query_multiplier \
+                    or event_count[0] != sub_count * query_multiplier * (2 if with_wildcard and topic_exists else 1):
                 current_event = event_count[0]
                 message_id_condition.wait(5)
                 if current_event == event_count[0]:
                     self.fail("Event wait timeout")
 
-        self.assertEqual(SUB_COUNT * QUERY_MULTIPLIER, len(message_ids))
-        self.assertEqual(SUB_COUNT * QUERY_MULTIPLIER * (2 if with_wildcard and topic_exists else 1), event_count[0])
+        self.assertEqual(sub_count * query_multiplier, len(message_ids))
+        self.assertEqual(sub_count * query_multiplier * (2 if with_wildcard and topic_exists else 1), event_count[0])
 
         return time.time() - start_time
 

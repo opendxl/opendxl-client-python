@@ -1,3 +1,9 @@
+"""
+DxlClient test that creates a thread per client and sends a request to a test
+service. Calculations such as request/second and average response time are
+calculated.
+"""
+
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
@@ -8,6 +14,9 @@ from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResp
 from dxlclient.test.test_service import TestService
 from .base_test import BaseClientTest, atomize
 from .thread_executor import ThreadRunExecutor
+
+# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=too-many-instance-attributes
 
 
 class SyncRequestTroughputRunner(BaseClientTest):
@@ -148,7 +157,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
                             try:
                                 client.connect()
                                 connected = True
-                            except Exception:
+                            except Exception: # pylint: disable=broad-except
                                 if retries > 0:
                                     retries -= 1
                                     self.connect_retries += 1
@@ -170,7 +179,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                 self.requests_start_time = time.time()
                                 self.connect_time = self.requests_start_time - connect_time_start
 
-                        for i in range(0, self.REQUEST_COUNT):
+                        for _ in range(0, self.REQUEST_COUNT):
                             req = Request(topic)
                             call_start_time = time.time()
                             response = client.sync_request(req, timeout=self.DEFAULT_TIMEOUT)
@@ -191,10 +200,10 @@ class SyncRequestTroughputRunner(BaseClientTest):
                             self.cummulative_response_time = self.cummulative_response_time + response_time
                             self.response_times.append(response_time)
 
-                except Exception as e:
-                    print(e)
-                    logging.info(e)
-                    raise e
+                except Exception as ex:
+                    print(ex)
+                    logging.info(ex)
+                    raise ex
             executor.execute(run)
 
             if self.THREAD_COUNT != self.response_count / self.REQUEST_COUNT:

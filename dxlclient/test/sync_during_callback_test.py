@@ -1,9 +1,17 @@
+"""
+Test to ensure that synchronous requests can't be made on
+the incoming message thread
+"""
+
 from __future__ import absolute_import
 from threading import Condition
 import time
 from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, Request, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest
+
+# pylint: disable=missing-docstring, too-many-locals
+
 
 @attr('system')
 class TestSyncDuringCallback(BaseClientTest):
@@ -13,8 +21,6 @@ class TestSyncDuringCallback(BaseClientTest):
     event_received = False
     event_received_condition = Condition()
 
-    # Test to ensure that synchronous requests can't be made on
-    # the incoming message thread
     def test_execute_sync_during_callback(self):
 
         event_topic = UuidGenerator.generate_id_as_string()
@@ -24,23 +30,23 @@ class TestSyncDuringCallback(BaseClientTest):
             client.connect()
 
             # callback
-            def event_callback(event):
+            def event_callback(_):
                 with self.event_received_condition:
                     self.event_received = True
                     try:
                         req = Request(destination_topic=req_topic)
                         client.sync_request(req)
-                    except Exception as e:
-                        self.request_exception_message = str(e)
+                    except Exception as ex: # pylint: disable=broad-except
+                        self.request_exception_message = str(ex)
                     self.event_received_condition.notify_all()
 
-            ec = EventCallback()
-            ec.on_event = event_callback
+            callback = EventCallback()
+            callback.on_event = event_callback
 
-            client.add_event_callback(event_topic, ec)
+            client.add_event_callback(event_topic, callback)
 
-            evt = Event(destination_topic=event_topic)
-            client.send_event(evt)
+            event = Event(destination_topic=event_topic)
+            client.send_event(event)
 
             start = time.time()
             with self.event_received_condition:

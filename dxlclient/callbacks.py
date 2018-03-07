@@ -3,6 +3,8 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" Classes for the different DXL message callbacks. """
+
 from __future__ import absolute_import
 from dxlclient import _BaseObject
 

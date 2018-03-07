@@ -3,6 +3,11 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Classes which manage registration and routing of incoming messages from the
+DXL to callbacks.
+"""
+
 from __future__ import absolute_import
 import inspect
 import threading
@@ -168,13 +173,18 @@ class _CallbackManager(_BaseObject):
         if self.wildcarding_enabled:
 
             def on_next_wildcard(wildcard):
+                """
+                Invoked for the next wildcard pattern found
+
+                :param wildcard: The wildcard pattern
+                """
                 #if wildcarded channel does not exist no message is fired
                 self._fire_message(callbacks_by_channel.get(wildcard), message)
 
             wildcard_callback = WildcardCallback()
             wildcard_callback.on_next_wildcard = on_next_wildcard
 
-            #Iterate over all channel wildcards sending messages via callback if
+            #Iterate over all channel wildcards sending messages via callback
             DxlUtils.iterate_wildcards(wildcard_callback, message.destination_topic)
 
     def _fire_message(self, callbacks, message):
@@ -185,11 +195,9 @@ class _CallbackManager(_BaseObject):
         :param message: The message to fire
         :return:
         """
-        if callbacks is None or len(callbacks) == 0:
-            return
-
-        for callback in callbacks:
-            self.handle_fire(callback, message)
+        if callbacks:
+            for callback in callbacks:
+                self.handle_fire(callback, message)
 
     def handle_fire(self, callback, message):
         """
@@ -224,6 +232,7 @@ class _RequestCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, request_callback, request):
+        # pylint: disable=arguments-differ
         """
         Runs `request_callback` for `request`.
 
@@ -261,6 +270,7 @@ class _ResponseCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, response_callback, response):
+        # pylint: disable=arguments-differ
         """
         Runs `response_callback` for `response`.
 
@@ -298,6 +308,7 @@ class _EventCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, event_callback, event):
+        # pylint: disable=arguments-differ
         """
         Runs `event_callback` for `event`.
 

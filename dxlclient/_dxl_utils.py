@@ -2,6 +2,9 @@
 ###############################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ###############################################################################
+
+""" DXL utility classes. """
+
 from __future__ import absolute_import
 import errno
 import os
