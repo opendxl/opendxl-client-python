@@ -63,10 +63,11 @@ dist = setup(
     tests_require=TEST_REQUIREMENTS,
 
     extras_require={
-        'dev': [
-            'pylint'
+        "dev": [
+            "pylint",
+            "sphinx"
         ],
-        'test': TEST_REQUIREMENTS
+        "test": TEST_REQUIREMENTS
     },
 
     test_suite="nose.collector",
@@ -82,6 +83,11 @@ dist = setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6"
     ],
 )
