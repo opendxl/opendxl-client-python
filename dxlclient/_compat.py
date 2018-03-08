@@ -23,7 +23,6 @@ if sys.version_info[0] > 2:
         :return: The iterator.
         """
         return d.items()
-    string = str
 else:
     def iter_dict_items(d):
         """
@@ -33,4 +32,3 @@ else:
         :return: The iterator.
         """
         return d.iteritems()
-    string = basestring
