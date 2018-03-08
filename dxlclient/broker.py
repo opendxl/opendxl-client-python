@@ -15,6 +15,7 @@ import logging
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
+from dxlclient._uuid_generator import UuidGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -165,12 +166,14 @@ class Broker(_BaseObject):
         if len(elements) == 2:
             protocol = elements[0]
             host_name = elements[1]
-        elements = host_name.split(":")
-        if len(elements) == 2:
-            host_name = elements[0]
-            port = elements[1]
+        if host_name[-1] != ']':
+            host_name_left, _, host_name_right = host_name.rpartition(":")
+            if host_name_left:
+                host_name = host_name_left
+                port = host_name_right
         broker.host_name = host_name
         broker.port = port
+        broker.unique_id = UuidGenerator.generate_id_as_string()
 
         if protocol and protocol.lower() != Broker._SSL_PROTOCOL.lower():
             raise MalformedBrokerUriException("Unknown protocol: " + protocol)

@@ -37,7 +37,7 @@ class BrokerTest(unittest.TestCase):
         ("a ; "),
     ])
     @raises(MalformedBrokerUriException)
-    def test_parse_with_invalid_port_raises_exception(self, unique_id):
+    def test_parse_string_with_invalid_port_raises_exception(self, unique_id):
         self.broker._parse(unique_id + "b; [c] ")
 
     @parameterized.expand([
@@ -45,7 +45,7 @@ class BrokerTest(unittest.TestCase):
         ("a ; "),
     ])
     @raises(MalformedBrokerUriException)
-    def test_parse_without_hostname_raises_exception(self, unique_id):
+    def test_parse_string_without_hostname_raises_exception(self, unique_id):
         self.broker._parse(unique_id + "b")
 
     @parameterized.expand([
@@ -53,7 +53,7 @@ class BrokerTest(unittest.TestCase):
         ("a ; "),
     ])
     @raises(MalformedBrokerUriException)
-    def test_parse_with_empty_hostname_raises_exception(self, unique_id):
+    def test_parse_string_with_empty_hostname_raises_exception(self, unique_id):
         self.broker._parse(unique_id + "b;")
 
     @parameterized.expand([
@@ -61,36 +61,77 @@ class BrokerTest(unittest.TestCase):
         ("a ;"),
     ])
     @raises(MalformedBrokerUriException)
-    def test_parse_with_port_out_of_range_raises_exception(self, unique_id):
+    def test_parse_string_with_port_out_of_range_raises_exception(self, unique_id):
         self.broker._parse(unique_id + "65536; [c] ")
 
-    def test_parse_valid_with_unique_id_but_no_ip_address(self):
+    def test_parse_string_valid_with_unique_id_but_no_ip_address(self):
         self.broker._parse("a ; 8883; [c] ")
         self.assertEqual("a", self.broker.unique_id)
         self.assertEqual(8883, self.broker.port)
         self.assertEqual("c", self.broker.host_name)
         self.assertIsNone(self.broker.ip_address)
 
-    def test_parse_valid_with_unique_id_and_ip_address(self):
+    def test_parse_string_valid_with_unique_id_and_ip_address(self):
         self.broker._parse("a ; 8883; [c];10.0.0.1 ")
         self.assertEqual("a", self.broker.unique_id)
         self.assertEqual(8883, self.broker.port)
         self.assertEqual("c", self.broker.host_name)
         self.assertEqual("10.0.0.1", self.broker.ip_address)
 
-    def test_parse_valid_without_unique_id_or_ip_address(self):
+    def test_parse_string_valid_without_unique_id_or_ip_address(self):
         self.broker._parse("8883; [c] ")
         self.assertEqual("", self.broker.unique_id)
         self.assertEqual(8883, self.broker.port)
         self.assertEqual("c", self.broker.host_name)
         self.assertIsNone(self.broker.ip_address)
 
-    def test_parse_valid_with_ip_address_but_no_unique_id(self):
+    def test_parse_string_valid_with_ip_address_but_no_unique_id(self):
         self.broker._parse("8883; [c];10.0.0.1 ")
         self.assertEqual("", self.broker.unique_id)
         self.assertEqual(8883, self.broker.port)
         self.assertEqual("c", self.broker.host_name)
         self.assertEqual("10.0.0.1", self.broker.ip_address)
+
+    def test_parse_url_valid_with_host_name(self):
+        broker = Broker.parse("mybroker")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("mybroker", broker.host_name)
+
+    def test_parse_url_valid_with_host_name_and_port(self):
+        broker = Broker.parse("mybroker:8993")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("mybroker", broker.host_name)
+        self.assertEqual(8993, broker.port)
+
+    def test_parse_url_valid_with_protocol_and_host_name(self):
+        broker = Broker.parse("ssl://mybroker")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("mybroker", broker.host_name)
+        self.assertEqual(8883, broker.port)
+
+    def test_parse_url_valid_with_protocol_host_name_and_port(self):
+        broker = Broker.parse("ssl://mybroker:8993")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("mybroker", broker.host_name)
+        self.assertEqual(8993, broker.port)
+
+    def test_parse_url_generates_id(self):
+        broker = Broker.parse("mybroker")
+        self.assertIsInstance(broker, Broker)
+        self.assertIsNotNone(broker.unique_id)
+        self.assertIsNot("", broker.unique_id.strip())
+
+    def test_parse_url_valid_with_ipv6_hostname_but_no_port(self):
+        broker = Broker.parse("[ff02::1]")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("ff02::1", broker.host_name)
+        self.assertEqual(8883, broker.port)
+
+    def test_parse_url_valid_with_ipv6_hostname_and_port(self):
+        broker = Broker.parse("[ff02::1]:8993")
+        self.assertIsInstance(broker, Broker)
+        self.assertEqual("ff02::1", broker.host_name)
+        self.assertEqual(8993, broker.port)
 
     def test_attributes(self):
         self.assertEqual("", self.broker.unique_id)
