@@ -523,20 +523,30 @@ class DxlClientTest(unittest.TestCase):
     # Service unit tests
 
     def test_client_register_service_subscribes_client_to_channel(self):
-        channel1 = '/mcafee/service/unittest/one'
-        channel2 = '/mcafee/service/unittest/two'
+        channel = '/mcafee/service/unittest'
+
         # Create dummy service
         service_info = dxlclient.service.ServiceRegistrationInfo(
             service_type='/mcafee/service/unittest', client=self.client)
-        service_info.add_topic(channel1, RequestCallback())
-        service_info.add_topic(channel2, RequestCallback())
+
+        # Add topics to the service
+        service_info.add_topic(channel + "1", RequestCallback())
+        service_info.add_topic(channel + "2", RequestCallback())
+        service_info.add_topics({channel + str(i): RequestCallback()
+                                 for i in range(3, 6)})
+
+        subscriptions_before_registration = self.client.subscriptions
+        expected_subscriptions_after_registration = \
+            sorted(subscriptions_before_registration +
+                   tuple(channel + str(i) for i in range(1, 6)))
 
         # Register service in client
         self.client.register_service_async(service_info)
         # Check subscribed channels
-        subscriptions = self.client.subscriptions
-        self.assertIn(channel1, subscriptions, "Client wasn't subscribed to service channel")
-        self.assertIn(channel2, subscriptions, "Client wasn't subscribed to service channel")
+        subscriptions_after_registration = self.client.subscriptions
+
+        self.assertEqual(expected_subscriptions_after_registration,
+                         sorted(subscriptions_after_registration))
 
     def test_client_wont_register_the_same_service_twice(self):
         service_info = dxlclient.service.ServiceRegistrationInfo(
