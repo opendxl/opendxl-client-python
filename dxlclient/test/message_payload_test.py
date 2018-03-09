@@ -41,10 +41,10 @@ class MessagePayloadTest(BaseClientTest):
 
         # Create a server that handles a request, unpacks the payload, and
         # asserts that the information in the payload was delivered successfully.
-        with self.create_client(max_retries=0) as client:
-            client.connect()
+        with self.create_client(max_retries=0) as service_client:
+            service_client.connect()
             topic = UuidGenerator.generate_id_as_string()
-            reg_info = ServiceRegistrationInfo(client,
+            reg_info = ServiceRegistrationInfo(service_client,
                                                "message_payload_runner_service")
 
             # callback definition
@@ -60,10 +60,10 @@ class MessagePayloadTest(BaseClientTest):
             request_callback.on_request = on_request
             reg_info.add_topic(topic, request_callback)
             # Register the service
-            client.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
+            service_client.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
 
-            with self.create_client() as client:
-                client.connect()
+            with self.create_client() as request_client:
+                request_client.connect()
                 packer = msgpack.Packer()
 
                 # Send a request to the server with information contained
@@ -72,7 +72,7 @@ class MessagePayloadTest(BaseClientTest):
                 request.payload = packer.pack(self.TEST_STRING)
                 request.payload += packer.pack(self.TEST_BYTE)
                 request.payload += packer.pack(self.TEST_INT)
-                client.async_request(request, request_callback)
+                request_client.async_request(request, request_callback)
 
                 start = time.time()
                 # Wait until the request has been processed
