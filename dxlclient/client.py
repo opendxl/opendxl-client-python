@@ -259,7 +259,7 @@ def _on_unsubscribe(client, userdata, mid):
 ################################################################################
 
 
-class DxlClient(_BaseObject): # pylint: disable=too-many-instance-attributes, too-many-public-methods
+class DxlClient(_BaseObject):
 
     """
     The :class:`DxlClient` class is responsible for all communication with the Data Exchange Layer (DXL)

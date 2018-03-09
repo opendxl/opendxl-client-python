@@ -21,7 +21,7 @@ import tempfile
 import unittest
 import uuid
 
-# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=missing-docstring
 
 
 if sys.version_info[0] > 2:

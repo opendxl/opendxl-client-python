@@ -50,7 +50,7 @@ from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import DxlException
 from ._compat import iter_dict_items
 
-# pylint: disable=too-many-instance-attributes
+
 class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
     """
     The base class for the different Data Exchange Layer (DXL) message types

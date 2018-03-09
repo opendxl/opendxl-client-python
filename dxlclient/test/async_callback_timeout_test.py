@@ -8,7 +8,7 @@ from dxlclient import ResponseCallback, UuidGenerator, ServiceRegistrationInfo, 
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
 
-# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=missing-docstring
 
 
 class AsyncCallbackTimeoutTest(BaseClientTest):

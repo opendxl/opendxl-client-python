@@ -129,8 +129,11 @@ disable=print-statement,
         dict-values-not-iterating,
         line-too-long,
         too-few-public-methods,
-        fixme,
+        too-many-locals,
+        too-many-public-methods,
+        too-many-instance-attributes,
         too-many-lines,
+        fixme,
         protected-access,
         similarities
 

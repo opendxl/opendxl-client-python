@@ -124,7 +124,6 @@ def _password_action_prompt(title, confirm=False):
         :func:`argparse.ArgumentParser.add_argument`
     :rtype: type
     """
-    # pylint: disable=too-few-public-methods
     class PasswordAction(argparse.Action):
         """
         Custom action class for password argument parsing

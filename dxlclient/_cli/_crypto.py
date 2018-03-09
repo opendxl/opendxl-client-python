@@ -32,7 +32,7 @@ def _bytes_to_unicode(obj):
     return obj.decode() if isinstance(obj, bytes) else obj
 
 
-class X509Name(object): # pylint: disable=too-many-instance-attributes
+class X509Name(object):
     """
     Holder for an X.509 distinguished name, e.g., /C=US/CN=myname.
     """
@@ -215,7 +215,7 @@ class _KeyPair(object):
                                            _bytes_to_unicode(passphrase))
 
 
-class _CertificateRequest(object):  # pylint: disable=too-few-public-methods
+class _CertificateRequest(object):
     """
     Certificate request generator
     """

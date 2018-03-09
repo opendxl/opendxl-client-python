@@ -10,7 +10,7 @@ from dxlclient import EventCallback, Event, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest, atomize
 from dxlclient.test.thread_executor import ThreadRunExecutor
 
-# pylint: disable=missing-docstring, too-many-instance-attributes
+# pylint: disable=missing-docstring
 
 
 class EventThroughputRunner(BaseClientTest):

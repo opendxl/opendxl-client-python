@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 
 class ServiceRegistrationInfo(_BaseObject):
-    # pylint: disable=too-many-instance-attributes
     """
     Service Registration instances are used to register and expose services onto a DXL fabric.
 
@@ -323,7 +322,6 @@ class ServiceRegistrationInfo(_BaseObject):
 
 
 class _ServiceRegistrationHandler(_BaseObject):
-    # pylint: disable=broad-except, too-many-instance-attributes
     def __init__(self, client, service):
         """
         Constructs the ServiceRegistrationHandler object.

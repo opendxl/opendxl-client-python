@@ -27,7 +27,7 @@ from dxlclient import Request
 from dxlclient._global_settings import *
 from dxlclient.test.base_test import BaseClientTest
 
-# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=missing-docstring
 
 def topic_splitter(topic):
     if not topic:

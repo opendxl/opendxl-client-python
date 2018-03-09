@@ -11,7 +11,7 @@ from nose.plugins.attrib import attr
 from dxlclient import Request, UuidGenerator
 from dxlclient.test.base_test import BaseClientTest
 
-# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=missing-docstring
 
 
 @attr('system')

@@ -7,7 +7,7 @@ import logging
 from dxlclient import ErrorResponse, Response
 from dxlclient.callbacks import RequestCallback
 
-# pylint: disable=missing-docstring, too-many-instance-attributes
+# pylint: disable=missing-docstring
 
 logger = logging.getLogger(__name__)
 

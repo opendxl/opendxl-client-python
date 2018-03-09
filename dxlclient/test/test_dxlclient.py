@@ -48,7 +48,7 @@ from dxlclient._global_settings import *
 
 from .base_test import BaseClientTest
 
-# pylint: disable=missing-docstring, too-many-locals, too-many-public-methods
+# pylint: disable=missing-docstring
 
 CONFIG_DATA_NO_CERTS_SECTION = """
 [no_certs]

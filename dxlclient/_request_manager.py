@@ -19,7 +19,6 @@ from dxlclient.callbacks import ResponseCallback
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=too-many-instance-attributes
 class RequestManager(ResponseCallback):
     """
     Manager that tracks outstanding requests and notifies the appropriate parties

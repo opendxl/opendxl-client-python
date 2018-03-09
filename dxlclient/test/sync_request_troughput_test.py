@@ -15,8 +15,7 @@ from dxlclient.test.test_service import TestService
 from .base_test import BaseClientTest, atomize
 from .thread_executor import ThreadRunExecutor
 
-# pylint: disable=missing-docstring, too-many-locals
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=missing-docstring
 
 
 class SyncRequestTroughputRunner(BaseClientTest):

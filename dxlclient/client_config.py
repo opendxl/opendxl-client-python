@@ -72,7 +72,7 @@ def _get_brokers(broker_list_json):
 ################################################################################
 
 
-class DxlClientConfig(_BaseObject): # pylint: disable=too-many-instance-attributes
+class DxlClientConfig(_BaseObject):
     """
     The Data Exchange Layer (DXL) client configuration contains the information necessary to connect
     a :class:`dxlclient.client.DxlClient` to the DXL fabric.

@@ -9,13 +9,13 @@ from __future__ import absolute_import
 from dxlclient import _BaseObject
 
 
-class MessageCallback(_BaseObject):  # pylint: disable=too-few-public-methods
+class MessageCallback(_BaseObject):
     """
     Base class for the different callbacks
     """
     pass
 
-class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class EventCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Event` messages.
 
@@ -64,7 +64,7 @@ class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
         raise NotImplementedError("Must be implemented in a child class.")
 
 
-class RequestCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class RequestCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Request` messages.
 
@@ -82,7 +82,7 @@ class RequestCallback(MessageCallback):  # pylint: disable=too-few-public-method
         raise NotImplementedError("Must be implemented in a child class.")
 
 
-class ResponseCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class ResponseCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Response` messages.
 

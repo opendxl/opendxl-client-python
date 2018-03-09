@@ -14,7 +14,7 @@ from dxlclient.service import _ServiceManager
 from dxlclient.exceptions import WaitTimeoutException
 from .base_test import BaseClientTest
 
-# pylint: disable=missing-docstring, too-many-locals
+# pylint: disable=missing-docstring
 
 
 @attr('system')
