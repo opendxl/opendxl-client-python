@@ -1,8 +1,9 @@
-""" Base class for the various client tests. """
+""" Base class and functions for the various client tests. """
 
 from __future__ import absolute_import
 from functools import wraps
 import os
+import sys
 from unittest import TestCase
 from dxlclient import DxlClientConfig, DxlClient
 
@@ -32,3 +33,9 @@ class BaseClientTest(TestCase):
 
         config.connect_retries = max_retries
         return DxlClient(config)
+
+if sys.version_info[0] > 2:
+    import builtins # pylint: disable=import-error, unused-import
+else:
+    import __builtin__ # pylint: disable=import-error
+    builtins = __builtin__ # pylint: disable=invalid-name

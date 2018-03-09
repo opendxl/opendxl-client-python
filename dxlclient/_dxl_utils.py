@@ -120,7 +120,8 @@ class DxlUtils(object):
         contents of `data`.
 
         :param str filename: name of the file to save
-        :param str data: data to be saved
+        :param data: data to be saved
+        :type data: str or bytes
         :param int mode: permissions mode to use for the file
         """
         DxlUtils.makedirs(os.path.dirname(filename))

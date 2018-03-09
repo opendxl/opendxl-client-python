@@ -11,8 +11,10 @@ updateconfig.
 # Run with nosetests dxlclient.test.test_cli
 
 from __future__ import absolute_import
+from __future__ import print_function
 import base64
 import datetime
+import getpass
 import json
 import os
 import shutil
@@ -21,9 +23,6 @@ import tempfile
 import unittest
 import uuid
 
-# pylint: disable=missing-docstring
-
-
 if sys.version_info[0] > 2:
     from io import StringIO as NativeStringIO
 else:
@@ -31,13 +30,17 @@ else:
 
 # pylint: disable=wrong-import-position
 from asn1crypto import csr, pem, x509, algos
-from mock import patch
+from mock import call, patch
 from parameterized import parameterized
 from oscrypto import asymmetric
 import requests_mock
 
 from dxlclient import DxlUtils
 from dxlclient._cli import cli_run
+
+from .base_test import builtins
+
+# pylint: disable=missing-docstring
 
 
 def command_args(args):
@@ -255,13 +258,61 @@ class CliTest(unittest.TestCase):
             self.assertEqual(["host1.com", "host2.com"],
                              request.subject_alt_names)
 
-    def test_generatecsr_with_encrypted_private_key(self):
-        with _TempDir("gencsr_enc_pk") as temp_dir, \
+    def test_generatecsr_with_encrypted_private_key_and_passphrase_arg(self):
+        with _TempDir("gencsr_enc_pk_pass_arg") as temp_dir, \
                 patch("sys.argv", command_args(["generatecsr",
                                                 temp_dir,
                                                 "myclient",
                                                 "-P", "itsasecret"])):
             cli_run()
+
+            private_key_file = os.path.join(temp_dir, "client.key")
+            self.assertTrue(os.path.exists(private_key_file))
+
+            # Validate that supplying no password raises an exception
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file)
+
+            # Validate that supplying a bad password raises an exception
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file, "wrongpass")
+
+            # Validate that supplying the right password is successful
+            key = _PrivateKey(private_key_file, "itsasecret")
+            self.assertEqual("rsa", key.algorithm)
+
+    def test_generatecsr_with_encrypted_private_key_and_passphrase_prompt(self):
+        passphrase = "itsasecret"
+
+        responses = ['', passphrase + "nomatch1", passphrase + "nomatch2",
+                     passphrase, passphrase]
+        response_count = [-1]
+        def prompt_response(_):
+            response_count[0] += 1
+            return responses[response_count[0]]
+
+        with _TempDir("gencsr_enc_pk_pass_prompt") as temp_dir,\
+                patch("sys.argv", command_args(["generatecsr",
+                                                temp_dir,
+                                                "myclient",
+                                                "-P"])), \
+                patch.object(builtins, 'print') as mock_print, \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass:
+            cli_run()
+
+            mock_getpass.assert_has_calls([
+                call("Enter private key passphrase:"),
+                call("Enter private key passphrase:"),
+                call("Confirm private key passphrase:"),
+                call("Enter private key passphrase:"),
+                call("Confirm private key passphrase:")
+            ])
+
+            mock_print.assert_has_calls([
+                call("Value cannot be empty. Try again."),
+                call("Values for private key passphrase do not match. Try again.")
+            ])
 
             private_key_file = os.path.join(temp_dir, "client.key")
             self.assertTrue(os.path.exists(private_key_file))
@@ -428,6 +479,36 @@ class CliTest(unittest.TestCase):
 
             self.assertEqual("mytruststore.pem", request.verify)
 
+    def test_provisionconfig_with_prompt_for_server_user_and_password(self):
+        responses = {"Enter server username:": "myuser",
+                     "Enter server password:": "mypass"}
+        def prompt_response(arg):
+            return responses[arg]
+
+        with _TempDir("provconfig_no_server_creds") as temp_dir, \
+                patch("sys.argv", command_args(["provisionconfig",
+                                                temp_dir,
+                                                "myhost",
+                                                "myclient"])), \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass, \
+                requests_mock.mock(case_sensitive=True) as req_mock:
+            req_mock.get(get_server_provision_url("myhost", 8443),
+                         text=get_mock_provision_response_func())
+
+            cli_run()
+
+            self.assertEqual(1, len(req_mock.request_history))
+            request = req_mock.request_history[0]
+
+            # Validate auth credentials sent in request
+            expected_creds = "Basic {}".format(base64.b64encode(
+                b"myuser:mypass").decode("utf8"))
+            self.assertEqual(expected_creds, request.headers["Authorization"])
+
+            self.assertEqual(2, mock_getpass.call_count)
+
+
     def test_updateconfig_basic(self):
         with _TempDir("updateconfig_basic") as temp_dir, \
                 patch("sys.argv", command_args(["updateconfig",
@@ -535,6 +616,45 @@ class CliTest(unittest.TestCase):
             # made to the right port
             self.assertIn(client_ca_url, request_urls)
             self.assertIn(broker_list_url, request_urls)
+
+    def test_updateconfig_with_prompt_for_server_user_and_password(self):
+        responses = {"Enter server username:": "myuser",
+                     "Enter server password:": "mypass"}
+        def prompt_response(arg):
+            return responses[arg]
+
+        with _TempDir("updateconfig_no_server_creds") as temp_dir, \
+                patch("sys.argv", command_args(["updateconfig",
+                                                temp_dir,
+                                                "myhost"])), \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass, \
+                requests_mock.mock(case_sensitive=True) as req_mock:
+            ca_bundle_file = os.path.join(temp_dir, "ca-bundle.crt")
+            DxlUtils.save_to_file(ca_bundle_file, "old ca")
+
+            config_file = os.path.join(temp_dir, "dxlclient.config")
+            DxlUtils.save_to_file(config_file, make_config())
+
+            client_ca_url = get_server_client_ca_url("myhost")
+            broker_list_url = get_server_broker_list_url("myhost")
+            req_mock.get(client_ca_url,
+                         text=get_mock_ca_bundle_response_func())
+            req_mock.get(broker_list_url,
+                         text=get_mock_broker_list_response_func())
+
+            cli_run()
+
+            self.assertEqual(2, len(req_mock.request_history))
+
+            # Validate auth credentials sent in requests
+            expected_creds = "Basic {}".format(base64.b64encode(
+                b"myuser:mypass").decode("utf8"))
+            for request in req_mock.request_history:
+                self.assertEqual(expected_creds,
+                                 request.headers["Authorization"])
+
+            self.assertEqual(2, mock_getpass.call_count)
 
 
 def slurp_file_into_bytes(filename):

@@ -11,17 +11,10 @@ Test cases for the DxlClient class
 
 from __future__ import absolute_import
 import io
-import sys
 from textwrap import dedent
 import time
 import threading
 import unittest
-
-if sys.version_info[0] > 2:
-    import builtins # pylint: disable=import-error
-else:
-    import __builtin__ # pylint: disable=import-error
-    builtins = __builtin__ # pylint: disable=invalid-name
 
 # pylint: disable=wrong-import-position
 import paho.mqtt.client as mqtt
@@ -46,7 +39,7 @@ from dxlclient import DxlException, WaitTimeoutException
 # pylint: disable=wildcard-import, unused-wildcard-import
 from dxlclient._global_settings import *
 
-from .base_test import BaseClientTest
+from .base_test import BaseClientTest, builtins
 
 # pylint: disable=missing-docstring
 
