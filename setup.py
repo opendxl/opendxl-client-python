@@ -63,6 +63,8 @@ TEST_REQUIREMENTS = [
     "requests-mock"
 ]
 
+DEV_REQUIREMENTS = TEST_REQUIREMENTS + ["sphinx"]
+
 setup(
     # Application name:
     name="dxlclient",
@@ -99,9 +101,7 @@ setup(
     tests_require=TEST_REQUIREMENTS,
 
     extras_require={
-        "dev": [
-            "sphinx"
-        ],
+        "dev": DEV_REQUIREMENTS,
         "test": TEST_REQUIREMENTS
     },
 
