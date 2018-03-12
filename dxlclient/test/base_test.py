@@ -20,6 +20,24 @@ def atomize(lock):
     return decorator
 
 
+class TestDxlClient(DxlClient):
+    def _destroy(self, wait_complete=True):
+        client = self._client
+        super(TestDxlClient, self)._destroy(wait_complete)
+        if client:
+            # Close out sockets that the MQTT client is holding in order to
+            # avoid socket ResourceWarning messages appearing when tests are
+            # run on Python 3. This should be removed when this issue is
+            # addressed:
+            # https://github.com/eclipse/paho.mqtt.python/issues/170
+            if hasattr(client, "_sockpairR") and client._sockpairR:
+                client._sockpairR.close()
+                client._sockpairR = None
+            if hasattr(client, "_sockpairW") and client._sockpairW:
+                client._sockpairW.close()
+                client._sockpairW = None
+
+
 class BaseClientTest(TestCase):
     DEFAULT_TIMEOUT = 5 * 60
     DEFAULT_RETRIES = 3
@@ -32,7 +50,7 @@ class BaseClientTest(TestCase):
         config.incoming_message_thread_pool_size = incoming_message_thread_pool_size
 
         config.connect_retries = max_retries
-        return DxlClient(config)
+        return TestDxlClient(config)
 
 if sys.version_info[0] > 2:
     import builtins # pylint: disable=import-error, unused-import
