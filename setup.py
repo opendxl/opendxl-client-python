@@ -36,8 +36,9 @@ class LintCommand(Command):
                       level=distutils.log.INFO)
         subprocess.check_call(["pylint", "dxlclient"] + glob.glob("*.py"))
         self.announce("Running pylint for examples", level=distutils.log.INFO)
-        subprocess.check_call(["pylint", "examples",
-                               "--rcfile", ".pylintrc.examples"])
+        subprocess.check_call(["pylint"] + glob.glob("examples/*.py") +
+                              glob.glob("examples/**/*.py") +
+                              ["--rcfile", ".pylintrc.examples"])
 
 class CiCommand(Command):
     """
