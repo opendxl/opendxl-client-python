@@ -65,3 +65,4 @@ autoclass_content = 'both'
 
 modindex_common_prefix = ['dxlclient.']
 
+html_use_smartypants = False

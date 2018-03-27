@@ -67,8 +67,11 @@ for f in os.listdir(DIST_DOCTMP_DIR):
         os.remove(os.path.join(DIST_DOCTMP_DIR, f))
 
 # Copy files to dist/doctmp
-print("\nCopying conf.py and sdk directory\n")
-copy_file(os.path.join(DIST_PY_FILE_LOCATION, "docs", "conf.py"), os.path.join(DIST_DOCTMP_DIR, "conf.py"))
+print("\nCopying conf.py, docutils.conf, and sdk directory\n")
+copy_file(os.path.join(DIST_PY_FILE_LOCATION, "docs", "conf.py"),
+          os.path.join(DIST_DOCTMP_DIR, "conf.py"))
+copy_file(os.path.join(DIST_PY_FILE_LOCATION, "docs", "docutils.conf"),
+          os.path.join(DIST_DOCTMP_DIR, "docutils.conf"))
 copy_tree(os.path.join(DIST_PY_FILE_LOCATION, "docs", "sdk"), DIST_DOCTMP_DIR)
 
 # Call Sphinx build
