@@ -329,6 +329,20 @@ class DxlClient(_BaseObject):
         :param config: The :class:`dxlclient.client_config.DxlClientConfig` object containing the configuration
             settings for the client.
         """
+
+        # Ensure that variables which may be referenced from the destructor
+        # are pre-initialized in the event that an error is raised from the
+        # constructor.
+        self._destroy_lock = threading.RLock()
+        self._destroyed = False
+        self._service_manager = None
+        self._request_manager = None
+        self._thread_pool = None
+        self._client = None
+
+        # The flag for the connection state
+        self._connected = False
+
         super(DxlClient, self).__init__()
 
         if config is None or not isinstance(config, DxlClientConfig):
@@ -341,8 +355,6 @@ class DxlClient(_BaseObject):
         # The condition associated with the client configuration
         self._config_lock_condition = threading.Condition(self._config_lock)
 
-        # The flag for the connection state
-        self._connected = False
         # The lock for the flag for the connection state
         self._connected_lock = threading.RLock()
         # The condition for the flag on connection state
@@ -441,9 +453,6 @@ class DxlClient(_BaseObject):
         self._connect_wait_lock = threading.RLock()
         # The condition associated with the client configuration
         self._connect_wait_condition = threading.Condition(self._connect_wait_lock)
-
-        self._destroy_lock = threading.RLock()
-        self._destroyed = False
 
         self._packets_awaiting_ack = set()
         self._packets_awaiting_ack_condition = threading.Condition()
@@ -557,20 +566,24 @@ class DxlClient(_BaseObject):
     def _destroy(self, wait_complete=True):
         with self._destroy_lock:
             if not self._destroyed:
-                self._service_manager.destroy()
-                self._service_manager = None
+                if self._service_manager:
+                    self._service_manager.destroy()
+                    self._service_manager = None
 
-                self._request_manager.destroy()
-                self._request_manager = None
+                if self._request_manager:
+                    self._request_manager.destroy()
+                    self._request_manager = None
 
                 self.disconnect()
 
-                self._thread_pool.shutdown(wait_complete)
+                if self._thread_pool:
+                    self._thread_pool.shutdown(wait_complete)
 
                 self._config = None
 
-                self._client.user_data_set(None)
-                self._client = None
+                if self._client:
+                    self._client.user_data_set(None)
+                    self._client = None
 
                 self._destroyed = True
 
