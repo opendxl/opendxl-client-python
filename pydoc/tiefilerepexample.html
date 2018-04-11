@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Threat Intelligence Exchange (TIE) File Reputation Sample &#8212; DXL Python SDK 4.0.0.417 documentation</title>
-    
+    <title>Threat Intelligence Exchange (TIE) File Reputation Sample &#8212; DXL Python SDK 4.0.0.418 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.0.0.417',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -28,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="McAfee Active Response (MAR) Search Sample" href="marsearchexample.html" />
     <link rel="prev" title="Service Wrapper Sample" href="servicewrapperexample.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +33,7 @@
         <li class="right" >
           <a href="servicewrapperexample.html" title="Service Wrapper Sample"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -65,15 +53,15 @@ by their hashes).</p>
 <li>The samples configuration step has been completed (<a class="reference internal" href="sampleconfig.html"><span class="doc">Samples Configuration</span></a>)</li>
 <li>A TIE Service is available on the DXL fabric</li>
 </ul>
-<p>To run this sample execute the <code class="docutils literal"><span class="pre">sample\tie\file_rep_sample.py</span></code> script as follows:</p>
+<p>To run this sample execute the <code class="docutils literal notranslate"><span class="pre">sample\tie\file_rep_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\tie\file_rep_sample.py
+c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\tie\file_rep_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Notepad</span><span class="o">.</span><span class="n">exe</span> <span class="n">reputation</span><span class="p">:</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Notepad</span><span class="o">.</span><span class="n">exe</span> <span class="n">reputation</span><span class="p">:</span>
 <span class="p">{</span>
     <span class="s2">&quot;props&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;serverTime&quot;</span><span class="p">:</span> <span class="mi">1451505556</span><span class="p">,</span>
@@ -136,15 +124,15 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\tie\file_rep_sample.py
 </div>
 </div></blockquote>
 <p>The sample outputs the file reputation for two files.</p>
-<p>The first file queried in the TIE service is &#8220;notepad.exe&#8221;. The McAfee Global Threat Intelligence (GTI) service
-is identified in the results as <code class="docutils literal"><span class="pre">&quot;providerId&quot;</span> <span class="pre">:</span> <span class="pre">1</span></code>. The trust level associated with the GTI response
-(<code class="docutils literal"><span class="pre">&quot;trustLevel&quot;:</span> <span class="pre">99</span></code>) indicates that the file is known good.</p>
-<p>The second file queried in the TIE service is the &#8220;EICAR Standard Anti-Virus Test File&#8221;. The trust level associated
-with the GTI response (<code class="docutils literal"><span class="pre">&quot;trustLevel&quot;:</span> <span class="pre">1</span></code>) indicates that the file is known bad.</p>
-<p>The major functionality provided by the sample resides in the <code class="docutils literal"><span class="pre">get_tie_file_reputation()</span></code> method as shown
+<p>The first file queried in the TIE service is “notepad.exe”. The McAfee Global Threat Intelligence (GTI) service
+is identified in the results as <code class="docutils literal notranslate"><span class="pre">&quot;providerId&quot;</span> <span class="pre">:</span> <span class="pre">1</span></code>. The trust level associated with the GTI response
+(<code class="docutils literal notranslate"><span class="pre">&quot;trustLevel&quot;:</span> <span class="pre">99</span></code>) indicates that the file is known good.</p>
+<p>The second file queried in the TIE service is the “EICAR Standard Anti-Virus Test File”. The trust level associated
+with the GTI response (<code class="docutils literal notranslate"><span class="pre">&quot;trustLevel&quot;:</span> <span class="pre">1</span></code>) indicates that the file is known bad.</p>
+<p>The major functionality provided by the sample resides in the <code class="docutils literal notranslate"><span class="pre">get_tie_file_reputation()</span></code> method as shown
 below:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_tie_file_reputation</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">md5_hex</span><span class="p">,</span> <span class="n">sha1_hex</span><span class="p">):</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_tie_file_reputation</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">md5_hex</span><span class="p">,</span> <span class="n">sha1_hex</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary containing the results of a TIE file reputation request</span>
 
@@ -179,12 +167,12 @@ below:</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>This method creates a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message that will be delivered to the
-file reputation request topic (<code class="docutils literal"><span class="pre">/mcafee/service/tie/file/reputation</span></code>) of a TIE service on the fabric.</p>
-<p>The required payload for a &#8220;TIE File Reputation&#8221; request is set on the message.</p>
-<p>The request message is delivered to the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method on
+<p>This method creates a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message that will be delivered to the
+file reputation request topic (<code class="docutils literal notranslate"><span class="pre">/mcafee/service/tie/file/reputation</span></code>) of a TIE service on the fabric.</p>
+<p>The required payload for a “TIE File Reputation” request is set on the message.</p>
+<p>The request message is delivered to the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method on
 the DXL client.</p>
-<p>The payload of the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message received is converted to a Python <code class="docutils literal"><span class="pre">dictionary</span></code>
+<p>The payload of the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message received is converted to a Python <code class="docutils literal notranslate"><span class="pre">dictionary</span></code>
 object and returned to the caller of the method.</p>
 </div>
 </div>
@@ -218,12 +206,14 @@ object and returned to the caller of the method.</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -245,12 +235,12 @@ object and returned to the caller of the method.</p>
         <li class="right" >
           <a href="servicewrapperexample.html" title="Service Wrapper Sample"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

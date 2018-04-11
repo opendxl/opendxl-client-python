@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>dxlclient.callbacks module &#8212; DXL Python SDK 4.0.0.417 documentation</title>
-    
+    <title>dxlclient.callbacks module &#8212; DXL Python SDK 4.0.0.418 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.0.0.417',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -28,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="dxlclient.client module" href="dxlclient.client.html" />
     <link rel="prev" title="dxlclient.broker module" href="dxlclient.broker.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +33,7 @@
         <li class="right" >
           <a href="dxlclient.broker.html" title="dxlclient.broker module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -60,13 +48,13 @@
 <dl class="class">
 <dt id="dxlclient.callbacks.EventCallback">
 <em class="property">class </em><code class="descclassname">dxlclient.callbacks.</code><code class="descname">EventCallback</code><a class="headerlink" href="#dxlclient.callbacks.EventCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
-<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages.</p>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
+<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> messages.</p>
 <p>To receive events, a concrete instance of this callback must be created and registered with a
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> instance via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a>
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> instance via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a>
 method.</p>
 <p>The following is a simple example of using an event callback:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.callbacks</span> <span class="kn">import</span> <span class="n">EventCallback</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.callbacks</span> <span class="kn">import</span> <span class="n">EventCallback</span>
 
 <span class="k">class</span> <span class="nc">MyEventCallback</span><span class="p">(</span><span class="n">EventCallback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -76,10 +64,10 @@ method.</p>
 </pre></div>
 </div>
 <p><strong>NOTE:</strong> By default when registering an event callback the client will automatically subscribe
-(<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the topic.</p>
+(<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the topic.</p>
 <p>The following demonstrates a client that is sending an event message that would be received by the
 callback above.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Event</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Event</span>
 
 <span class="c1"># Create the event message</span>
 <span class="n">evt</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s2">&quot;/testeventtopic&quot;</span><span class="p">)</span>
@@ -94,12 +82,12 @@ callback above.</p>
 <dl class="method">
 <dt id="dxlclient.callbacks.EventCallback.on_event">
 <code class="descname">on_event</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.callbacks.EventCallback.on_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> has been received.</p>
+<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> has been received.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> &#8211; The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> message that was received</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> – The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> message that was received</td>
 </tr>
 </tbody>
 </table>
@@ -110,27 +98,27 @@ callback above.</p>
 <dl class="class">
 <dt id="dxlclient.callbacks.MessageCallback">
 <em class="property">class </em><code class="descclassname">dxlclient.callbacks.</code><code class="descname">MessageCallback</code><a class="headerlink" href="#dxlclient.callbacks.MessageCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dxlclient._BaseObject</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient._BaseObject</span></code></p>
 <p>Base class for the different callbacks</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="dxlclient.callbacks.RequestCallback">
 <em class="property">class </em><code class="descclassname">dxlclient.callbacks.</code><code class="descname">RequestCallback</code><a class="headerlink" href="#dxlclient.callbacks.RequestCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
-<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages.</p>
-<p>Request callbacks are typically used when implementing a &#8220;service&#8221;.</p>
-<p>See <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> for more information on how to register a
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
+<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages.</p>
+<p>Request callbacks are typically used when implementing a “service”.</p>
+<p>See <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> for more information on how to register a
 service.</p>
 <dl class="method">
 <dt id="dxlclient.callbacks.RequestCallback.on_request">
 <code class="descname">on_request</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.callbacks.RequestCallback.on_request" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> has been received.</p>
+<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> has been received.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> &#8211; The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message that was received</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message that was received</td>
 </tr>
 </tbody>
 </table>
@@ -141,11 +129,11 @@ service.</p>
 <dl class="class">
 <dt id="dxlclient.callbacks.ResponseCallback">
 <em class="property">class </em><code class="descclassname">dxlclient.callbacks.</code><code class="descname">ResponseCallback</code><a class="headerlink" href="#dxlclient.callbacks.ResponseCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
-<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> messages.</p>
+<dd><p>Bases: <a class="reference internal" href="#dxlclient.callbacks.MessageCallback" title="dxlclient.callbacks.MessageCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.MessageCallback</span></code></a></p>
+<p>Concrete instances of this interface are used to receive <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> messages.</p>
 <p>Response callbacks are typically used when invoking a service asynchronously.</p>
 <p>The following is a simple example of using a response callback with an asynchronous service invocation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Request</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Request</span>
 <span class="kn">from</span> <span class="nn">dxlclient.callbacks</span> <span class="kn">import</span> <span class="n">ResponseCallback</span>
 
 <span class="k">class</span> <span class="nc">MyResponseCallback</span><span class="p">(</span><span class="n">ResponseCallback</span><span class="p">):</span>
@@ -159,12 +147,12 @@ service.</p>
 <dl class="method">
 <dt id="dxlclient.callbacks.ResponseCallback.on_response">
 <code class="descname">on_response</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.callbacks.ResponseCallback.on_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> has been received.</p>
+<dd><p>Invoked when an <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> has been received.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>response</strong> &#8211; The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message that was received</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>response</strong> – The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message that was received</td>
 </tr>
 </tbody>
 </table>
@@ -195,12 +183,14 @@ service.</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -222,13 +212,13 @@ service.</p>
         <li class="right" >
           <a href="dxlclient.broker.html" title="dxlclient.broker module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

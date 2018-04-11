@@ -15,7 +15,7 @@ Certificate Authority (CA) that will sign the client's certificate.
 `NOTE: ePO-managed environments must have 4.0 (or newer) versions of
 DXL ePO extensions installed.`
 
-Here is an example usage of ``provisionconfig`` operatoin::
+Here is an example usage of ``provisionconfig`` operation::
 
     python -m dxlclient provisionconfig config myserver client1
 

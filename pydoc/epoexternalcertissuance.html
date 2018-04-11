@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>External Certificate Authority (CA) Provisioning &#8212; DXL Python SDK 4.0.0.417 documentation</title>
-    
+    <title>External Certificate Authority (CA) Provisioning &#8212; DXL Python SDK 4.0.0.418 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.0.0.417',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -28,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="dxlclient package" href="dxlclient.html" />
     <link rel="prev" title="OpenDXL Broker Management Console Provisioning" href="openconsoleprovisioning.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +33,7 @@
         <li class="right" >
           <a href="openconsoleprovisioning.html" title="OpenDXL Broker Management Console Provisioning"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -72,14 +60,14 @@ generation of a client key-pair, and export of broker-related information from e
 <li>Export the Broker Certificates (<a class="reference internal" href="epobrokercertsexport.html"><span class="doc">ePO Broker Certificates Export</span></a>)</li>
 <li>Export the list of DXL Brokers (<a class="reference internal" href="epobrokerlistexport.html"><span class="doc">ePO Broker List Export</span></a>)</li>
 </ul>
-<p>The final step is to populate the contents of a <code class="docutils literal"><span class="pre">dxlclient.config</span></code> file. In this particular case, the
-<code class="docutils literal"><span class="pre">dxlclient.config</span></code> file that is located in the <code class="docutils literal"><span class="pre">sample</span></code> sub-directory of the Python DXL SDK
+<p>The final step is to populate the contents of a <code class="docutils literal notranslate"><span class="pre">dxlclient.config</span></code> file. In this particular case, the
+<code class="docutils literal notranslate"><span class="pre">dxlclient.config</span></code> file that is located in the <code class="docutils literal notranslate"><span class="pre">sample</span></code> sub-directory of the Python DXL SDK
 will be populated.</p>
 <p>The following steps walk through the process of populating this file:</p>
 <ol class="arabic">
-<li><p class="first">Open the <code class="docutils literal"><span class="pre">dxlclient.config</span></code> file located in the <code class="docutils literal"><span class="pre">sample</span></code> sub-directory of the Python DXL SDK.</p>
+<li><p class="first">Open the <code class="docutils literal notranslate"><span class="pre">dxlclient.config</span></code> file located in the <code class="docutils literal notranslate"><span class="pre">sample</span></code> sub-directory of the Python DXL SDK.</p>
 <p>The contents should appear as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
 <span class="n">BrokerCertChain</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">cabundle</span><span class="o">&gt;</span>
 <span class="n">CertFile</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dxlcert</span><span class="o">&gt;</span>
 <span class="n">PrivateKey</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dxlprivatekey</span><span class="o">&gt;</span>
@@ -90,11 +78,11 @@ will be populated.</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Update the <code class="docutils literal"><span class="pre">CertFile</span></code> and <code class="docutils literal"><span class="pre">PrivateKey</span></code> values to point to the certificate file (<code class="docutils literal"><span class="pre">client.crt</span></code>) and
-private key file (<code class="docutils literal"><span class="pre">client.key</span></code>) that were created during the certificate provisioning steps.</p>
+<li><p class="first">Update the <code class="docutils literal notranslate"><span class="pre">CertFile</span></code> and <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code> values to point to the certificate file (<code class="docutils literal notranslate"><span class="pre">client.crt</span></code>) and
+private key file (<code class="docutils literal notranslate"><span class="pre">client.key</span></code>) that were created during the certificate provisioning steps.</p>
 <p>See the <a class="reference internal" href="certcreation.html"><span class="doc">Certificate Files Creation (PKI)</span></a> section for more information on the creation of client key-pairs.</p>
 <p>After completing this step the contents of the configuration file should look similar to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
 <span class="n">BrokerCertChain</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">cabundle</span><span class="o">&gt;</span>
 <span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
 <span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
@@ -105,11 +93,11 @@ private key file (<code class="docutils literal"><span class="pre">client.key</s
 </pre></div>
 </div>
 </li>
-<li><p class="first">Update the <code class="docutils literal"><span class="pre">BrokerCertChain</span></code> value to point to the Broker Certificates file (<code class="docutils literal"><span class="pre">brokercerts.crt</span></code>)
+<li><p class="first">Update the <code class="docutils literal notranslate"><span class="pre">BrokerCertChain</span></code> value to point to the Broker Certificates file (<code class="docutils literal notranslate"><span class="pre">brokercerts.crt</span></code>)
 that was created when exporting the Broker Certificates.</p>
 <p>See the <a class="reference internal" href="epobrokercertsexport.html"><span class="doc">ePO Broker Certificates Export</span></a> section for more information on exporting Broker Certificates.</p>
 <p>After completing this step the contents of the configuration file should look similar to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
 <span class="n">BrokerCertChain</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">brokercerts</span><span class="o">.</span><span class="n">crt</span>
 <span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
 <span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
@@ -122,11 +110,11 @@ that was created when exporting the Broker Certificates.</p>
 </li>
 </ol>
 <ol class="arabic" start="3">
-<li><p class="first">Update the <code class="docutils literal"><span class="pre">[Brokers]</span></code> section to include the contents of the broker list file (<code class="docutils literal"><span class="pre">brokerlist.properties</span></code>)
+<li><p class="first">Update the <code class="docutils literal notranslate"><span class="pre">[Brokers]</span></code> section to include the contents of the broker list file (<code class="docutils literal notranslate"><span class="pre">brokerlist.properties</span></code>)
 that was created when exporting the Broker List.</p>
 <p>See the <a class="reference internal" href="epobrokerlistexport.html"><span class="doc">ePO Broker List Export</span></a> section for more information on exporting the Broker List.</p>
 <p>After completing this step the contents of the configuration file should look similar to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Certs</span><span class="p">]</span>
 <span class="n">BrokerCertChain</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">brokercerts</span><span class="o">.</span><span class="n">crt</span>
 <span class="n">CertFile</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">crt</span>
 <span class="n">PrivateKey</span><span class="o">=</span><span class="n">c</span><span class="p">:</span>\\<span class="n">certificates</span>\\<span class="n">client</span><span class="o">.</span><span class="n">key</span>
@@ -163,12 +151,14 @@ that was created when exporting the Broker List.</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -190,12 +180,12 @@ that was created when exporting the Broker List.</p>
         <li class="right" >
           <a href="openconsoleprovisioning.html" title="OpenDXL Broker Management Console Provisioning"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

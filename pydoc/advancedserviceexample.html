@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Advanced Service Sample &#8212; DXL Python SDK 4.0.0.417 documentation</title>
-    
+    <title>Advanced Service Sample &#8212; DXL Python SDK 4.0.0.418 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.0.0.417',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -28,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Service Wrapper Sample" href="servicewrapperexample.html" />
     <link rel="prev" title="Advanced Events Sample" href="advancedeventsexample.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +33,7 @@
         <li class="right" >
           <a href="advancedeventsexample.html" title="Advanced Events Sample"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,23 +45,23 @@
   <div class="section" id="advanced-service-sample">
 <h1>Advanced Service Sample<a class="headerlink" href="#advanced-service-sample" title="Permalink to this headline">¶</a></h1>
 <p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><span class="doc">Samples Configuration</span></a>).</p>
-<p>This sample differs from the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a> by breaking the &#8220;service provider&#8221; and &#8220;service invoker&#8221;
+<p>This sample differs from the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a> by breaking the “service provider” and “service invoker”
 functionality into two distinct scripts. When executed, each of these scripts will contain a unique instance of
-a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
 <div class="section" id="service-provider">
 <h2>Service Provider<a class="headerlink" href="#service-provider" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to start the &#8220;service provider&#8221;. This script will remain running and receive
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages from the &#8220;service invoker&#8221;.</p>
-<p>To start the &#8220;service provider&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\service_provider_sample.py</span></code> script as follows:</p>
+<p>The first step is to start the “service provider”. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages from the “service invoker”.</p>
+<p>To start the “service provider”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_provider_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_provider_sample.py
+c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_provider_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:dxlclient-python-sdk-4.0.0.417\sample/dxlclient.config
+2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
 2015-12-30 10:25:32,170 __main__ - INFO - Service Provider - Creating DXL Client
 2015-12-30 10:25:32,187 __main__ - INFO - Service Provider - Connecting to Broker
 2015-12-30 10:25:32,187 dxlclient.client - INFO - Waiting for broker list...
@@ -90,11 +78,11 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_provider_sam
    Enter value:
 </pre>
 </div></blockquote>
-<p>The provider will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
-<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages received by the &#8220;service invoker&#8221; will be displayed in the output.</p>
+<p>The provider will remain running until <code class="docutils literal notranslate"><span class="pre">9</span></code> is entered to quit.</p>
+<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages received by the “service invoker” will be displayed in the output.</p>
 <p>The code for the provider is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a>:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses to our Asynchronous Requests</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses to our Asynchronous Requests</span>
 <span class="k">class</span> <span class="nc">MyRequestCallback</span><span class="p">(</span><span class="n">RequestCallback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
@@ -128,28 +116,28 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_provider_sam
 </pre></div>
 </div>
 </div></blockquote>
-<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> is constructed that will be invoked for a specific topic associated
-with the service. The callback will send back a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> for any
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> messages that are received.</p>
-<p>It then creates a <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> instance and registers the request
-callback with it via the <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo.add_topic" title="dxlclient.service.ServiceRegistrationInfo.add_topic"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.service.ServiceRegistrationInfo.add_topic()</span></code></a> method.</p>
-<p>Finally it registers the service with the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.register_service_sync" title="dxlclient.client.DxlClient.register_service_sync"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.register_service_sync()</span></code></a>
-method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.RequestCallback" title="dxlclient.callbacks.RequestCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.RequestCallback</span></code></a> is constructed that will be invoked for a specific topic associated
+with the service. The callback will send back a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> for any
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages that are received.</p>
+<p>It then creates a <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.service.ServiceRegistrationInfo</span></code></a> instance and registers the request
+callback with it via the <a class="reference internal" href="dxlclient.service.html#dxlclient.service.ServiceRegistrationInfo.add_topic" title="dxlclient.service.ServiceRegistrationInfo.add_topic"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.service.ServiceRegistrationInfo.add_topic()</span></code></a> method.</p>
+<p>Finally it registers the service with the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.register_service_sync" title="dxlclient.client.DxlClient.register_service_sync"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.register_service_sync()</span></code></a>
+method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
 </div>
 <div class="section" id="service-invoker">
 <h2>Service Invoker<a class="headerlink" href="#service-invoker" title="Permalink to this headline">¶</a></h2>
-<p>The next step is to start the &#8220;service invoker&#8221;. This script must be executed in a separate command prompt (or shell),
-leaving the &#8220;service provider&#8221; running.</p>
-<p>To start the &#8220;service invoker&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\service_invoker_sample.py</span></code> script as follows:</p>
+<p>The next step is to start the “service invoker”. This script must be executed in a separate command prompt (or shell),
+leaving the “service provider” running.</p>
+<p>To start the “service invoker”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_invoker_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_invoker_sample.py
+c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_invoker_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-4.0.0.417\sample/dxlclient.config
+2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
 2015-12-30 10:43:33,628 __main__ - INFO - Service Invoker - Creating DXL Client
 2015-12-30 10:43:33,644 __main__ - INFO - Service Invoker - Connecting to Broker
 2015-12-30 10:43:33,645 dxlclient.client - INFO - Waiting for broker list...
@@ -166,13 +154,13 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_invoker_samp
    Enter value:
 </pre>
 </div></blockquote>
-<p>To publish a synchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal"><span class="pre">1</span></code>.</p>
-<p>To publish an asynchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal"><span class="pre">2</span></code>.</p>
-<p>Information similar to the following should appear in the &#8220;service provider&#8221; output indicating that the
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message was properly received and that a corresponding
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message was sent:</p>
+<p>To publish a synchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p>To publish an asynchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+<p>Information similar to the following should appear in the “service provider” output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message was properly received and that a corresponding
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message was sent:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">832</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Request</span> <span class="n">received</span><span class="p">:</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">832</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Provider</span> <span class="o">-</span> <span class="n">Request</span> <span class="n">received</span><span class="p">:</span>
    <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">service</span>
    <span class="n">Request</span> <span class="n">ID</span><span class="p">:</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span>
    <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Synchronous</span> <span class="n">Request</span> <span class="n">Payload</span> <span class="o">-</span> <span class="n">Request</span> <span class="n">ID</span><span class="p">:</span> <span class="p">{</span><span class="mf">0e7</span><span class="n">c1994</span><span class="o">-</span><span class="n">b610</span><span class="o">-</span><span class="mi">4436</span><span class="o">-</span><span class="n">ae3b</span><span class="o">-</span><span class="n">e2eec9ebdf33</span><span class="p">}</span>
@@ -181,10 +169,10 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_invoker_samp
 </pre></div>
 </div>
 </div></blockquote>
-<p>Information similar to the following should appear in the &#8220;service invoker&#8221; output indicating that the
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a> message was properly received:</p>
+<p>Information similar to the following should appear in the “service invoker” output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message was properly received:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">838</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">838</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
 <span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">845</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Service</span> <span class="n">Invoker</span> <span class="o">-</span> <span class="n">Synchronous</span> <span class="n">Response</span> <span class="n">received</span><span class="p">:</span>
    <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
    <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Response</span> <span class="n">Payload</span>
@@ -193,7 +181,7 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_invoker_samp
 </div></blockquote>
 <p>The code for making <em>synchronous requests</em> is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a>:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Synchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Synchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 
 <span class="c1"># Encode string payload as UTF-8</span>
@@ -216,13 +204,13 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\service_invoker_samp
 </pre></div>
 </div>
 </div></blockquote>
-<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
-invoked which delivers the request message to the fabric. The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a>
+<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.sync_request" title="dxlclient.client.DxlClient.sync_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.sync_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
+invoked which delivers the request message to the fabric. The <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a>
 message is checked to ensure it is not an error, and its payload is displayed.</p>
 <p>The code for making <em>asynchronous requests</em> is listed below:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses from a Service to our Asynchronous Requests</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses from a Service to our Asynchronous Requests</span>
 <span class="k">class</span> <span class="nc">MyResponseCallback</span><span class="p">(</span><span class="n">ResponseCallback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="c1"># Check that the Response is not an Error Response, then extract</span>
@@ -250,11 +238,11 @@ message is checked to ensure it is not an error, and its payload is displayed.</
 </pre></div>
 </div>
 </div></blockquote>
-<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.ResponseCallback" title="dxlclient.callbacks.ResponseCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.ResponseCallback</span></code></a> is defined that will receive the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Response</span></code></a>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.ResponseCallback" title="dxlclient.callbacks.ResponseCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.ResponseCallback</span></code></a> is defined that will receive the <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a>
 message from the service provider. The callback will display the details of the response message that was
 received (including validating that it is not an error response).</p>
-<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
+<p>A <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message is constructed and a payload is assigned. The
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.async_request" title="dxlclient.client.DxlClient.async_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.async_request()</span></code></a> method of the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> is
 invoked which delivers the request message to the fabric. Along with the request, an instance of
 the previously defined response callback is included which will be invoked when a response is received
 from the service provider.</p>
@@ -291,12 +279,14 @@ from the service provider.</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -318,12 +308,12 @@ from the service provider.</p>
         <li class="right" >
           <a href="advancedeventsexample.html" title="Advanced Events Sample"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

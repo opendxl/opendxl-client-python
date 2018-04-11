@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Advanced Events Sample &#8212; DXL Python SDK 4.0.0.417 documentation</title>
-    
+    <title>Advanced Events Sample &#8212; DXL Python SDK 4.0.0.418 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.0.0.417',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -28,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Advanced Service Sample" href="advancedserviceexample.html" />
     <link rel="prev" title="Basic Service Sample" href="basicserviceexample.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +33,7 @@
         <li class="right" >
           <a href="basicserviceexample.html" title="Basic Service Sample"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,23 +45,23 @@
   <div class="section" id="advanced-events-sample">
 <h1>Advanced Events Sample<a class="headerlink" href="#advanced-events-sample" title="Permalink to this headline">¶</a></h1>
 <p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><span class="doc">Samples Configuration</span></a>).</p>
-<p>This sample differs from the <a class="reference internal" href="basiceventsexample.html"><span class="doc">Basic Events Sample</span></a> by breaking the &#8220;event subscriber&#8221; and &#8220;event publisher&#8221;
+<p>This sample differs from the <a class="reference internal" href="basiceventsexample.html"><span class="doc">Basic Events Sample</span></a> by breaking the “event subscriber” and “event publisher”
 functionality into two distinct scripts. When executed, each of these scripts will contain a unique instance of
-a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
+a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
 <div class="section" id="event-subscriber">
 <h2>Event Subscriber<a class="headerlink" href="#event-subscriber" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to start the &#8220;event subscriber&#8221;. This script will remain running and receive
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages from the &#8220;event publisher&#8221;.</p>
-<p>To start the &#8220;event subscriber&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\event_subscriber_sample.py</span></code> script as follows:</p>
+<p>The first step is to start the “event subscriber”. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> messages from the “event publisher”.</p>
+<p>To start the “event subscriber”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\event_subscriber_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_subscriber_sample.py
+c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\event_subscriber_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 08:55:44,936 __main__ - INFO - Event Subscriber - Load DXL config from: c:\dxlclient-python-sdk-4.0.0.417\sample/dxlclient.config
+2015-12-30 08:55:44,936 __main__ - INFO - Event Subscriber - Load DXL config from: c:\dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
 2015-12-30 08:55:44,938 __main__ - INFO - Event Subscriber - Creating DXL Client
 2015-12-30 08:55:44,956 __main__ - INFO - Event Subscriber - Connecting to Broker
 2015-12-30 08:55:44,957 dxlclient.client - INFO - Waiting for broker list...
@@ -90,11 +78,11 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_subscriber_sam
    Enter value:
 </pre>
 </div></blockquote>
-<p>The subscriber will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
-<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> messages received by the &#8220;event publisher&#8221; will be displayed in the output.</p>
+<p>The subscriber will remain running until <code class="docutils literal notranslate"><span class="pre">9</span></code> is entered to quit.</p>
+<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> messages received by the “event publisher” will be displayed in the output.</p>
 <p>The code for the subscriber is very similar to what is being used in the <a class="reference internal" href="basiceventsexample.html"><span class="doc">Basic Events Sample</span></a>:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Event callback class to handle incoming DXL Events</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Event callback class to handle incoming DXL Events</span>
 <span class="k">class</span> <span class="nc">MyEventCallback</span><span class="p">(</span><span class="n">EventCallback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="c1"># Extract information from Event payload, in this sample we expect it is UTF-8 encoded</span>
@@ -107,24 +95,24 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_subscriber_sam
 </pre></div>
 </div>
 </div></blockquote>
-<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.EventCallback" title="dxlclient.callbacks.EventCallback"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.callbacks.EventCallback</span></code></a> is registered with the client for a specific topic. By default
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a> will also subscribe
-(<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the same topic on the fabric.</p>
+<p>A <a class="reference internal" href="dxlclient.callbacks.html#dxlclient.callbacks.EventCallback" title="dxlclient.callbacks.EventCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.callbacks.EventCallback</span></code></a> is registered with the client for a specific topic. By default
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.add_event_callback" title="dxlclient.client.DxlClient.add_event_callback"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.add_event_callback()</span></code></a> will also subscribe
+(<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.subscribe" title="dxlclient.client.DxlClient.subscribe"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.subscribe()</span></code></a>) to the same topic on the fabric.</p>
 </div>
 <div class="section" id="event-publisher">
 <h2>Event Publisher<a class="headerlink" href="#event-publisher" title="Permalink to this headline">¶</a></h2>
-<p>The next step is to start the &#8220;event publisher&#8221;. This script must be executed in a separate command prompt (or shell),
-leaving the &#8220;event subscriber&#8221; running.</p>
-<p>To start the &#8220;event publisher&#8221;, execute the <code class="docutils literal"><span class="pre">sample\advanced\event_publisher_sample.py</span></code> script as follows:</p>
+<p>The next step is to start the “event publisher”. This script must be executed in a separate command prompt (or shell),
+leaving the “event subscriber” running.</p>
+<p>To start the “event publisher”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\event_publisher_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_publisher_sample.py
+c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\event_publisher_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 09:00:38,076 __main__ - INFO - Event Publisher - Load DXL config from: C:\dxlclient-python-sdk-4.0.0.417\sample/dxlclient.config
+2015-12-30 09:00:38,076 __main__ - INFO - Event Publisher - Load DXL config from: C:\dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
 2015-12-30 09:00:38,078 __main__ - INFO - Event Publisher - Creating DXL Client
 2015-12-30 09:00:38,094 __main__ - INFO - Event Publisher - Connecting to Broker
 2015-12-30 09:00:38,095 dxlclient.client - INFO - Waiting for broker list...
@@ -140,20 +128,20 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_publisher_samp
    Enter value:
 </pre>
 </div></blockquote>
-<p>To publish a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> message, enter <code class="docutils literal"><span class="pre">1</span></code>.</p>
-<p>Information similar to the following should appear in the &#8220;event subscriber&#8221; output indicating that the
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> message was properly received:</p>
+<p>To publish a <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> message, enter <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p>Information similar to the following should appear in the “event subscriber” output indicating that the
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> message was properly received:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">03</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">444</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">received</span><span class="p">:</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">09</span><span class="p">:</span><span class="mo">03</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="mi">444</span> <span class="n">__main__</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">Subscriber</span> <span class="o">-</span> <span class="n">Event</span> <span class="n">received</span><span class="p">:</span>
    <span class="n">Topic</span><span class="p">:</span> <span class="o">/</span><span class="n">isecg</span><span class="o">/</span><span class="n">sample</span><span class="o">/</span><span class="n">event</span>
    <span class="n">Payload</span><span class="p">:</span> <span class="n">Sample</span> <span class="n">Event</span> <span class="n">Payload</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p>The publisher will remain running until <code class="docutils literal"><span class="pre">9</span></code> is entered to quit.</p>
+<p>The publisher will remain running until <code class="docutils literal notranslate"><span class="pre">9</span></code> is entered to quit.</p>
 <p>The code for the publisher is very similar to what is being used in the <a class="reference internal" href="basiceventsexample.html"><span class="doc">Basic Events Sample</span></a>:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Create the Event</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the Event</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Publisher - Creating Event for Topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">EVENT_TOPIC</span><span class="p">)</span>
 <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">EVENT_TOPIC</span><span class="p">)</span>
 
@@ -166,8 +154,8 @@ c:\dxlclient-python-sdk-4.0.0.417&gt;python sample\advanced\event_publisher_samp
 </pre></div>
 </div>
 </div></blockquote>
-<p>An <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal"><span class="pre">dxlclient.message.Event</span></code></a> event message is created and a payload is assigned. The event
-is delivered to the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method.</p>
+<p>An <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Event" title="dxlclient.message.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Event</span></code></a> event message is created and a payload is assigned. The event
+is delivered to the fabric via the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.send_event" title="dxlclient.client.DxlClient.send_event"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.send_event()</span></code></a> method.</p>
 </div>
 </div>
 
@@ -201,12 +189,14 @@ is delivered to the fabric via the <a class="reference internal" href="dxlclient
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -228,12 +218,12 @@ is delivered to the fabric via the <a class="reference internal" href="dxlclient
         <li class="right" >
           <a href="basicserviceexample.html" title="Basic Service Sample"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.417 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

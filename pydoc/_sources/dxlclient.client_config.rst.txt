@@ -1,5 +1,5 @@
-dxlclient.client_config module
-==============================
+dxlclient.client\_config module
+===============================
 
 .. automodule:: dxlclient.client_config
     :members:
