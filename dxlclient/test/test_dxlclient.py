@@ -309,35 +309,23 @@ class DxlClientTest(unittest.TestCase):
         self.test_channel = '/test/channel'
 
     def tearDown(self):
+        self.client._connected = False
+        self.client.destroy()
         patch.stopall()
 
     def test_client_raises_exception_on_connect_when_already_connecting(self):
         self.client._client.connect.side_effect = Exception("An exception!")
-
-        class MyThread(threading.Thread):
-            def __init__(self, client):
-                super(MyThread, self).__init__()
-                self._client = client
-
-            def run(self):
-                self._client.connect()
-
-        t = MyThread(self.client)
-        t.setDaemon(True)
-        t.start()
-        time.sleep(2)
-
+        self.client._thread = threading.Thread()
         self.assertEqual(self.client.connected, False)
         with self.assertRaises(DxlException):
             self.client.connect()
-            # self.client.disconnect()
+        self.client._thread = None
 
     def test_client_raises_exception_on_connect_when_already_connected(self):
         self.client._client.connect.side_effect = Exception("An exception!")
-        self.client._connected = Mock(return_value=True)
+        self.client._connected = True
         with self.assertRaises(DxlException):
             self.client.connect()
-            # self.client.disconnect()
 
     # The following test is too slow
     def test_client_disconnect_doesnt_raises_exception_on_disconnect_when_disconnected(self):
@@ -367,7 +355,6 @@ class DxlClientTest(unittest.TestCase):
         with self.assertRaises(DxlException):
             self.client.connect()
         self.assertEqual(self.client._client.connect.call_count, connect_count)
-        # self.client.disconnect()
 
     def test_client_subscribe_adds_subscription_when_not_connected(self):
         self.client._client.subscribe = Mock(return_value=None)
