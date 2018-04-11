@@ -411,6 +411,11 @@ class DxlClientTest(unittest.TestCase):
         self.client._handle_message(self.test_channel, evt)
         # Check that callback was called
         self.assertEqual(event_callback.on_event.call_count, 1)
+        self.client.remove_event_callback(self.test_channel, event_callback)
+        self.client._handle_message(self.test_channel, evt)
+        # Check that callback was not called again - because the event
+        # callback was unregistered
+        self.assertEqual(event_callback.on_event.call_count, 1)
 
     def test_client_handle_message_with_request_calls_request_callback(self):
         req_callback = RequestCallback()
@@ -420,6 +425,11 @@ class DxlClientTest(unittest.TestCase):
         req = Request(destination_topic=self.test_channel)._to_bytes()
         self.client._handle_message(self.test_channel, req)
         # Check that callback was called
+        self.assertEqual(req_callback.on_request.call_count, 1)
+        self.client.remove_request_callback(self.test_channel, req_callback)
+        self.client._handle_message(self.test_channel, req)
+        # Check that callback was not called again - because the request
+        # callback was unregistered
         self.assertEqual(req_callback.on_request.call_count, 1)
 
     def test_client_handle_message_with_response_calls_response_callback(self):
@@ -431,6 +441,21 @@ class DxlClientTest(unittest.TestCase):
         self.client._handle_message(self.test_channel, msg)
         # Check that callback was called
         self.assertEqual(callback.on_response.call_count, 1)
+        self.client.remove_response_callback(self.test_channel, callback)
+        self.client._handle_message(self.test_channel, msg)
+        # Check that callback was not called again - because the response
+        # callback was unregistered
+        self.assertEqual(callback.on_response.call_count, 1)
+
+    def test_client_remove_call_for_unregistered_callback_does_not_error(self):
+        callback = EventCallback()
+        callback.on_event = Mock()
+        callback2 = EventCallback()
+        callback2.on_event = Mock()
+        self.client.add_event_callback(self.test_channel, callback)
+        self.client.add_event_callback(self.test_channel, callback2)
+        self.client.remove_event_callback(self.test_channel, callback)
+        self.client.remove_event_callback(self.test_channel, callback)
 
     def test_client_send_event_publishes_message_to_dxl_fabric(self):
         self.client._client.publish = Mock(return_value=None)

@@ -14,6 +14,14 @@ cwd=os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(cwd, "dxlclient", "_product_props.py")) as f:
     exec(f.read(), product_props)
 
+TEST_REQUIREMENTS = [
+    "futures",
+    "mock",
+    "nose",
+    "parameterized",
+    "requests-mock"
+]
+
 dist = setup(
     # Application name:
     name="dxlclient",
@@ -62,7 +70,11 @@ dist = setup(
         "requests-mock"
     ],
 
-    test_suite = "nose.collector",
+    extras_require={
+        "test": TEST_REQUIREMENTS
+    },
+
+    test_suite="nose.collector",
 
     # Details
     url="http://www.mcafee.com/",

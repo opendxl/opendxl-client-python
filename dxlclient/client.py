@@ -852,7 +852,8 @@ class DxlClient(_BaseObject):
                         self._wait_packet_acked(result, mid,
                                                 "unsubscription to " + topic)
         finally:
-            self._subscriptions.remove(topic)
+            if topic in self._subscriptions:
+                self._subscriptions.remove(topic)
             logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
 
