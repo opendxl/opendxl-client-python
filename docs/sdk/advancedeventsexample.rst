@@ -50,7 +50,8 @@ The code for the subscriber is very similar to what is being used in the :doc:`b
         # Event callback class to handle incoming DXL Events
         class MyEventCallback(EventCallback):
             def on_event(self, event):
-                # Extract information from Event payload, in this sample we expect it is UTF-8 encoded
+                # Extract information from Event payload, in this sample we
+                # expect it is UTF-8 encoded
                 logger.info("Event Subscriber - Event received:\n   Topic: %s\n   Payload: %s",
                             event.destination_topic, event.payload.decode())
 

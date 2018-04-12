@@ -78,24 +78,25 @@ The majority of code for the service wrapper is shown below:
                         logger.info("Service received request payload: " + query)
 
                         # Send HTTP request to OpenWeatherMap
-                        req = urllib2.Request(
+                        req = URLRequest(
                             CURRENT_WEATHER_URL.format(query, API_KEY), None,
                             {'Content-Type': 'text/json'})
-                        f = urllib2.urlopen(req)
+                        f = urlopen(req)
                         weather_response = f.read()
                         f.close()
 
                         # Create the response message
                         response = Response(request)
                         # Populate the response payload
-                        response.payload = weather_response.encode(encoding="UTF-8")
+                        response.payload = weather_response
                         # Send the response
                         client.send_response(response)
 
                     except Exception as ex:
                         print str(ex)
                         # Send error response
-                        client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
+                        client.send_response(ErrorResponse(
+                            request, error_message=str(ex).encode(encoding="UTF-8")))
 
             # Create service registration object
             info = ServiceRegistrationInfo(client, SERVICE_NAME)
@@ -216,10 +217,10 @@ The majority of code for the service invoker is shown below:
         # Extract information from the response (if an error did not occur)
         if res.message_type != Message.MESSAGE_TYPE_ERROR:
             response_dict = json.loads(res.payload.decode(encoding="UTF-8"))
-            print "Client received response payload: \n" + \
-              json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': '))
+            print("Client received response payload: \n" + \
+              json.dumps(response_dict, sort_keys=True, indent=4, separators=(',', ': ')))
         else:
-            logger.error("Error: " + res.error_message + " (" + str(res.error_code) + ")")
+            logger.error("Error: %s (%s)", res.error_message, res.error_code)
 
 A DXL :class:`dxlclient.message.Request` message is created and its payload is set to the query (zip code,
 location, city, etc.) to perform against the `OpenWeatherMap REST API <http://openweathermap.org/api>`_.

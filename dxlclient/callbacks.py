@@ -31,7 +31,7 @@ class EventCallback(MessageCallback):
 
         class MyEventCallback(EventCallback):
             def on_event(self, event):
-                print "Received event! " + event.source_client_id
+                print("Received event! " + event.source_client_id)
 
         dxl_client.add_event_callback("/testeventtopic", MyEventCallback())
 
@@ -97,7 +97,7 @@ class ResponseCallback(MessageCallback):
 
         class MyResponseCallback(ResponseCallback):
             def on_response(self, response):
-                print "Received response! " + response.service_id
+                print("Received response! " + response.service_id)
 
         request = Request("/testservice/testrequesttopic")
         dxl_client.async_request(request, MyResponseCallback())

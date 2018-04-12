@@ -64,7 +64,6 @@ class AsyncFloodTest(BaseClientTest):
                 client2.connect()
 
                 def my_response_callback(response):
-                    # print "response"
                     if response.message_type == Message.MESSAGE_TYPE_ERROR:
                         print("Received error response: " + response._error_response)
                         with self.resp_condition:

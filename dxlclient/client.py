@@ -836,7 +836,7 @@ class DxlClient(_BaseObject):
 
             class MyEventCallback(EventCallback):
                 def on_event(self, event):
-                    print "Received event! " + event.source_client_id
+                    print("Received event! " + event.source_client_id)
 
             dxl_client.add_event_callback("/testeventtopic", MyEventCallback(), False)
             dxl_client.subscribe("/testeventtopic")
