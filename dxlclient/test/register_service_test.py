@@ -14,6 +14,7 @@ from dxlclient.service import _ServiceManager
 from dxlclient.exceptions import WaitTimeoutException
 from .base_test import BaseClientTest
 
+
 # pylint: disable=missing-docstring
 
 
@@ -189,7 +190,7 @@ class RegisterServiceClientTest(BaseClientTest):
         # is successful. This test ensures that concurrent add/remove service
         # calls and processing of incoming messages do not produce deadlocks.
         with self.create_client(self.DEFAULT_RETRIES, 2) as client:
-            expected_second_service_response_payload =\
+            expected_second_service_response_payload = \
                 "Second service request okay too"
             second_service_callback = RequestCallback()
 
@@ -237,13 +238,12 @@ class RegisterServiceClientTest(BaseClientTest):
 
             first_service_response = client.sync_request(
                 first_service_request, self.POST_OP_DELAY)
-            first_service_response_payload = first_service_response.\
+            first_service_response_payload = first_service_response. \
                 payload.decode("utf8")
             logging.info("First service response payload: %s",
-                first_service_response_payload)
+                         first_service_response_payload)
 
-            self.assertEqual("Ok",
-                              first_service_response_payload)
+            self.assertEqual("Ok", first_service_response_payload)
 
             second_service_request = Request(
                 "/mcafee/service/JTI2/file/reputation/" +
@@ -311,7 +311,8 @@ class RegisterServiceClientTest(BaseClientTest):
         self.assertEqual(1, self.info_registrations)
 
     @attr('system')
-    def test_register_service_weak_reference_after_connect_and_send_request(self):
+    def test_register_service_weak_reference_after_connect_and_send_request(
+            self):
 
         with self.create_client() as client:
             self.add_client_callbacks(client)
@@ -335,14 +336,16 @@ class RegisterServiceClientTest(BaseClientTest):
             # Sending an request should result in a WaitTimeoutException since
             # the destroy() method of ServiceRegistrationInfo will unregister
             # the service
-            request = Request("/mcafee/service/JTI/file/reputation/" + service_id)
+            request = Request(
+                "/mcafee/service/JTI/file/reputation/" + service_id)
             request.payload = "Test"
 
             try:
                 response = client.sync_request(request, 2)
                 # Depending upon the timing, the broker can respond with 404 or the request might timeout
                 # self.assertIsInstance(response, ErrorResponse, "response is instance of ErrorResponse")
-                self.assertTrue(isinstance(response, ErrorResponse), response.__class__)
+                self.assertTrue(isinstance(response, ErrorResponse),
+                                response.__class__)
             except WaitTimeoutException as ex:
                 self.assertIn(request.message_id, str(ex))
 

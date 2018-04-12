@@ -1,4 +1,4 @@
-""" Tests Test the broker registry query. """
+""" Tests the broker registry query. """
 
 from __future__ import absolute_import
 from __future__ import print_function

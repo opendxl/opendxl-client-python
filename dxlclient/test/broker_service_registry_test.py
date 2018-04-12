@@ -1,12 +1,16 @@
+""" Tests the broker service registry. """
+
 import json
 import threading
 
+from nose.plugins.attrib import attr
+from nose.tools import nottest
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient import ErrorResponse, Request, Response
 from dxlclient import RequestCallback, ServiceRegistrationInfo, UuidGenerator
-from nose.plugins.attrib import attr
-from nose.tools import nottest
 
+
+# pylint: disable=missing-docstring
 
 @attr('system')
 class BrokerServiceRegistryTest(BaseClientTest):
@@ -43,7 +47,8 @@ class BrokerServiceRegistryTest(BaseClientTest):
             query = {}
         request.payload = json.dumps(query)
         response = client.sync_request(request, timeout=self.RESPONSE_WAIT)
-        return json.loads(response.payload.rstrip("\0"))["services"]
+        return json.loads(
+            response.payload.decode("utf8").rstrip("\0"))["services"]
 
     def query_service_registry_by_service_id(self, client, service_id):
         response = self.query_service_registry(
@@ -141,25 +146,26 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 service_client.register_service_sync(reg_info,
                                                      self.DEFAULT_TIMEOUT)
                 return reg_info
-            reg_infos = [create_service_reg_info()
+
+            reg_infos = [create_service_reg_info() # pylint: disable=unused-variable
                          for _ in range(service_count)]
             with self.create_client() as request_client:
                 request_client.connect()
-                for i in range(0, request_to_send_count):
+                for _ in range(0, request_to_send_count):
                     request = Request(topic)
                     response = request_client.sync_request(
                         request, timeout=self.RESPONSE_WAIT)
                     self.assertNotIsInstance(response, ErrorResponse)
-                    self.assertEquals(request.message_id,
-                                      response.request_message_id)
+                    self.assertEqual(request.message_id,
+                                     response.request_message_id)
             with request_lock:
-                self.assertEquals(0, request_to_wrong_service_id_count[0])
-                self.assertEquals(request_to_send_count,
-                                  request_received_count[0])
-                self.assertEquals(service_count, len(requests_by_service))
+                self.assertEqual(0, request_to_wrong_service_id_count[0])
+                self.assertEqual(request_to_send_count,
+                                 request_received_count[0])
+                self.assertEqual(service_count, len(requests_by_service))
                 for service_request_count in requests_by_service.values():
-                    self.assertEquals(request_per_service_count,
-                                      service_request_count)
+                    self.assertEqual(request_per_service_count,
+                                     service_request_count)
 
     #
     # Test routing requests to multiple services.
@@ -177,6 +183,7 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 response = Response(request)
                 response.payload = "service1"
                 service_client.send_response(response)
+
             reg_info_callback_1 = RequestCallback()
             reg_info_callback_1.on_request = reg_info_request_1
             reg_info_1.add_topic(reg_info_topic_1, reg_info_callback_1)
@@ -192,6 +199,7 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 response = Response(request)
                 response.payload = "service2"
                 service_client.send_response(response)
+
             reg_info_callback_2 = RequestCallback()
             reg_info_callback_2.on_request = reg_info_request_2
             reg_info_2.add_topic(reg_info_topic_2, reg_info_callback_2)
@@ -202,11 +210,11 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 response = request_client.sync_request(
                     Request(reg_info_topic_1), self.DEFAULT_TIMEOUT)
                 self.assertIsInstance(response, Response)
-                self.assertEqual(response.payload, "service1")
+                self.assertEqual(response.payload.decode("utf8"), "service1")
                 response = request_client.sync_request(
                     Request(reg_info_topic_2), self.DEFAULT_TIMEOUT)
                 self.assertIsInstance(response, Response)
-                self.assertEqual(response.payload, "service2")
+                self.assertEqual(response.payload.decode("utf8"), "service2")
 
     #
     # Test circumventing round-robin of services by specifying a single service
@@ -250,24 +258,25 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 service_client.register_service_sync(reg_info,
                                                      self.DEFAULT_TIMEOUT)
                 return reg_info
+
             reg_infos = [create_service_reg_info()
                          for _ in range(service_count)]
             with self.create_client() as request_client:
                 request_client.connect()
-                for i in range(0, request_count):
+                for _ in range(0, request_count):
                     request = Request(topic)
                     request.service_id = reg_infos[0].service_id
                     response = request_client.sync_request(
                         request, timeout=self.RESPONSE_WAIT)
                     self.assertNotIsInstance(response, ErrorResponse)
-                    self.assertEquals(request.message_id,
-                                      response.request_message_id)
+                    self.assertEqual(request.message_id,
+                                     response.request_message_id)
             with request_lock:
-                self.assertEquals(0, request_to_wrong_service_id_count[0])
-                self.assertEquals(request_count, request_received_count[0])
-                self.assertEquals(1, len(requests_by_service))
+                self.assertEqual(0, request_to_wrong_service_id_count[0])
+                self.assertEqual(request_count, request_received_count[0])
+                self.assertEqual(1, len(requests_by_service))
                 self.assertIn(reg_infos[0].service_id, requests_by_service)
-                self.assertEquals(
+                self.assertEqual(
                     request_count, requests_by_service[reg_infos[0].service_id])
 
     #
@@ -287,6 +296,7 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 request_received_count[0] += 1
                 response = Response(request)
                 service_client.send_response(response)
+
             reg_info = ServiceRegistrationInfo(service_client,
                                                "multiple_registrations_test")
             callback = RequestCallback()
@@ -294,19 +304,19 @@ class BrokerServiceRegistryTest(BaseClientTest):
             reg_info.add_topic(topic, callback)
             with self.create_client() as request_client:
                 request_client.connect()
-                for i in range(0, service_registration_count):
+                for _ in range(0, service_registration_count):
                     service_client.register_service_sync(reg_info,
                                                          self.DEFAULT_TIMEOUT)
                     request = Request(topic)
                     response = request_client.sync_request(
                         request, timeout=self.RESPONSE_WAIT)
                     self.assertNotIsInstance(response, ErrorResponse)
-                    self.assertEquals(request.message_id,
-                                      response.request_message_id)
+                    self.assertEqual(request.message_id,
+                                     response.request_message_id)
                     service_client.unregister_service_sync(reg_info,
                                                            self.DEFAULT_TIMEOUT)
-                self.assertEquals(service_registration_count,
-                                  request_received_count[0])
+                self.assertEqual(service_registration_count,
+                                 request_received_count[0])
 
     #
     # Test the state of the response when no channel is registered with the
@@ -324,6 +334,7 @@ class BrokerServiceRegistryTest(BaseClientTest):
             def my_request(request):
                 request_received[0] = True
                 service_client.send_response(Response(request))
+
             reg_info = ServiceRegistrationInfo(
                 service_client, "response_service_not_found_no_channel_test")
             callback = RequestCallback()
@@ -342,12 +353,12 @@ class BrokerServiceRegistryTest(BaseClientTest):
                     request, timeout=self.RESPONSE_WAIT)
                 self.assertFalse(request_received[0])
                 self.assertIsInstance(response, ErrorResponse)
-                self.assertEquals(reg_info.service_id, response.service_id)
-                self.assertEquals(
+                self.assertEqual(reg_info.service_id, response.service_id)
+                self.assertEqual(
                     self.DXL_SERVICE_UNAVAILABLE_ERROR_CODE,
                     BrokerServiceRegistryTest.normalized_error_code(response))
-                self.assertEquals(self.DXL_SERVICE_UNAVAILABLE_ERROR_MESSAGE,
-                                  response.error_message)
+                self.assertEqual(self.DXL_SERVICE_UNAVAILABLE_ERROR_MESSAGE,
+                                 response.error_message)
                 self.assertIsNone(self.query_service_registry_by_service(
                     service_client, reg_info))
 
@@ -367,6 +378,7 @@ class BrokerServiceRegistryTest(BaseClientTest):
             def my_request(request):
                 request_received[0] = True
                 service_client.send_response(Response(request))
+
             reg_info = ServiceRegistrationInfo(
                 service_client,
                 "response_service_not_found_no_service_id_at_client_test")
@@ -400,11 +412,11 @@ class BrokerServiceRegistryTest(BaseClientTest):
                 # the request to an internally registered service.
                 self.assertFalse(request_received[0])
                 self.assertIsInstance(response, ErrorResponse)
-                self.assertEquals(reg_info.service_id, response.service_id)
-                self.assertEquals(
+                self.assertEqual(reg_info.service_id, response.service_id)
+                self.assertEqual(
                     self.DXL_SERVICE_UNAVAILABLE_ERROR_CODE,
                     BrokerServiceRegistryTest.normalized_error_code(response))
-                self.assertEquals(self.DXL_SERVICE_UNAVAILABLE_ERROR_MESSAGE,
-                                  response.error_message)
+                self.assertEqual(self.DXL_SERVICE_UNAVAILABLE_ERROR_MESSAGE,
+                                 response.error_message)
                 self.assertIsNone(self.query_service_registry_by_service(
                     service_client, reg_info))
