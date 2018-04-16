@@ -16,6 +16,8 @@ from dxlclient import _BaseObject
 from dxlclient.callbacks import MessageCallback, RequestCallback, ResponseCallback, EventCallback
 from dxlclient._dxl_utils import WildcardCallback, DxlUtils
 
+from ._compat import is_string
+
 
 def _has_wildcard(channel_name):
     """
@@ -24,7 +26,7 @@ def _has_wildcard(channel_name):
     :param channel_name: The channel name
     :return: Whether the channel has a wildcard
     """
-    if not isinstance(channel_name, str):
+    if not is_string(channel_name):
         raise ValueError("Channel name should be str class")
     return channel_name and channel_name[-1] == '#'
 

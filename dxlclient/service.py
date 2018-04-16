@@ -18,7 +18,8 @@ from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.callbacks import RequestCallback
 from dxlclient.exceptions import DxlException
 from dxlclient.message import Message, Request, ErrorResponse
-from ._compat import iter_dict_items
+
+from ._compat import is_string, iter_dict_items
 
 logger = logging.getLogger(__name__)
 
@@ -635,7 +636,7 @@ class _ServiceManager(RequestCallback):
         :param instanceId: The instance ID of the service to remove.
         :return: None.
         """
-        if not isinstance(service_id, str):
+        if not is_string(service_id):
             raise ValueError("Expected service id")
 
         if not service_id:
