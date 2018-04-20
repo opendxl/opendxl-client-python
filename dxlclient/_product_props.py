@@ -5,7 +5,7 @@
 
 """ Product properties, used for packaging. """
 
-__version__ = "4.0.0.418"
+__version__ = "4.1.0.184"
 
 __product_id__ = "DXL_____1000"
 
