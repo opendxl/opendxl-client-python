@@ -45,8 +45,12 @@ class MessageOtherFieldsTest(BaseClientTest):
             event = Event(destination_topic=topic)
             event.other_fields = {"key" + str(i): "value" + str(i)
                                   for i in range(self.OTHER_FIELDS_COUNT)}
+            event.other_fields[b"key_as_bytes"] = b"val_as_bytes"
             client.send_event(event)
-
+            # Bytes values for other field keys/values are expected to be
+            # converted to unicode strings as received from the DXL fabric.
+            del event.other_fields[b"key_as_bytes"]
+            event.other_fields[u"key_as_bytes"] = u"val_as_bytes"
             start = time.time()
             with self.event_received_condition:
                 while (time.time() - start < self.MAX_WAIT) and \

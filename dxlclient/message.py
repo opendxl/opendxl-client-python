@@ -282,7 +282,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
         array = []
         for key, value in iter_dict_items(self._other_fields):
-            array.extend((key.encode('utf8'), value.encode('utf8')))
+            array.extend((key, value))
         buf.write(packer.pack(array))
 
     def _unpack_message_v1(self, unpacker):
