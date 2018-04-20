@@ -43,6 +43,9 @@ from __future__ import absolute_import
 from io import BytesIO
 from abc import ABCMeta, abstractproperty, abstractmethod
 
+import os
+os.environ['MSGPACK_PUREPYTHON'] = "1"
+# pylint: disable=wrong-import-position
 import msgpack
 
 from dxlclient import _BaseObject

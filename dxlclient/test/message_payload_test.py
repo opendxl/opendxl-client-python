@@ -10,8 +10,12 @@ from io import BytesIO
 import time
 from threading import Condition
 
-from nose.plugins.attrib import attr
+import os
+os.environ['MSGPACK_PUREPYTHON'] = "1"
+# pylint: disable=wrong-import-position
 import msgpack
+
+from nose.plugins.attrib import attr
 
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, RequestCallback, Request
 from dxlclient.test.base_test import BaseClientTest
