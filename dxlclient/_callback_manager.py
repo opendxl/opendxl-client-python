@@ -3,12 +3,20 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Classes which manage registration and routing of incoming messages from the
+DXL to callbacks.
+"""
+
+from __future__ import absolute_import
+import inspect
 import threading
-import types
 
 from dxlclient import _BaseObject
 from dxlclient.callbacks import MessageCallback, RequestCallback, ResponseCallback, EventCallback
 from dxlclient._dxl_utils import WildcardCallback, DxlUtils
+
+from ._compat import is_string
 
 
 def _has_wildcard(channel_name):
@@ -18,7 +26,7 @@ def _has_wildcard(channel_name):
     :param channel_name: The channel name
     :return: Whether the channel has a wildcard
     """
-    if not  isinstance(channel_name, str):
+    if not is_string(channel_name):
         raise ValueError("Channel name should be str class")
     return channel_name and channel_name[-1] == '#'
 
@@ -43,7 +51,7 @@ class _CallbackManager(_BaseObject):
         if callback is None:
             raise ValueError("Missing callback argument")
         # Check if the provided eventCallback is a class
-        if isinstance(callback, (type, types.ClassType)):
+        if inspect.isclass(callback):
             if not issubclass(callback, MessageCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -125,10 +133,10 @@ class _CallbackManager(_BaseObject):
             if callbacks is not None:
                 if callback in callbacks:
                     callbacks.remove(callback)
-                if len(callbacks) == 0:
-                    del callbacks_by_channel[channel]
-                else:
+                if callbacks:
                     callbacks_by_channel[channel] = callbacks
+                else:
+                    del callbacks_by_channel[channel]
                 rc = True  # pylint: disable=invalid-name
             #Determine if any wildcard exist
             if self.wildcarding_enabled:
@@ -167,13 +175,18 @@ class _CallbackManager(_BaseObject):
         if self.wildcarding_enabled:
 
             def on_next_wildcard(wildcard):
+                """
+                Invoked for the next wildcard pattern found
+
+                :param wildcard: The wildcard pattern
+                """
                 #if wildcarded channel does not exist no message is fired
                 self._fire_message(callbacks_by_channel.get(wildcard), message)
 
             wildcard_callback = WildcardCallback()
             wildcard_callback.on_next_wildcard = on_next_wildcard
 
-            #Iterate over all channel wildcards sending messages via callback if
+            #Iterate over all channel wildcards sending messages via callback
             DxlUtils.iterate_wildcards(wildcard_callback, message.destination_topic)
 
     def _fire_message(self, callbacks, message):
@@ -184,11 +197,9 @@ class _CallbackManager(_BaseObject):
         :param message: The message to fire
         :return:
         """
-        if callbacks is None or len(callbacks) == 0:
-            return
-
-        for callback in callbacks:
-            self.handle_fire(callback, message)
+        if callbacks:
+            for callback in callbacks:
+                self.handle_fire(callback, message)
 
     def handle_fire(self, callback, message):
         """
@@ -214,7 +225,7 @@ class _RequestCallbackManager(_CallbackManager):
         """
         super(_RequestCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, types.ClassType)):
+        if inspect.isclass(callback):
             if not issubclass(callback, RequestCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -223,6 +234,7 @@ class _RequestCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, request_callback, request):
+        # pylint: disable=arguments-differ
         """
         Runs `request_callback` for `request`.
 
@@ -230,7 +242,7 @@ class _RequestCallbackManager(_CallbackManager):
         :param request: {@link dxlclient.request.Request} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(request_callback, (type, types.ClassType)):
+        if inspect.isclass(request_callback):
             callback = request_callback()
             callback.on_request(request)
         # Not a class, but an instance
@@ -251,7 +263,7 @@ class _ResponseCallbackManager(_CallbackManager):
         """
         super(_ResponseCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, types.ClassType)):
+        if inspect.isclass(callback):
             if not issubclass(callback, ResponseCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -260,6 +272,7 @@ class _ResponseCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, response_callback, response):
+        # pylint: disable=arguments-differ
         """
         Runs `response_callback` for `response`.
 
@@ -267,7 +280,7 @@ class _ResponseCallbackManager(_CallbackManager):
         :param response: {@link dxlclient.response.Response} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(response_callback, (type, types.ClassType)):
+        if inspect.isclass(response_callback):
             callback = response_callback()
             callback.on_response(response)
         # Not a class, but an instance
@@ -288,7 +301,7 @@ class _EventCallbackManager(_CallbackManager):
         """
         super(_EventCallbackManager, self).validate_callback(callback)
         # Check if the provided callback is a class
-        if isinstance(callback, (type, types.ClassType)):
+        if inspect.isclass(callback):
             if not issubclass(callback, EventCallback):
                 raise ValueError("Type mismatch on callback argument")
         # Not a class, but an instance
@@ -297,6 +310,7 @@ class _EventCallbackManager(_CallbackManager):
                 raise ValueError("Type mismatch on callback argument")
 
     def handle_fire(self, event_callback, event):
+        # pylint: disable=arguments-differ
         """
         Runs `event_callback` for `event`.
 
@@ -304,7 +318,7 @@ class _EventCallbackManager(_CallbackManager):
         :param event: {@link dxlclient.event.Event} object.
         """
         # Check if the provided eventCallback is a class
-        if isinstance(event_callback, (type, types.ClassType)):
+        if inspect.isclass(event_callback):
             callback = event_callback()
             callback.on_event(event)
         # Not a class, but an instance

@@ -1,11 +1,21 @@
-from threading import Condition
-from base_test import BaseClientTest, atomize
-from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse
-from dxlclient.test.test_service import TestService
-from thread_executor import ThreadRunExecutor
+"""
+DxlClient test that creates a thread per client and sends a request to a test
+service. Calculations such as request/second and average response time are
+calculated.
+"""
+
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import time
+from threading import Condition
 from nose.plugins.attrib import attr
+from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse
+from dxlclient.test.test_service import TestService
+from .base_test import BaseClientTest, atomize
+from .thread_executor import ThreadRunExecutor
+
+# pylint: disable=missing-docstring
 
 
 class SyncRequestTroughputRunner(BaseClientTest):
@@ -97,7 +107,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
     @attr('load')
     def test_sync_request_troughput(self):
         self.execute_t(self.create_client)
-        print self.get_execution_results()
+        print(self.get_execution_results())
 
     def get_execution_results(self):
         total_time = self.requests_end_time - self.requests_start_time
@@ -109,7 +119,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
         output += "Average response time: " + str(self.cummulative_response_time /
                                                   (self.THREAD_COUNT * self.REQUEST_COUNT)) + "\n"
 
-        mid = (self.THREAD_COUNT * self.REQUEST_COUNT) / 2
+        mid = (self.THREAD_COUNT * self.REQUEST_COUNT) // 2
         self.response_times.sort()
         if (self.THREAD_COUNT * self.REQUEST_COUNT) % 2 == 0:
             median_response_time = self.response_times[mid] + self.response_times[mid-1] / 2
@@ -146,7 +156,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
                             try:
                                 client.connect()
                                 connected = True
-                            except Exception:
+                            except Exception: # pylint: disable=broad-except
                                 if retries > 0:
                                     retries -= 1
                                     self.connect_retries += 1
@@ -161,14 +171,14 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                 curr_count = self.atomic_connect_count
                                 self.connect_condition.wait(self.MAX_CONNECT_WAIT)
                                 if self.atomic_connect_count == curr_count:
-                                    self.fail( "Timeout waiting for all threads to connect" )
+                                    self.fail("Timeout waiting for all threads to connect")
 
                             # Once all clients have connected, reset timing information
                             if self.requests_start_time == 0:
                                 self.requests_start_time = time.time()
                                 self.connect_time = self.requests_start_time - connect_time_start
 
-                        for i in range(0, self.REQUEST_COUNT):
+                        for _ in range(0, self.REQUEST_COUNT):
                             req = Request(topic)
                             call_start_time = time.time()
                             response = client.sync_request(req, timeout=self.DEFAULT_TIMEOUT)
@@ -183,20 +193,20 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                     self.requests_end_time = time.time()
 
                             if count % 100 is 0:
-                                print str(count) + ", " + str(time.time() - self.requests_start_time)
+                                print(str(count) + ", " + str(time.time() - self.requests_start_time))
 
                             # Calulate and track response times
                             self.cummulative_response_time = self.cummulative_response_time + response_time
                             self.response_times.append(response_time)
 
-                except Exception, e:
-                    print e
-                    logging.info(e.message)
-                    raise e
+                except Exception as ex:
+                    print(ex)
+                    logging.info(ex)
+                    raise ex
             executor.execute(run)
 
             if self.THREAD_COUNT != self.response_count / self.REQUEST_COUNT:
-                print "Failed! responseCount=" + str(self.response_count)
+                print("Failed! responseCount=" + str(self.response_count))
             self.assertEqual(self.THREAD_COUNT, self.response_count / self.REQUEST_COUNT)
 
             server_client.unregister_service_sync(reg_info, self.DEFAULT_TIMEOUT)

@@ -8,6 +8,7 @@ Helpers for crypto operations used by the cli tools - e.g., for creating
 certificate requests and private keys
 """
 
+from __future__ import absolute_import
 import logging
 
 from asn1crypto import x509, pem, csr
@@ -214,7 +215,7 @@ class _KeyPair(object):
                                            _bytes_to_unicode(passphrase))
 
 
-class _CertificateRequest(object):  # pylint: disable=too-few-public-methods
+class _CertificateRequest(object):
     """
     Certificate request generator
     """
@@ -278,9 +279,9 @@ class _CertificateRequest(object):  # pylint: disable=too-few-public-methods
             "version": u"v1",
             "subject": x509_subject,
             "subject_pk_info": public_key.asn1,
-            "attributes": [{"type": u"extension_request",
-                            "values": [map(self._create_extension,
-                                           extensions)]}]})
+            "attributes":
+                [{"type": u"extension_request",
+                  "values": [[self._create_extension(x) for x in extensions]]}]})
 
     @staticmethod
     def _create_extension(extension):
@@ -413,6 +414,6 @@ def validate_cert_pem(pem_text, message_on_exception=None):
         logger.error("%s. Reason: %s",
                      message_on_exception or
                      "Failed to validate certificate PEM",
-                     ex.message)
+                     ex)
         logger.debug("Certificate PEM: %s", pem_text)
         raise

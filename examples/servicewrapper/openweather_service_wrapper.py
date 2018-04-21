@@ -8,11 +8,19 @@
 # openweather_common.py must be edited to include the OpenWeatherMap API
 # key (see http://openweathermap.org/appid)
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
 import time
-import urllib2
+
+try:
+    from urllib.request import urlopen
+    from urllib.request import Request as URLRequest
+except ImportError:
+    from urllib2 import urlopen
+    from urllib2 import Request as URLRequest
 
 from dxlclient.callbacks import RequestCallback
 from dxlclient.client import DxlClient
@@ -55,24 +63,25 @@ with DxlClient(config) as client:
                 logger.info("Service received request payload: " + query)
 
                 # Send HTTP request to OpenWeatherMap
-                req = urllib2.Request(
+                req = URLRequest(
                     CURRENT_WEATHER_URL.format(query, API_KEY), None,
                     {'Content-Type': 'text/json'})
-                f = urllib2.urlopen(req)
+                f = urlopen(req)
                 weather_response = f.read()
                 f.close()
 
                 # Create the response message
                 response = Response(request)
                 # Populate the response payload
-                response.payload = weather_response.encode(encoding="UTF-8")
+                response.payload = weather_response
                 # Send the response
                 client.send_response(response)
 
             except Exception as ex:
-                print str(ex)
+                print(str(ex))
                 # Send error response
-                client.send_response(ErrorResponse(request, error_message=str(ex).encode(encoding="UTF-8")))
+                client.send_response(ErrorResponse(
+                    request, error_message=str(ex).encode(encoding="UTF-8")))
 
     # Create service registration object
     info = ServiceRegistrationInfo(client, SERVICE_NAME)

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -32,17 +34,12 @@ try:
 
         # Prompt user for input to publish DXL Events
         while True:
-            print "   Enter 1 to publish a DXL Event"
-            print "   Enter 9 to quit"
-            input = raw_input("   Enter value: ")
-
-            try:
-                option = int(input)
-            except:
-                option = input
+            print("   Enter 1 to publish a DXL Event")
+            print("   Enter 9 to quit")
+            option = prompt("   Enter value: ").strip()
 
             # Option: DXL Event
-            if option == 1:
+            if option == "1":
                 # Create the Event
                 logger.info("Event Publisher - Creating Event for Topic %s", EVENT_TOPIC)
                 event = Event(EVENT_TOPIC)
@@ -55,7 +52,7 @@ try:
                 client.send_event(event)
 
             # Option: Exit the loop
-            elif option == 9:
+            elif option == "9":
                 break
 
             # Invalid input

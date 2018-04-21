@@ -5,6 +5,7 @@ This includes the defining the path to the configuration file used to initialize
 in addition to setting up the logger appropriately.
 """
 
+from __future__ import absolute_import
 import os
 import logging
 
@@ -22,3 +23,9 @@ console_handler.setFormatter(log_formatter)
 logger = logging.getLogger()
 logger.addHandler(console_handler)
 logger.setLevel(logging.INFO)
+
+# pylint: disable=unused-import
+try:
+    from builtins import input as prompt
+except ImportError:
+    from __builtin__ import raw_input as prompt

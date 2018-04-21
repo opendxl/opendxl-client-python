@@ -1,14 +1,20 @@
+""" Tests various methods of the DxlClient """
+
+from __future__ import absolute_import
+from __future__ import print_function
 import threading
 import time
-from threading import Condition
 
+from nose.plugins.attrib import attr
 from dxlclient import UuidGenerator, ServiceRegistrationInfo, Request, ErrorResponse, EventCallback, Event
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
-from nose.plugins.attrib import attr
+
+# pylint: disable=missing-docstring
+
 
 @attr('system')
-class DxlClientTest (BaseClientTest):
+class DxlClientTest(BaseClientTest):
 
     #
     # Tests the connect and disconnect methods of the DxlClient
@@ -80,33 +86,42 @@ class DxlClientTest (BaseClientTest):
             # Send a request and ensure the response is an error message
             response = client.sync_request(Request(topic))
             self.assertIsInstance(response, ErrorResponse, msg="Response is not an ErrorResponse")
-            self.assertEquals(error_code, response.error_code)
-            self.assertEquals(error_message, response.error_message)
+            self.assertEqual(error_code, response.error_code)
+            self.assertEqual(error_message, response.error_message)
 
     #
     # Tests threading of incoming requests
     #
     @attr('system')
     def test_incoming_message_threading(self):
+        max_wait = 30
         thread_count = 10
+        thread_name_condition = threading.Condition()
         thread_name = set()
 
         event_topic = UuidGenerator.generate_id_as_string()
-        with self.create_client(incoming_message_thread_pool_size=thread_count) as client:
+        with self.create_client(incoming_message_thread_pool_size=
+                                thread_count) as client:
             client.connect()
             event_callback = EventCallback()
 
-            def on_event(event):
-                thread_name.add(threading.current_thread())
+            def on_event(_):
+                with thread_name_condition:
+                    thread_name.add(threading.current_thread())
+                    if len(thread_name) == thread_count:
+                        thread_name_condition.notify_all()
 
             event_callback.on_event = on_event
             client.add_event_callback(event_topic, event_callback)
 
-            for i in range(0, 1000):
+            for _ in range(0, 1000):
                 evt = Event(event_topic)
                 client.send_event(evt)
 
-            time.sleep(30)
+            start = time.time()
+            with thread_name_condition:
+                while (time.time() - start < max_wait) and \
+                        len(thread_name) < thread_count:
+                    thread_name_condition.wait(max_wait)
 
-            self.assertEquals(thread_count, len(thread_name))
-
+            self.assertEqual(thread_count, len(thread_name))

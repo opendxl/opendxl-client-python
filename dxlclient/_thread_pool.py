@@ -3,13 +3,19 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
-import traceback
-from Queue import Queue
+"""
+Classes which provide a thread pool implementation, e.g., for use in
+concurrent processing of incoming DXL messages by registered callbacks.
+"""
+
+from __future__ import absolute_import
 from threading import Thread
 import logging
 
 from dxlclient import _BaseObject, _ObjectTracker
 from dxlclient._uuid_generator import UuidGenerator
+
+from ._compat import Queue
 
 logger = logging.getLogger(__name__)
 
@@ -46,8 +52,8 @@ class ThreadPoolWorker(Thread):
                     # Exit the thread
                     return
                 else:
-                    func(*args, **kargs)  # pylint: disable=star-args
-            except Exception as ex:  # pylint: disable=broad-except
+                    func(*args, **kargs)
+            except Exception:  # pylint: disable=broad-except
                 logger.exception("Error in worker thread")
             del func
             self.tasks.task_done()
@@ -69,10 +75,6 @@ class ThreadPool(_BaseObject):
             t = ThreadPoolWorker(self._tasks, thread_prefix)
             self._threads.append(t)
 
-    def __del__(self):
-        """destructor"""
-        super(ThreadPool, self).__del__()
-
     def add_task(self, func, *args, **kargs):
         """Add a task to the queue"""
         self._tasks.put((func, args, kargs))
@@ -81,16 +83,17 @@ class ThreadPool(_BaseObject):
         """Wait for completion of all the tasks in the queue"""
         self._tasks.join()
 
-    def shutdown(self):
+    def shutdown(self, wait_complete=True):
         """Shuts down the thread pool"""
         logger.debug("Shutting down thread pool...")
-        self.wait_completion()
+        if wait_complete:
+            self.wait_completion()
 
         # Add task to stop the thread
         for _ in self._threads:
             self.add_task(None)
 
         # Wait for threads to exit
-        for t in self._threads:
-            t.join()
-
+        if wait_complete:
+            for t in self._threads:
+                t.join()

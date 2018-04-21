@@ -2,13 +2,11 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
-import os
 
-################################################################################
-#
-# Global Configuration
-#
-################################################################################
+""" Global configuration functions. """
+
+from __future__ import absolute_import
+import os
 
 if os.name.lower() == "posix":
     PATH_CACHE = "/var/McAfee/{0}".format("dxlclient")

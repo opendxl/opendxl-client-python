@@ -3,6 +3,8 @@
 # set number of Event messages to the fabric and waits for them all to be
 # received by the callback.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -52,7 +54,7 @@ with DxlClient(config) as client:
         def on_event(self, event):
             with event_count_condition:
                 # Print the payload for the received event
-                print "Received event: " + event.payload.decode()
+                print("Received event: " + event.payload.decode())
                 # Increment the count
                 event_count[0] += 1
                 # Notify that the count was increment
@@ -78,10 +80,10 @@ with DxlClient(config) as client:
         client.send_event(event)
 
     # Wait until all events have been received
-    print "Waiting for events to be received..."
+    print("Waiting for events to be received...")
     with event_count_condition:
         while event_count[0] < TOTAL_EVENTS:
             event_count_condition.wait()
 
     # Print the elapsed time
-    print "Elapsed time (ms): " + str((time.time() - start) * 1000)
+    print("Elapsed time (ms): " + str((time.time() - start) * 1000))

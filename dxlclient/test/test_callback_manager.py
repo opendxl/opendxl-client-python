@@ -3,12 +3,19 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Test cases for the CallbackManager class
+"""
+
 # Run with python -m unittest dxlclient.test.test_callback_manager
 
+from __future__ import absolute_import
 import unittest
 
 import dxlclient.callbacks as callbacks
 import dxlclient._callback_manager as callback_manager
+
+# pylint: disable=missing-docstring
 
 
 class MockRequestCallback(callbacks.RequestCallback):
@@ -33,161 +40,161 @@ class CallbackManagerTest(unittest.TestCase):
     def test_request_callback_manager_with_valid_callback(self):
         cbm = callback_manager._RequestCallbackManager()
         cbm.add_callback("/test", MockRequestCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.add_callback(callback=MockRequestCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockRequestCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback(callback=MockRequestCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_request_callback_manager_with_invalid_callback(self):
         cbm = callback_manager._RequestCallbackManager()
         with self.assertRaises(ValueError):
             cbm.add_callback("/test", MockResponseCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_request_callback_manager_with_double_registration(self):
         cbm = callback_manager._RequestCallbackManager()
         cbm.add_callback("/test", MockRequestCallback)
         cbm.add_callback("/test", MockRequestCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockRequestCallback)
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_request_callback_manager_with_valid_callback_instance(self):
         cbm = callback_manager._RequestCallbackManager()
-        cb = MockRequestCallback()
-        cbm.add_callback("/test", cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.add_callback(callback=cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
-        cbm.remove_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.remove_callback(callback=cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        callback = MockRequestCallback()
+        cbm.add_callback("/test", callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.add_callback(callback=callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
+        cbm.remove_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.remove_callback(callback=callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_request_callback_manager_with_invalid_callback_instance(self):
         cbm = callback_manager._RequestCallbackManager()
-        cb = MockResponseCallback()
+        callback = MockResponseCallback()
         with self.assertRaises(ValueError):
-            cbm.add_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+            cbm.add_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_response_callback_manager_with_valid_callback(self):
         cbm = callback_manager._ResponseCallbackManager()
         cbm.add_callback("/test", MockResponseCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.add_callback(callback=MockResponseCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockResponseCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback(callback=MockResponseCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_response_callback_manager_with_invalid_callback(self):
         cbm = callback_manager._ResponseCallbackManager()
         with self.assertRaises(ValueError):
             cbm.add_callback("/test", MockEventCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_response_callback_manager_with_double_registration(self):
         cbm = callback_manager._ResponseCallbackManager()
         cbm.add_callback("/test", MockResponseCallback)
         cbm.add_callback("/test", MockResponseCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockResponseCallback)
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_response_callback_manager_with_valid_callback_instance(self):
         cbm = callback_manager._ResponseCallbackManager()
-        cb = MockResponseCallback()
-        cbm.add_callback("/test", cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.add_callback(callback=cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
-        cbm.remove_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.remove_callback(callback=cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        callback = MockResponseCallback()
+        cbm.add_callback("/test", callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.add_callback(callback=callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
+        cbm.remove_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.remove_callback(callback=callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_response_callback_manager_with_invalid_callback_instance(self):
         cbm = callback_manager._ResponseCallbackManager()
-        cb = MockEventCallback()
+        callback = MockEventCallback()
         with self.assertRaises(ValueError):
-            cbm.add_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+            cbm.add_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_event_callback_manager_with_valid_callback(self):
         cbm = callback_manager._EventCallbackManager()
         cbm.add_callback("/test", MockEventCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.add_callback(callback=MockEventCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockEventCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback(callback=MockEventCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_event_callback_manager_with_invalid_callback(self):
         cbm = callback_manager._EventCallbackManager()
         with self.assertRaises(ValueError):
             cbm.add_callback("/test", MockRequestCallback)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_event_callback_manager_with_double_registration(self):
         cbm = callback_manager._EventCallbackManager()
         cbm.add_callback("/test", MockEventCallback)
         cbm.add_callback("/test", MockEventCallback)
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
         cbm.remove_callback("/test", MockEventCallback)
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_event_callback_manager_with_valid_callback_instance(self):
         cbm = callback_manager._EventCallbackManager()
-        cb = MockEventCallback()
-        cbm.add_callback("/test", cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("/test")))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.add_callback(callback=cb)
-        self.assertEquals(1, len(cbm.callbacks_by_channel.get("")))
-        self.assertEquals(2, len(cbm.callbacks_by_channel))
-        cbm.remove_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(1, len(cbm.callbacks_by_channel))
-        cbm.remove_callback(callback=cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get(""))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+        callback = MockEventCallback()
+        cbm.add_callback("/test", callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("/test")))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.add_callback(callback=callback)
+        self.assertEqual(1, len(cbm.callbacks_by_channel.get("")))
+        self.assertEqual(2, len(cbm.callbacks_by_channel))
+        cbm.remove_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(1, len(cbm.callbacks_by_channel))
+        cbm.remove_callback(callback=callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get(""))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))
 
     def test_event_callback_manager_with_invalid_callback_instance(self):
         cbm = callback_manager._EventCallbackManager()
-        cb = MockRequestCallback()
+        callback = MockRequestCallback()
         with self.assertRaises(ValueError):
-            cbm.add_callback("/test", cb)
-        self.assertEquals(None, cbm.callbacks_by_channel.get("/test"))
-        self.assertEquals(0, len(cbm.callbacks_by_channel))
+            cbm.add_callback("/test", callback)
+        self.assertEqual(None, cbm.callbacks_by_channel.get("/test"))
+        self.assertEqual(0, len(cbm.callbacks_by_channel))

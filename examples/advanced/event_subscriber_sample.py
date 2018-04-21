@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -33,7 +35,8 @@ try:
         # Event callback class to handle incoming DXL Events
         class MyEventCallback(EventCallback):
             def on_event(self, event):
-                # Extract information from Event payload, in this sample we expect it is UTF-8 encoded
+                # Extract information from Event payload, in this sample we
+                # expect it is UTF-8 encoded
                 logger.info("Event Subscriber - Event received:\n   Topic: %s\n   Payload: %s",
                             event.destination_topic, event.payload.decode())
 
@@ -43,16 +46,11 @@ try:
 
         # Wait for DXL Events
         while True:
-            print "   Enter 9 to quit"
-            input = raw_input("   Enter value: ")
-
-            try:
-                option = int(input)
-            except:
-                option = input
+            print("   Enter 9 to quit")
+            option = prompt("   Enter value: ").strip()
 
             # Option: Exit the loop
-            if option == 9:
+            if option == "9":
                 break
 
             # Invalid input

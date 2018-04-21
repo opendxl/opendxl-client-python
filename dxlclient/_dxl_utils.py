@@ -2,6 +2,10 @@
 ###############################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ###############################################################################
+
+""" DXL utility classes. """
+
+from __future__ import absolute_import
 import errno
 import os
 
@@ -33,13 +37,13 @@ class DxlUtils(object):
         :param topic: channel topic.
         :return: wildcarded topic
         """
-        if topic is "":
+        if not topic:
             return "#"
         splitted = topic.split("/")
         if topic[-1] != "#":
             return "/".join(splitted[:-1]) + "/#"
         else:
-            if len(topic) is 2:
+            if len(topic) == 2:
                 return "#"
             return "/".join(splitted[:-2]) + "/#"
 
@@ -116,12 +120,13 @@ class DxlUtils(object):
         contents of `data`.
 
         :param str filename: name of the file to save
-        :param str data: data to be saved
+        :param data: data to be saved
+        :type data: str or bytes
         :param int mode: permissions mode to use for the file
         """
         DxlUtils.makedirs(os.path.dirname(filename))
-        with os.fdopen(os.open(filename,
-                               os.O_WRONLY | os.O_CREAT, mode), 'w') as handle:
+        with os.fdopen(os.open(filename, os.O_WRONLY | os.O_CREAT, mode),
+                       'wb' if isinstance(data, bytes) else 'w') as handle:
             handle.write(data)
 
 

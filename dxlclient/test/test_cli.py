@@ -3,26 +3,44 @@
 # Copyright (c) 2014 McAfee Inc. - All Rights Reserved.
 ###############################################################################
 
+"""
+Test cases for the CLI subcommands (generatecsr, provisionconfig, and
+updateconfig.
+"""
+
 # Run with nosetests dxlclient.test.test_cli
 
+from __future__ import absolute_import
+from __future__ import print_function
 import base64
 import datetime
-import io
+import getpass
 import json
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 import uuid
 
+if sys.version_info[0] > 2:
+    from io import StringIO as NativeStringIO
+else:
+    from io import BytesIO as NativeStringIO
+
+# pylint: disable=wrong-import-position
 from asn1crypto import csr, pem, x509, algos
-from mock import patch
+from mock import call, patch
 from parameterized import parameterized
 from oscrypto import asymmetric
 import requests_mock
 
 from dxlclient import DxlUtils
 from dxlclient._cli import cli_run
+
+from .base_test import builtins
+
+# pylint: disable=missing-docstring
 
 
 def command_args(args):
@@ -47,7 +65,7 @@ class _TempDir(object):
 
 class _CertificateRequest(object):
     def __init__(self, csr_file):
-        csr_bytes = slurp_file_into_string(csr_file)
+        csr_bytes = slurp_file_into_bytes(csr_file)
         _, _, der_bytes = pem.unarmor(csr_bytes)
         self.request = csr.CertificationRequest.load(der_bytes)
 
@@ -81,7 +99,7 @@ class _CertificateRequest(object):
 
 class _PrivateKey(object):
     def __init__(self, private_key_file, password=None):
-        private_key_bytes = slurp_file_into_string(private_key_file)
+        private_key_bytes = slurp_file_into_bytes(private_key_file)
         self.private_key = asymmetric.load_private_key(private_key_bytes,
                                                        password)
 
@@ -119,7 +137,7 @@ FAKE_CERTIFICATE = \
                           get_fake_public_key_asn1()}),
                   "signature_algorithm": algos.SignedDigestAlgorithm({
                       "algorithm": u"sha256_rsa"}),
-                  "signature_value": "fake"}).dump())
+                  "signature_value": b"fake"}).dump()).decode('utf8')
 
 FAKE_CSR = \
     pem.armor(
@@ -131,7 +149,7 @@ FAKE_CSR = \
                     "subject": _FAKE_SUBJECT,
                     "subject_pk_info": get_fake_public_key_asn1()}),
             "signature_algorithm": _SIGNATURE_ALGORITHM,
-            "signature": "fake"}).dump())
+            "signature": b"fake"}).dump()).decode('utf8')
 
 
 class CliTest(unittest.TestCase):
@@ -159,7 +177,7 @@ class CliTest(unittest.TestCase):
         ("",),
         ("?",)])
     def test_invalid_args_returns_error_code(self, value):
-        stderr_bytes = io.BytesIO()
+        stderr_bytes = NativeStringIO()
         with patch("dxlclient._cli.argparse.ArgumentParser.print_help"), \
                 patch("sys.argv", command_args(value)), \
                 patch("sys.stderr", new=stderr_bytes), \
@@ -168,7 +186,7 @@ class CliTest(unittest.TestCase):
         stderr_bytes.seek(0)
         stderr_string = stderr_bytes.read()
         self.assertIn("invalid choice", stderr_string)
-        self.assertNotEquals(0, context.exception.code)
+        self.assertNotEqual(0, context.exception.code)
 
     @parameterized.expand([
         ("client1",),
@@ -240,8 +258,8 @@ class CliTest(unittest.TestCase):
             self.assertEqual(["host1.com", "host2.com"],
                              request.subject_alt_names)
 
-    def test_generatecsr_with_encrypted_private_key(self):
-        with _TempDir("gencsr_enc_pk") as temp_dir, \
+    def test_generatecsr_with_encrypted_private_key_and_passphrase_arg(self):
+        with _TempDir("gencsr_enc_pk_pass_arg") as temp_dir, \
                 patch("sys.argv", command_args(["generatecsr",
                                                 temp_dir,
                                                 "myclient",
@@ -252,11 +270,60 @@ class CliTest(unittest.TestCase):
             self.assertTrue(os.path.exists(private_key_file))
 
             # Validate that supplying no password raises an exception
-            self.assertRaises(OSError, _PrivateKey, private_key_file)
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file)
 
             # Validate that supplying a bad password raises an exception
-            self.assertRaises(OSError, _PrivateKey, private_key_file,
-                              "wrongpass")
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file, "wrongpass")
+
+            # Validate that supplying the right password is successful
+            key = _PrivateKey(private_key_file, "itsasecret")
+            self.assertEqual("rsa", key.algorithm)
+
+    def test_generatecsr_with_encrypted_private_key_and_passphrase_prompt(self):
+        passphrase = "itsasecret"
+
+        responses = ['', passphrase + "nomatch1", passphrase + "nomatch2",
+                     passphrase, passphrase]
+        response_count = [-1]
+        def prompt_response(_):
+            response_count[0] += 1
+            return responses[response_count[0]]
+
+        with _TempDir("gencsr_enc_pk_pass_prompt") as temp_dir,\
+                patch("sys.argv", command_args(["generatecsr",
+                                                temp_dir,
+                                                "myclient",
+                                                "-P"])), \
+                patch.object(builtins, 'print') as mock_print, \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass:
+            cli_run()
+
+            mock_getpass.assert_has_calls([
+                call("Enter private key passphrase:"),
+                call("Enter private key passphrase:"),
+                call("Confirm private key passphrase:"),
+                call("Enter private key passphrase:"),
+                call("Confirm private key passphrase:")
+            ])
+
+            mock_print.assert_has_calls([
+                call("Value cannot be empty. Try again."),
+                call("Values for private key passphrase do not match. Try again.")
+            ])
+
+            private_key_file = os.path.join(temp_dir, "client.key")
+            self.assertTrue(os.path.exists(private_key_file))
+
+            # Validate that supplying no password raises an exception
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file)
+
+            # Validate that supplying a bad password raises an exception
+            self.assertRaises((ValueError, OSError), _PrivateKey,
+                              private_key_file, "wrongpass")
 
             # Validate that supplying the right password is successful
             key = _PrivateKey(private_key_file, "itsasecret")
@@ -313,27 +380,30 @@ class CliTest(unittest.TestCase):
 
             # Validate auth credentials sent in request
             expected_creds = "Basic {}".format(base64.b64encode(
-                "myuser:mypass"))
+                b"myuser:mypass").decode("utf8"))
             self.assertEqual(expected_creds, request.headers["Authorization"])
 
             # Validate csr saved to disk matches csr submitted for signing
-            csr_bytes_from_file = slurp_file_into_string(csr_file)
+            csr_bytes_from_file = slurp_file_into_bytes(csr_file)
             csr_bytes_in_request = flattened_query_params(request).get(
                 "csrString")
-            self.assertEqual(csr_bytes_from_file, csr_bytes_in_request)
+            self.assertEqual(csr_bytes_in_request.encode("utf8"),
+                             csr_bytes_from_file)
 
             # Validate CA bundle returned for request matches stored file
             ca_bundle_file = os.path.join(temp_dir, "ca-bundle.crt")
             self.assertTrue(os.path.exists(ca_bundle_file))
-            ca_bundle_from_file = slurp_file_into_string(ca_bundle_file)
-            self.assertEqual(ca_bundle_for_response, ca_bundle_from_file)
+            ca_bundle_from_file = slurp_file_into_bytes(ca_bundle_file)
+            self.assertEqual(ca_bundle_for_response.encode("utf8"),
+                             ca_bundle_from_file)
 
             # Validate client cert returned for request matches stored file
             client_cert_file = os.path.join(temp_dir, "{}.crt".format(
                 file_prefix))
             self.assertTrue(os.path.exists(client_cert_file))
-            client_cert_from_file = slurp_file_into_string(client_cert_file)
-            self.assertEqual(client_cert_for_response, client_cert_from_file)
+            client_cert_from_file = slurp_file_into_bytes(client_cert_file)
+            self.assertEqual(client_cert_for_response.encode("utf8"),
+                             client_cert_from_file)
 
             # Validate config file stored properly, with broker data returned
             # from server
@@ -343,7 +413,7 @@ class CliTest(unittest.TestCase):
 
             config_file = os.path.join(temp_dir, "dxlclient.config")
             self.assertTrue(os.path.exists(config_file))
-            config_from_file = slurp_file_into_string(config_file)
+            config_from_file = slurp_file_into_bytes(config_file)
             self.assertEqual(expected_config_content, config_from_file)
 
     def test_provisionconfig_with_csr(self):
@@ -373,17 +443,20 @@ class CliTest(unittest.TestCase):
 
             # Validate csr saved to disk was not regenerated and matches csr
             # submitted for signing
-            csr_bytes_from_file = slurp_file_into_string(full_csr_file_path)
+            csr_bytes_from_file = slurp_file_into_bytes(full_csr_file_path)
             csr_bytes_in_request = flattened_query_params(request).get(
                 "csrString")
-            self.assertEqual(csr_bytes_from_file, csr_bytes_in_request)
-            self.assertEqual(csr_to_test, csr_bytes_from_file)
+            self.assertEqual(csr_bytes_in_request.encode("utf8"),
+                             csr_bytes_from_file)
+            self.assertEqual(csr_to_test.encode("utf8"),
+                             csr_bytes_from_file)
 
             # Validate client cert returned for request matches stored file
             client_cert_file = os.path.join(temp_dir, "client.crt")
             self.assertTrue(os.path.exists(client_cert_file))
-            client_cert_from_file = slurp_file_into_string(client_cert_file)
-            self.assertEqual(client_cert_for_response, client_cert_from_file)
+            client_cert_from_file = slurp_file_into_bytes(client_cert_file)
+            self.assertEqual(client_cert_for_response.encode("utf8"),
+                             client_cert_from_file)
 
     def test_provisionconfig_with_trusted_ca_cert_and_port(self):
         with _TempDir("provconfig_ca_port") as temp_dir, \
@@ -405,6 +478,36 @@ class CliTest(unittest.TestCase):
             request = req_mock.request_history[0]
 
             self.assertEqual("mytruststore.pem", request.verify)
+
+    def test_provisionconfig_with_prompt_for_server_user_and_password(self):
+        responses = {"Enter server username:": "myuser",
+                     "Enter server password:": "mypass"}
+        def prompt_response(arg):
+            return responses[arg]
+
+        with _TempDir("provconfig_no_server_creds") as temp_dir, \
+                patch("sys.argv", command_args(["provisionconfig",
+                                                temp_dir,
+                                                "myhost",
+                                                "myclient"])), \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass, \
+                requests_mock.mock(case_sensitive=True) as req_mock:
+            req_mock.get(get_server_provision_url("myhost", 8443),
+                         text=get_mock_provision_response_func())
+
+            cli_run()
+
+            self.assertEqual(1, len(req_mock.request_history))
+            request = req_mock.request_history[0]
+
+            # Validate auth credentials sent in request
+            expected_creds = "Basic {}".format(base64.b64encode(
+                b"myuser:mypass").decode("utf8"))
+            self.assertEqual(expected_creds, request.headers["Authorization"])
+
+            self.assertEqual(2, mock_getpass.call_count)
+
 
     def test_updateconfig_basic(self):
         with _TempDir("updateconfig_basic") as temp_dir, \
@@ -457,19 +560,20 @@ class CliTest(unittest.TestCase):
 
             # Validate auth credentials sent in requests
             expected_creds = "Basic {}".format(base64.b64encode(
-                "myuser:mypass"))
+                b"myuser:mypass").decode("utf8"))
             for request in req_mock.request_history:
                 self.assertEqual(expected_creds,
                                  request.headers["Authorization"])
 
             # Validate updates to the ca bundle file
             self.assertTrue(os.path.exists(ca_bundle_file))
-            ca_bundle_from_file = slurp_file_into_string(ca_bundle_file)
-            self.assertEqual(updated_ca_bundle, ca_bundle_from_file)
+            ca_bundle_from_file = slurp_file_into_bytes(ca_bundle_file)
+            self.assertEqual(updated_ca_bundle.encode("utf8"),
+                             ca_bundle_from_file)
 
             # Validate updates to the config file
             self.assertTrue(os.path.exists(config_file))
-            config_from_file = slurp_file_into_string(config_file)
+            config_from_file = slurp_file_into_bytes(config_file)
             self.assertEqual(expected_config_content, config_from_file)
 
     def test_updateconfig_with_trusted_ca_cert_and_port(self):
@@ -513,10 +617,49 @@ class CliTest(unittest.TestCase):
             self.assertIn(client_ca_url, request_urls)
             self.assertIn(broker_list_url, request_urls)
 
+    def test_updateconfig_with_prompt_for_server_user_and_password(self):
+        responses = {"Enter server username:": "myuser",
+                     "Enter server password:": "mypass"}
+        def prompt_response(arg):
+            return responses[arg]
 
-def slurp_file_into_string(filename):
-    with open(filename, "r") as handle:
-        return handle.read()
+        with _TempDir("updateconfig_no_server_creds") as temp_dir, \
+                patch("sys.argv", command_args(["updateconfig",
+                                                temp_dir,
+                                                "myhost"])), \
+                patch.object(getpass, "getpass",
+                             side_effect=prompt_response) as mock_getpass, \
+                requests_mock.mock(case_sensitive=True) as req_mock:
+            ca_bundle_file = os.path.join(temp_dir, "ca-bundle.crt")
+            DxlUtils.save_to_file(ca_bundle_file, "old ca")
+
+            config_file = os.path.join(temp_dir, "dxlclient.config")
+            DxlUtils.save_to_file(config_file, make_config())
+
+            client_ca_url = get_server_client_ca_url("myhost")
+            broker_list_url = get_server_broker_list_url("myhost")
+            req_mock.get(client_ca_url,
+                         text=get_mock_ca_bundle_response_func())
+            req_mock.get(broker_list_url,
+                         text=get_mock_broker_list_response_func())
+
+            cli_run()
+
+            self.assertEqual(2, len(req_mock.request_history))
+
+            # Validate auth credentials sent in requests
+            expected_creds = "Basic {}".format(base64.b64encode(
+                b"myuser:mypass").decode("utf8"))
+            for request in req_mock.request_history:
+                self.assertEqual(expected_creds,
+                                 request.headers["Authorization"])
+
+            self.assertEqual(2, mock_getpass.call_count)
+
+
+def slurp_file_into_bytes(filename):
+    with open(filename) as handle:
+        return handle.read().encode('utf8')
 
 
 def get_server_provision_url(host, port=8443):
@@ -587,7 +730,7 @@ def make_config(basic_config_lines=None, broker_lines=None):
         broker_lines = broker_lines_for_config_file(
             make_broker_lines(2))
 
-    return "\n".join(basic_config_lines + [broker_lines])
+    return "\n".join(basic_config_lines + [broker_lines]).encode("utf8")
 
 
 def flattened_broker_lines(broker_lines,
@@ -623,8 +766,8 @@ def make_fake_ca_bundle(ca_certs=3):
 
 def make_ok_response(message, request):
     output = flattened_query_params(request).get(":output")
-    return "OK:\r\n{}\r\n".format(json.dumps(message)
-                                  if output == "json" else message)
+    return u"OK:\r\n{}\r\n".format(json.dumps(message)
+                                   if output == "json" else message)
 
 
 def get_mock_provision_response_func(ca_bundle=None,

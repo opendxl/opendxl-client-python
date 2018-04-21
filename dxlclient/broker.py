@@ -3,6 +3,11 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Contains the :class:`Broker` class, which represents a DXL message broker.
+"""
+
+from __future__ import absolute_import
 import re
 import socket
 import datetime
@@ -10,10 +15,12 @@ import logging
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
+from dxlclient._uuid_generator import UuidGenerator
 
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=attribute-defined-outside-init, too-many-instance-attributes
 class Broker(_BaseObject):
     """
     The class :class:`Broker` represents a DXL message broker.
@@ -61,10 +68,6 @@ class Broker(_BaseObject):
         # The broker response time in nanoseconds, or None if no response or not tested
         self._response_time = None
 
-    def __del__(self):
-        """Destructor"""
-        super(Broker, self).__del__()
-
     @property
     def unique_id(self):
         """
@@ -73,7 +76,7 @@ class Broker(_BaseObject):
         return self._unique_id
 
     @unique_id.setter
-    def unique_id(self, id):
+    def unique_id(self, id): # pylint: disable=invalid-name, redefined-builtin
         if id:
             self._unique_id = id
         else:
@@ -107,10 +110,8 @@ class Broker(_BaseObject):
     def ip_address(self, ip_address):
         if ip_address:
             # Remove brackets around IPv6 address
-            ip = re.sub(r"[\[\]]", "", ip_address)
-        else:
-            ip = ip_address
-        self._ip_address = ip
+            ip_address = re.sub(r"[\[\]]", "", ip_address)
+        self._ip_address = ip_address
 
     @property
     def port(self):
@@ -165,14 +166,16 @@ class Broker(_BaseObject):
         if len(elements) == 2:
             protocol = elements[0]
             host_name = elements[1]
-        elements = host_name.split(":")
-        if len(elements) == 2:
-            host_name = elements[0]
-            port = elements[1]
+        if host_name[-1] != ']':
+            host_name_left, _, host_name_right = host_name.rpartition(":")
+            if host_name_left:
+                host_name = host_name_left
+                port = host_name_right
         broker.host_name = host_name
         broker.port = port
+        broker.unique_id = UuidGenerator.generate_id_as_string()
 
-        if protocol and not protocol.lower() == Broker._SSL_PROTOCOL.lower():
+        if protocol and protocol.lower() != Broker._SSL_PROTOCOL.lower():
             raise MalformedBrokerUriException("Unknown protocol: " + protocol)
 
         return broker
@@ -238,7 +241,7 @@ class Broker(_BaseObject):
             end = datetime.datetime.now()
             self._response_from_ip_address = False
             self._response_time = (end - start).total_seconds()
-        except socket.error, msg:
+        except socket.error as msg:
             if self._ip_address:
                 try:
                     start = datetime.datetime.now()
@@ -246,26 +249,30 @@ class Broker(_BaseObject):
                     end = datetime.datetime.now()
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
-                except socket.error, msg:
-                    logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
+                except socket.error as msg:
+                    logger.error(
+                        "Socket could not be created. Error Code: %s. Message: %s.",
+                        msg.errno, msg)
             else:
-                logger.error("Socket could not be created. Error Code : " + str(msg.errno) + " Message " + str(msg.message))
+                logger.error(
+                    "Socket could not be created. Error Code: %s. Message: %s.",
+                    msg.errno, msg)
         finally:
             if broker_s is not None:
                 broker_s.close()
 
     @staticmethod
-    def _is_port_number(input):
+    def _is_port_number(port):
         """
         Indicates if the input is a valid port number.
-        :param input: Port number to check.
+        :param port: Port number to check.
         :return: True if the input is a valid port number, false otherwise.
         """
         res = True
         try:
-            port = int(input)
-            if port < 1 or port > 65535:
+            port_int = int(port)
+            if port_int < 1 or port_int > 65535:
                 res = False
-        except Exception, e:
+        except (TypeError, ValueError):
             res = False
         return res

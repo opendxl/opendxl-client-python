@@ -1,6 +1,8 @@
 # This sample queries McAfee Active Response for the IP addresses of hosts
 # that have an Active Response client installed.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 import json
@@ -39,7 +41,7 @@ def execute_mar_search_api(client, payload_dict):
     req.payload = json.dumps(payload_dict).encode(encoding="UTF-8")
 
     # Display the request that is going to be sent
-    print "Request:\n" + json.dumps(payload_dict, sort_keys=True, indent=4, separators=(',', ': '))
+    print("Request:\n" + json.dumps(payload_dict, sort_keys=True, indent=4, separators=(',', ': ')))
 
     # Send the request and wait for a response (synchronous)
     res = client.sync_request(req, timeout=30)
@@ -48,7 +50,8 @@ def execute_mar_search_api(client, payload_dict):
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
         resp_dict = json.loads(res.payload.decode(encoding="UTF-8"))
         # Display the response
-        print "Response:\n" + json.dumps(resp_dict, sort_keys=True, indent=4, separators=(',', ': '))
+        print("Response:\n" + json.dumps(resp_dict, sort_keys=True,
+                                         indent=4, separators=(',', ': ')))
         if "code" in resp_dict:
             code = resp_dict['code']
             if code < 200 or code >= 300:
@@ -72,7 +75,8 @@ with DxlClient(config) as client:
     client.connect()
 
     # Create the search
-    response_dict = execute_mar_search_api(client,
+    response_dict = execute_mar_search_api(
+        client,
         {
             "target": "/v1/simple",
             "method": "POST",
@@ -93,7 +97,8 @@ with DxlClient(config) as client:
     search_id = response_dict["body"]["id"]
 
     # Start the search
-    execute_mar_search_api(client,
+    execute_mar_search_api(
+        client,
         {
             "target": "/v1/" + search_id + "/start",
             "method": "PUT",
@@ -105,7 +110,8 @@ with DxlClient(config) as client:
     # Wait until the search finishes
     finished = False
     while not finished:
-        response_dict = execute_mar_search_api(client,
+        response_dict = execute_mar_search_api(
+            client,
             {
                 "target": "/v1/" + search_id + "/status",
                 "method": "GET",
@@ -119,7 +125,8 @@ with DxlClient(config) as client:
 
     # Get the search results
     # Results limited to 10, the API does support paging
-    response_dict = execute_mar_search_api(client,
+    response_dict = execute_mar_search_api(
+        client,
         {
             "target": "/v1/" + search_id + "/results",
             "method": "GET",
@@ -135,6 +142,6 @@ with DxlClient(config) as client:
     )
 
     # Loop and display the results
-    print "Results:"
+    print("Results:")
     for result in response_dict['body']['items']:
-        print "    " + result['output']['HostInfo|ip_address']
+        print("    " + result['output']['HostInfo|ip_address'])

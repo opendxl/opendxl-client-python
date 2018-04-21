@@ -1,19 +1,24 @@
+"""
+Slams a service with a flood of asynchronous tests. The PAHO library by default will
+deadlock when it is waiting to complete a publish and at the same time receives an
+incoming message.
+
+This test ensures that the changes we made to the PAHO library now work in this particular
+scenario.
+"""
+
+from __future__ import absolute_import
+from __future__ import print_function
+from threading import Condition
 import time
+from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
-from threading import Condition
-from nose.plugins.attrib import attr
+
+# pylint: disable=missing-docstring
 
 
-#
-# Slams a service with a flood of asynchronous tests. The PAHO library by default will
-# deadlock when it is waiting to complete a publish and at the same time receives an
-# incoming message.
-#
-# This test ensures that the changes we made to the PAHO library now work in this particular
-# scenario.
-#
 @attr('system')
 class AsyncFloodTest(BaseClientTest):
     # The count of requests to send
@@ -40,15 +45,14 @@ class AsyncFloodTest(BaseClientTest):
             client.connect()
             client.subscribe(channel)
 
-            def my_request_callback(rq):
-                # print "request: " + str(rq.version)
+            def my_request_callback(request):
                 try:
                     time.sleep(0.05)
-                    resp = Response(rq)
-                    resp.payload = rq.payload
+                    resp = Response(request)
+                    resp.payload = request.payload
                     client.send_response(resp)
-                except Exception, e:
-                    print e.message
+                except Exception as ex: # pylint: disable=broad-except
+                    print(ex)
 
             req_callback = RequestCallback()
             req_callback.on_request = my_request_callback
@@ -60,16 +64,15 @@ class AsyncFloodTest(BaseClientTest):
                 client2.connect()
 
                 def my_response_callback(response):
-                    # print "response"
                     if response.message_type == Message.MESSAGE_TYPE_ERROR:
-                        print "Received error response: " + response._error_response
+                        print("Received error response: " + response._error_response)
                         with self.resp_condition:
                             self.error_count += 1
                             self.resp_condition.notify_all()
                     else:
                         with self.resp_condition:
                             if self.response_count % 10 == 0:
-                                print "Received request " + str(self.response_count)
+                                print("Received request " + str(self.response_count))
                             self.response_count += 1
                             self.resp_condition.notify_all()
 
@@ -80,11 +83,10 @@ class AsyncFloodTest(BaseClientTest):
 
                 for i in range(0, self.REQUEST_COUNT):
                     if i % 100 == 0:
-                        print "Sent: " + str(i)
+                        print("Sent: " + str(i))
 
                     request = Request(channel)
-                    pl = str(i)
-                    request.payload = pl
+                    request.payload = str(i)
                     client2.async_request(request)
 
                     if self.error_count > 0:
@@ -97,8 +99,6 @@ class AsyncFloodTest(BaseClientTest):
                         self.resp_condition.wait(5)
 
                 if self.error_count != 0:
-                    exc = Exception()
-                    exc.message = "Received an error response!"
-                    raise exc
+                    raise Exception("Received an error response!")
 
-                self.assertEquals(self.REQUEST_COUNT, self.response_count, "Did not receive all messages!")
+                self.assertEqual(self.REQUEST_COUNT, self.response_count, "Did not receive all messages!")

@@ -3,6 +3,12 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+"""
+Contains the :class:`UuidGenerator` class, which generates formatted UUIDs,
+e.g., for applying unique identifiers to new DXL messages.
+"""
+
+from __future__ import absolute_import
 import uuid
 
 

@@ -3,21 +3,19 @@
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
 
+""" Classes for the different DXL message callbacks. """
+
+from __future__ import absolute_import
 from dxlclient import _BaseObject
 
 
-class MessageCallback(_BaseObject):  # pylint: disable=too-few-public-methods
+class MessageCallback(_BaseObject):
     """
     Base class for the different callbacks
     """
-    def __init__(self):
-        super(MessageCallback, self).__init__()
+    pass
 
-    def __del__(self):
-        super(MessageCallback, self).__del__()
-
-
-class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class EventCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Event` messages.
 
@@ -33,7 +31,7 @@ class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
 
         class MyEventCallback(EventCallback):
             def on_event(self, event):
-                print "Received event! " + event.source_client_id
+                print("Received event! " + event.source_client_id)
 
         dxl_client.add_event_callback("/testeventtopic", MyEventCallback())
 
@@ -66,7 +64,7 @@ class EventCallback(MessageCallback):  # pylint: disable=too-few-public-methods
         raise NotImplementedError("Must be implemented in a child class.")
 
 
-class RequestCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class RequestCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Request` messages.
 
@@ -84,7 +82,7 @@ class RequestCallback(MessageCallback):  # pylint: disable=too-few-public-method
         raise NotImplementedError("Must be implemented in a child class.")
 
 
-class ResponseCallback(MessageCallback):  # pylint: disable=too-few-public-methods
+class ResponseCallback(MessageCallback):
     """
     Concrete instances of this interface are used to receive :class:`dxlclient.message.Response` messages.
 
@@ -99,7 +97,7 @@ class ResponseCallback(MessageCallback):  # pylint: disable=too-few-public-metho
 
         class MyResponseCallback(ResponseCallback):
             def on_response(self, response):
-                print "Received response! " + response.service_id
+                print("Received response! " + response.service_id)
 
         request = Request("/testservice/testrequesttopic")
         dxl_client.async_request(request, MyResponseCallback())

@@ -2,11 +2,17 @@
 ################################################################################
 # Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
 ################################################################################
+
+"""
+Contains the :class:`DxlClientConfig` class, which holds the information
+necessary to connect a :class:`dxlclient.client.DxlClient` to the DXL fabric.
+"""
+
+from __future__ import absolute_import
 from collections import OrderedDict
 import logging
 from os import path
 import threading
-from Queue import Queue
 
 from configobj import ConfigObj
 
@@ -14,6 +20,8 @@ from dxlclient import _BaseObject, DxlUtils
 from dxlclient.broker import Broker
 from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import BrokerListError
+
+from ._compat import Queue
 
 ################################################################################
 #
@@ -54,7 +62,7 @@ def _get_brokers(broker_list_json):
     """
     try:
         return _get_brokers_from_list(broker_list_json)
-    except Exception, broker_error:
+    except Exception as broker_error:
         raise BrokerListError("Broker list is not a valid JSON: " + str(broker_error))
 
 ################################################################################
@@ -500,7 +508,8 @@ class DxlClientConfig(_BaseObject):
     def reconnect_when_disconnected(self, reconnect):
         self._reconnect_when_disconnected = reconnect
 
-    def _get_sorted_broker_list_worker(self, broker):
+    @staticmethod
+    def _get_sorted_broker_list_worker(broker):
         """Returns a sorted list of the brokers in this config."""
         broker._connect_to_broker()
 

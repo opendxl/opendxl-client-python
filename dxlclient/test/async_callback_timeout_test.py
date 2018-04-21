@@ -1,8 +1,14 @@
+""" Test that ensures that async callbacks are being cleaned up via timeout """
+
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 from nose.plugins.attrib import attr
 from dxlclient import ResponseCallback, UuidGenerator, ServiceRegistrationInfo, Request
 from dxlclient.test.base_test import BaseClientTest
 from dxlclient.test.test_service import TestService
+
+# pylint: disable=missing-docstring
 
 
 class AsyncCallbackTimeoutTest(BaseClientTest):
@@ -14,8 +20,8 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
         def resp_callback():
             pass
 
-        cb = ResponseCallback()
-        cb.on_response = resp_callback
+        callback = ResponseCallback()
+        callback.on_response = resp_callback
 
         with self.create_client() as client:
             client.connect()
@@ -25,7 +31,7 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
 
             test_service = TestService(client, 1)
 
-            def empty_on_request(request):
+            def empty_on_request(_):
                 pass
 
             test_service.on_request = empty_on_request
@@ -36,23 +42,23 @@ class AsyncCallbackTimeoutTest(BaseClientTest):
             client.register_service_sync(reg_info, self.DEFAULT_TIMEOUT)
 
             async_req = Request(destination_topic=req_topic)
-            client.async_request(async_req, cb)  # TODO: Use the method with timeout when is will available
+            client.async_request(async_req, callback)  # TODO: Use the method with timeout when is will available
 
-            for i in range(0, 10):
+            for _ in range(0, 10):
                 req = Request(destination_topic=req_topic)
-                client.async_request(req, cb)  # TODO: Use the updated method with timeout when it is available
+                client.async_request(req, callback)  # TODO: Use the updated method with timeout when it is available
 
             req_for_error = Request(destination_topic=missing_topic)
             client.async_request(req_for_error)
             async_callback_count = client._get_async_callback_count()
-            self.assertEquals(11, async_callback_count)
+            self.assertEqual(11, async_callback_count)
 
-            for i in range(0, 20):
-                print "asyncCallbackCount = " + str(client._get_async_callback_count())
+            for _ in range(0, 20):
+                print("asyncCallbackCount = " + str(client._get_async_callback_count()))
                 time.sleep(1)
                 req = Request(destination_topic=req_topic)
-                client.async_request(req, cb)
+                client.async_request(req, callback)
 
-            self.assertEquals(1, async_callback_count)
+            self.assertEqual(1, async_callback_count)
 
         # TODO: Restore the value of SYSPROP_ASYNC_CALLBACK_CHECK_INTERVAL

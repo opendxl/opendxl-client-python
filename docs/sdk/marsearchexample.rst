@@ -40,7 +40,8 @@ addresses (``ip_address``) of any hosts (``HostInfo``) that have an Active Respo
     .. code-block:: python
 
         # Create the search
-        response_dict = execute_mar_search_api(client,
+        response_dict = execute_mar_search_api(
+            client,
             {
                 "target": "/v1/simple",
                 "method": "POST",
@@ -114,7 +115,8 @@ the search be started.
         search_id = response_dict["body"]["id"]
 
         # Start the search
-        execute_mar_search_api(client,
+        execute_mar_search_api(
+            client,
             {
                 "target": "/v1/" + search_id + "/start",
                 "method": "PUT",
@@ -169,7 +171,8 @@ status of ``FINISHED``.
         # Wait until the search finishes
         finished = False
         while not finished:
-            response_dict = execute_mar_search_api(client,
+            response_dict = execute_mar_search_api(
+                client,
                 {
                     "target": "/v1/" + search_id + "/status",
                     "method": "GET",
@@ -238,7 +241,8 @@ in the code block below). In this particular case, the search results are being 
 
         # Get the search results
         # Results limited to 10, the API does support paging
-        response_dict = execute_mar_search_api(client,
+        response_dict = execute_mar_search_api(
+            client,
             {
                 "target": "/v1/" + search_id + "/results",
                 "method": "GET",
@@ -303,9 +307,9 @@ The final code block in the script extracts the IP addresses from the search res
     .. code-block:: python
 
         # Loop and display the results
-        print "Results:"
+        print("Results:")
         for result in response_dict['body']['items']:
-            print "    " + result['output']['HostInfo|ip_address']
+            print("    " + result['output']['HostInfo|ip_address'])
 
 The output should appear similar to the following:
 
@@ -333,7 +337,7 @@ below:
             req.payload = json.dumps(payload_dict).encode(encoding="UTF-8")
 
             # Display the request that is going to be sent
-            print "Request:\n" + json.dumps(payload_dict, sort_keys=True, indent=4, separators=(',', ': '))
+            print("Request:\n" + json.dumps(payload_dict, sort_keys=True, indent=4, separators=(',', ': ')))
 
             # Send the request and wait for a response (synchronous)
             res = client.sync_request(req, timeout=30)
@@ -342,7 +346,8 @@ below:
             if res.message_type != Message.MESSAGE_TYPE_ERROR:
                 resp_dict = json.loads(res.payload.decode(encoding="UTF-8"))
                 # Display the response
-                print "Response:\n" + json.dumps(resp_dict, sort_keys=True, indent=4, separators=(',', ': '))
+                print("Response:\n" + json.dumps(resp_dict, sort_keys=True,
+                                                 indent=4, separators=(',', ': ')))
                 if "code" in resp_dict:
                     code = resp_dict['code']
                     if code < 200 or code >= 300:

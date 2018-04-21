@@ -5,3 +5,6 @@ dxlclient.egg-info
 MANIFEST
 dxlclient/test/client_config.cfg
 *.pyc
+*.crt
+*.csr
+*.key

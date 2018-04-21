@@ -39,20 +39,25 @@ the client should use the asynchronous form for sending requests,
 :func:`dxlclient.client.DxlClient.async_request`
 """
 
-import msgpack  # pylint: disable=import-error
+from __future__ import absolute_import
 from io import BytesIO
 from abc import ABCMeta, abstractproperty, abstractmethod
+
+import os
+os.environ['MSGPACK_PUREPYTHON'] = "1"
+# pylint: disable=wrong-import-position
+import msgpack
 
 from dxlclient import _BaseObject
 from dxlclient._uuid_generator import UuidGenerator
 from dxlclient.exceptions import DxlException
+from ._compat import iter_dict_items
 
-# pylint: disable=too-many-instance-attributes
-class Message(_BaseObject):
+
+class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
     """
     The base class for the different Data Exchange Layer (DXL) message types
     """
-    __metaclass__ = ABCMeta
 
     # The message version
     MESSAGE_VERSION = 2
@@ -107,10 +112,6 @@ class Message(_BaseObject):
         self._source_tenant_guid = ""
         # The set of tenant GUIDs to deliver the message to
         self._destination_tenant_guids = []
-
-    def __del__(self):
-        """destructor"""
-        super(Message, self).__del__()
 
     @property
     def version(self):
@@ -220,12 +221,12 @@ class Message(_BaseObject):
 
         :param unpacker: Unpacker object.
         """
-        self._message_id = unpacker.next()
-        self._source_client_id = unpacker.next()
-        self._source_broker_id = unpacker.next()
-        self._broker_ids = unpacker.next()
-        self._client_ids = unpacker.next()
-        self._payload = unpacker.next()
+        self._message_id = self._unpack_next_unicode_string(unpacker)
+        self._source_client_id = self._unpack_next_unicode_string(unpacker)
+        self._source_broker_id = self._unpack_next_unicode_string(unpacker)
+        self._broker_ids = self._unpack_next_unicode_string_array(unpacker)
+        self._client_ids = self._unpack_next_unicode_string_array(unpacker)
+        self._payload = next(unpacker)
 
     @property
     def other_fields(self):
@@ -280,8 +281,8 @@ class Message(_BaseObject):
         """
         # Internally "otherFields" is a dictionary, but it should be packed as a list to send it.
         array = []
-        for key, value in self._other_fields.iteritems():
-            array.extend((key.encode('utf8'), value.encode('utf8')))
+        for key, value in iter_dict_items(self._other_fields):
+            array.extend((key, value))
         buf.write(packer.pack(array))
 
     def _unpack_message_v1(self, unpacker):
@@ -291,7 +292,7 @@ class Message(_BaseObject):
         :param unpacker: The unpacker
         """
         # The "otherFields" member is unpacked as a list format, and then it is converted to a dictionary.
-        array = unpacker.next()
+        array = next(unpacker)
         key = None
         self._other_fields = {}
         for curr in array:
@@ -317,8 +318,8 @@ class Message(_BaseObject):
 
         :param unpacker: The unpacker
         """
-        self._source_tenant_guid = unpacker.next()
-        self._destination_tenant_guids = unpacker.next()
+        self._source_tenant_guid = self._unpack_next_unicode_string(unpacker)
+        self._destination_tenant_guids = self._unpack_next_unicode_string_array(unpacker)
 
     def _to_bytes(self):
         """
@@ -330,7 +331,7 @@ class Message(_BaseObject):
         packer = msgpack.Packer()
         buf.write(packer.pack(self.version))
         buf.write(packer.pack(self.message_type))
-        # Version 0 
+        # Version 0
         self._pack_message(packer, buf)
         # Version 1
         if self._version > 0:
@@ -352,8 +353,8 @@ class Message(_BaseObject):
         buf = BytesIO(raw)
         buf.seek(0)
         unpacker = msgpack.Unpacker(buf)
-        version = unpacker.next()
-        message_type = unpacker.next()
+        version = next(unpacker)
+        message_type = next(unpacker)
 
         message = None
         if message_type == Message.MESSAGE_TYPE_REQUEST:
@@ -374,11 +375,22 @@ class Message(_BaseObject):
                 message._unpack_message_v1(unpacker)
             # Version 2
             if message._version > 1:
-                message._unpack_message_v2(unpacker)            
+                message._unpack_message_v2(unpacker)
             return message
 
         raise DxlException("Unknown message type: " + message_type)
 
+    @staticmethod
+    def _decode_to_unicode_string(obj):
+        return None if obj is None else obj.decode('utf8')
+
+    @staticmethod
+    def _unpack_next_unicode_string(unpacker):
+        return Message._decode_to_unicode_string(next(unpacker))
+
+    @staticmethod
+    def _unpack_next_unicode_string_array(unpacker):
+        return [Message._decode_to_unicode_string(x) for x in next(unpacker)]
 
 class Request(Message):
     """
@@ -449,8 +461,8 @@ class Request(Message):
         :param unpacker: Unpacker object.
         """
         super(Request, self)._unpack_message(unpacker)
-        self._reply_to_topic = unpacker.next()
-        self._service_id = unpacker.next()
+        self._reply_to_topic = self._unpack_next_unicode_string(unpacker)
+        self._service_id = self._unpack_next_unicode_string(unpacker)
 
 
 class Response(Message):
@@ -477,12 +489,10 @@ class Response(Message):
             self._request_message_id = request.message_id
 
             self._service_id = request.service_id
-            id = request.source_client_id
-            if id is not None and len(id) > 0:
-                self.client_ids = [id]
-            id = request.source_broker_id
-            if id is not None and len(id) > 0:
-                self.broker_ids = [id]
+            if request.source_client_id:
+                self.client_ids = [request.source_client_id]
+            if request.source_broker_id:
+                self.broker_ids = [request.source_broker_id]
         else:
             super(Response, self).__init__(destination_topic="")
             # The request (only available when sending the response)
@@ -542,8 +552,8 @@ class Response(Message):
         :param unpacker: Unpacker object.
         """
         super(Response, self)._unpack_message(unpacker)
-        self._request_message_id = unpacker.next()
-        self._service_id = unpacker.next()
+        self._request_message_id = self._unpack_next_unicode_string(unpacker)
+        self._service_id = self._unpack_next_unicode_string(unpacker)
 
 
 class Event(Message):
@@ -552,13 +562,6 @@ class Event(Message):
     Event messages are sent by one publisher and received by one or more recipients that are currently
     subscribed to the :attr:`Message.destination_topic` associated with the event (otherwise known as one-to-many).
     """
-    def __init__(self, destination_topic):
-        """
-        Constructor parameters:
-
-        :param destination_topic: The topic to publish the event to
-        """
-        super(Event, self).__init__(destination_topic)
 
     @property
     def message_type(self):
@@ -567,6 +570,7 @@ class Event(Message):
         """
         return Message.MESSAGE_TYPE_EVENT
 
+    # pylint: disable=useless-super-delegation
     def _pack_message(self, packer, buf):
         """
         Converts the message to an array of bytes and writes them to buf.
@@ -583,7 +587,7 @@ class Event(Message):
         :param unpacker: Unpacker object.
         """
         super(Event, self)._unpack_message(unpacker)
-
+    # pylint: enable=useless-super-delegation
 
 class ErrorResponse(Response):
     """
@@ -637,7 +641,7 @@ class ErrorResponse(Response):
         """
         super(ErrorResponse, self)._pack_message(packer, buf)
         buf.write(packer.pack(self._error_code))
-        buf.write(packer.pack(self._error_message.encode('utf8')))
+        buf.write(packer.pack(self._error_message))
 
     def _unpack_message(self, unpacker):
         """
@@ -646,5 +650,5 @@ class ErrorResponse(Response):
         :param unpacker: Unpacker object.
         """
         super(ErrorResponse, self)._unpack_message(unpacker)
-        self._error_code = unpacker.next()
-        self._error_message = unpacker.next().decode('utf8')
+        self._error_code = next(unpacker)
+        self._error_message = self._unpack_next_unicode_string(unpacker)

@@ -1,8 +1,13 @@
+""" Simple test service that sends back a generic Response or ErrorResponse. """
+
+from __future__ import absolute_import
+from concurrent.futures import ThreadPoolExecutor
 import logging
 
 from dxlclient import ErrorResponse, Response
 from dxlclient.callbacks import RequestCallback
-from concurrent.futures import ThreadPoolExecutor
+
+# pylint: disable=missing-docstring
 
 logger = logging.getLogger(__name__)
 
@@ -59,9 +64,9 @@ class TestService(RequestCallback):
         def run_task():
             try:
                 self.m_client.send_response(response)
-            except Exception, e:
-                logging.info(e.message)
-                raise e
+            except Exception as ex:
+                logging.info(ex)
+                raise ex
 
         self.m_executor.submit(run_task)
 

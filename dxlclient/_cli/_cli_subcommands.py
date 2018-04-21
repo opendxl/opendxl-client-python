@@ -5,14 +5,14 @@
 
 """Subcommand classes and helpers for the cli"""
 
-import abc
+from __future__ import absolute_import
+from __future__ import print_function
+from abc import ABCMeta, abstractproperty, abstractmethod
 import argparse
 import getpass
 import json
 import logging
 import os
-
-import six
 
 from dxlclient import Broker, DxlClientConfig
 from dxlclient._cli._crypto import X509Name, validate_cert_pem, \
@@ -124,7 +124,6 @@ def _password_action_prompt(title, confirm=False):
         :func:`argparse.ArgumentParser.add_argument`
     :rtype: type
     """
-    # pylint: disable=too-few-public-methods
     class PasswordAction(argparse.Action):
         """
         Custom action class for password argument parsing
@@ -355,12 +354,11 @@ def generate_csr_and_private_key(common_name, private_key_filename, args):
     return generator.csr
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Subcommand:  # pylint: disable=no-init
+class Subcommand(ABCMeta('ABC', (object,), {'__slots__': ()})): # compatible metaclass with Python 2 *and* 3
     """
     Abstract base class for cli subcommands
     """
-    @abc.abstractproperty
+    @abstractproperty
     def help(self):
         """
         Help text to display at the cli for the subcommand
@@ -368,7 +366,7 @@ class Subcommand:  # pylint: disable=no-init
         """
         pass
 
-    @abc.abstractproperty
+    @abstractproperty
     def name(self):
         """
         Name of the subcommand, used as the argument to identify the subcommand
@@ -400,7 +398,7 @@ class Subcommand:  # pylint: disable=no-init
         """
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def execute(self, args):
         """
         Execution entry point for the subcommand. This method is called when
@@ -769,8 +767,7 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
                                      broker["ipAddress"],
                                      broker["port"]) for broker in brokers]
         except Exception as ex:
-            logger.error("Failed to process broker list. Message: %s",
-                         ex.message)
+            logger.error("Failed to process broker list. Message: %s", ex)
             raise
 
     def execute(self, args):
