@@ -93,9 +93,9 @@ setup(
     install_requires=[
         "asn1crypto",
         "configobj",
-        "msgpack",
+        "msgpack>=0.5",
         "oscrypto",
-        "paho-mqtt",
+        "paho-mqtt>=1.3",
         "requests"
     ],
 
