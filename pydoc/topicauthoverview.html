@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Authorization Overview &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>Authorization Overview &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="marsendauth.html" title="Authorize Client to Perform MAR Search"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,20 +44,20 @@
             
   <div class="section" id="authorization-overview">
 <h1>Authorization Overview<a class="headerlink" href="#authorization-overview" title="Permalink to this headline">¶</a></h1>
-<p>DXL topic authorization is used to restrict which clients can “send” and “receive” DXL messages on particular topics.</p>
+<p>DXL topic authorization is used to restrict which clients can &quot;send&quot; and &quot;receive&quot; DXL messages on particular topics.</p>
 <p>Examples of using topic authorization include:</p>
 <ul>
 <li><p class="first">Restricting which clients can provide DXL services.</p>
 <blockquote>
-<div><p>When providing a service (McAfee Threat Intelligence Exchange (TIE), etc.) a restriction should be added to ensure that only clients that are providing the service are able to “receive” messages on the service-related topics. Without this protection other clients could masquerade as the service.</p>
+<div><p>When providing a service (McAfee Threat Intelligence Exchange (TIE), etc.) a restriction should be added to ensure that only clients that are providing the service are able to &quot;receive&quot; messages on the service-related topics. Without this protection other clients could masquerade as the service.</p>
 </div></blockquote>
 </li>
 <li><p class="first">Restricting which clients can invoke DXL services.</p>
 <blockquote>
-<div><p>This is accomplished by limiting the clients that can “send” messages on the service-related topics. For example, the clients that can perform McAfee Active Response (MAR) queries are limited using topic authorization (see section <a class="reference internal" href="marsendauth.html"><span class="doc">Authorize Client to Perform MAR Search</span></a>)</p>
+<div><p>This is accomplished by limiting the clients that can &quot;send&quot; messages on the service-related topics. For example, the clients that can perform McAfee Active Response (MAR) queries are limited using topic authorization (see section <a class="reference internal" href="marsendauth.html"><span class="doc">Authorize Client to Perform MAR Search</span></a>)</p>
 </div></blockquote>
 </li>
-<li><p class="first">Restricting which clients can “send” event messages.</p>
+<li><p class="first">Restricting which clients can &quot;send&quot; event messages.</p>
 <blockquote>
 <div><p>For example, only authorized clients should be able to inform that fabric that a McAfee Threat Intelligence (TIE) reputation has changed by sending a DXL event.</p>
 </div></blockquote>
@@ -121,11 +121,11 @@ utilize DXL topic authorization.</p>
         <li class="right" >
           <a href="marsendauth.html" title="Authorize Client to Perform MAR Search"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>

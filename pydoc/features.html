@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Features &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>Features &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="architecture.html" title="Architecture"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,7 +46,7 @@
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="location-unaware">
 <h2>Location Unaware<a class="headerlink" href="#location-unaware" title="Permalink to this headline">¶</a></h2>
-<p>Communication between clients on the DXL fabric is based on sending “messages” to a “topic”. Clients are unaware
+<p>Communication between clients on the DXL fabric is based on sending &quot;messages&quot; to a &quot;topic&quot;. Clients are unaware
 of the location of the other DXL clients they are communicating with (its hostname, IP address, etc.).</p>
 <p>For example, if a client wanted to determine the reputation for a file, it could send a request message to the topic
 <code class="docutils literal notranslate"><span class="pre">/mcafee/service/tie/file/reputation</span></code>. A service would receive the request and send a response with the appropriate
@@ -82,7 +82,7 @@ communication and a publish/subscribe event-based model.</p>
 <ul>
 <li><p class="first">Service-based</p>
 <blockquote>
-<div><p>The DXL fabric allows for “services” to be registered and exposed that respond to requests
+<div><p>The DXL fabric allows for &quot;services&quot; to be registered and exposed that respond to requests
 sent by invoking clients. This communication is point-to-point (one-to-one), meaning the communication is
 solely between an invoking client and the service that is being invoked. It is important to note that in
 this model the client actively invokes the service by sending it requests.</p>
@@ -93,7 +93,7 @@ reputations for files and certificates.</p>
 <li><p class="first">Event-based</p>
 <blockquote>
 <div><p>The DXL fabric also allows for event-based communication. This model is typically referred to as
-“publish/subscribe” wherein clients register interest by subscribing to a particular topic and publishers
+&quot;publish/subscribe&quot; wherein clients register interest by subscribing to a particular topic and publishers
 periodically send events to that topic. The event is delivered by the DXL fabric to all of the currently
 subscribed clients for the topic. Therefore, a single event sent can reach multiple clients (one-to-many).
 It is important to note that in this model the client passively receives events when they are sent by a publisher.</p>
@@ -176,11 +176,11 @@ authorized to publish reputation change events to the topic <code class="docutil
         <li class="right" >
           <a href="architecture.html" title="Architecture"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>

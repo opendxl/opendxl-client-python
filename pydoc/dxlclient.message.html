@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>dxlclient.message module &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>dxlclient.message module &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -88,9 +88,9 @@ request or an internal error within the service itself. Error response messages 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>request</strong> – The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> message that this is a response for</li>
-<li><strong>error_code</strong> – The numeric error code</li>
-<li><strong>error_message</strong> – The textual error message</li>
+<li><strong>request</strong> -- The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> message that this is a response for</li>
+<li><strong>error_code</strong> -- The numeric error code</li>
+<li><strong>error_message</strong> -- The textual error message</li>
 </ul>
 </td>
 </tr>
@@ -128,7 +128,7 @@ subscribed to the <a class="reference internal" href="#dxlclient.message.Message
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> – The topic to publish the event to</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> -- The topic to publish the message to</td>
 </tr>
 </tbody>
 </table>
@@ -143,14 +143,14 @@ subscribed to the <a class="reference internal" href="#dxlclient.message.Message
 <dl class="class">
 <dt id="dxlclient.message.Message">
 <em class="property">class </em><code class="descclassname">dxlclient.message.</code><code class="descname">Message</code><span class="sig-paren">(</span><em>destination_topic</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.message.Message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient._BaseObject</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>The base class for the different Data Exchange Layer (DXL) message types</p>
 <p>Constructor parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> – The topic to publish the message to</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> -- The topic to publish the message to</td>
 </tr>
 </tbody>
 </table>
@@ -227,7 +227,7 @@ and <a class="reference internal" href="#dxlclient.message.Message.client_ids" t
 <dt id="dxlclient.message.Message.other_fields">
 <code class="descname">other_fields</code><a class="headerlink" href="#dxlclient.message.Message.other_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">dict</span></code> (dictionary) containing the set of additional fields associated
-with the message. These fields can be used to add “header” like values to the
+with the message. These fields can be used to add &quot;header&quot; like values to the
 message without requiring modifications to be made to the payload.</p>
 </dd></dl>
 
@@ -240,7 +240,7 @@ message without requiring modifications to be made to the payload.</p>
 <dl class="attribute">
 <dt id="dxlclient.message.Message.source_broker_id">
 <code class="descname">source_broker_id</code><a class="headerlink" href="#dxlclient.message.Message.source_broker_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>The identifier of the DXL broker that the message’s originating client is connected to
+<dd><p>The identifier of the DXL broker that the message's originating client is connected to
 (set by the initial broker)</p>
 </dd></dl>
 
@@ -278,7 +278,7 @@ service instance and in turn receives a response.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> – The topic to publish the request to</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination_topic</strong> -- The topic to publish the request to</td>
 </tr>
 </tbody>
 </table>
@@ -319,7 +319,7 @@ invoking the service (sending a request) will receive the response as a return v
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> message that this is a response for</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> -- The <a class="reference internal" href="#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> message that this is a response for</td>
 </tr>
 </tbody>
 </table>
@@ -405,12 +405,12 @@ was initially sent by the client.</p>
         <li class="right" >
           <a href="dxlclient.exceptions.html" title="dxlclient.exceptions module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>

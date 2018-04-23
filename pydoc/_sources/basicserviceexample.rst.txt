@@ -43,7 +43,7 @@ method of the :class:`dxlclient.client.DxlClient`.
         class MyRequestCallback(RequestCallback):
             def on_request(self, request):
                 # Extract information from request
-                print "Service received request payload: " + request.payload.decode()
+                print("Service received request payload: " + request.payload.decode())
                 # Create the response message
                 res = Response(request)
                 # Populate the response payload
@@ -84,4 +84,4 @@ are printed.
 
         # Extract information from the response (if an error did not occur)
         if res.message_type != Message.MESSAGE_TYPE_ERROR:
-            print "Client received response payload: " + res.payload.decode()
+            print("Client received response payload: " + res.payload.decode())

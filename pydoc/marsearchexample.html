@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>McAfee Active Response (MAR) Search Sample &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>McAfee Active Response (MAR) Search Sample &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="tiefilerepexample.html" title="Threat Intelligence Exchange (TIE) File Reputation Sample"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -56,7 +56,7 @@ installed.</p>
 <p>To run this sample execute the <code class="docutils literal notranslate"><span class="pre">sample\mar\search_example.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\mar\search_example.py
+c:\dxlclient-python-sdk-4.1.0.184&gt;python sample\mar\search_example.py
 </pre>
 </div></blockquote>
 <p>To perform an Active Response query via DXL the following steps must be performed:</p>
@@ -79,7 +79,8 @@ described in detail at the bottom of this document.</p>
 addresses (<code class="docutils literal notranslate"><span class="pre">ip_address</span></code>) of any hosts (<code class="docutils literal notranslate"><span class="pre">HostInfo</span></code>) that have an Active Response client installed.</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the search</span>
-<span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span><span class="n">client</span><span class="p">,</span>
+<span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">,</span>
     <span class="p">{</span>
         <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/simple&quot;</span><span class="p">,</span>
         <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
@@ -153,7 +154,8 @@ the search be started.</p>
 <span class="n">search_id</span> <span class="o">=</span> <span class="n">response_dict</span><span class="p">[</span><span class="s2">&quot;body&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
 
 <span class="c1"># Start the search</span>
-<span class="n">execute_mar_search_api</span><span class="p">(</span><span class="n">client</span><span class="p">,</span>
+<span class="n">execute_mar_search_api</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">,</span>
     <span class="p">{</span>
         <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/&quot;</span> <span class="o">+</span> <span class="n">search_id</span> <span class="o">+</span> <span class="s2">&quot;/start&quot;</span><span class="p">,</span>
         <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
@@ -207,7 +209,8 @@ status of <code class="docutils literal notranslate"><span class="pre">FINISHED<
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wait until the search finishes</span>
 <span class="n">finished</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="k">while</span> <span class="ow">not</span> <span class="n">finished</span><span class="p">:</span>
-    <span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span><span class="n">client</span><span class="p">,</span>
+    <span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span>
+        <span class="n">client</span><span class="p">,</span>
         <span class="p">{</span>
             <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/&quot;</span> <span class="o">+</span> <span class="n">search_id</span> <span class="o">+</span> <span class="s2">&quot;/status&quot;</span><span class="p">,</span>
             <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
@@ -276,7 +279,8 @@ in the code block below). In this particular case, the search results are being 
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the search results</span>
 <span class="c1"># Results limited to 10, the API does support paging</span>
-<span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span><span class="n">client</span><span class="p">,</span>
+<span class="n">response_dict</span> <span class="o">=</span> <span class="n">execute_mar_search_api</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">,</span>
     <span class="p">{</span>
         <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/&quot;</span> <span class="o">+</span> <span class="n">search_id</span> <span class="o">+</span> <span class="s2">&quot;/results&quot;</span><span class="p">,</span>
         <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
@@ -340,9 +344,9 @@ about the results (counts, paging-related information, etc.).</p>
 <p>The final code block in the script extracts the IP addresses from the search results (as shown below).</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Loop and display the results</span>
-<span class="k">print</span> <span class="s2">&quot;Results:&quot;</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Results:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">response_dict</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
-    <span class="k">print</span> <span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;HostInfo|ip_address&#39;</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="s1">&#39;HostInfo|ip_address&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -370,7 +374,7 @@ below:</p>
     <span class="n">req</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_dict</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
 
     <span class="c1"># Display the request that is going to be sent</span>
-    <span class="k">print</span> <span class="s2">&quot;Request:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_dict</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Request:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_dict</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)))</span>
 
     <span class="c1"># Send the request and wait for a response (synchronous)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
@@ -379,7 +383,8 @@ below:</p>
     <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
         <span class="n">resp_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">))</span>
         <span class="c1"># Display the response</span>
-        <span class="k">print</span> <span class="s2">&quot;Response:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">resp_dict</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Response:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">resp_dict</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                         <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">)))</span>
         <span class="k">if</span> <span class="s2">&quot;code&quot;</span> <span class="ow">in</span> <span class="n">resp_dict</span><span class="p">:</span>
             <span class="n">code</span> <span class="o">=</span> <span class="n">resp_dict</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">code</span> <span class="o">&lt;</span> <span class="mi">200</span> <span class="ow">or</span> <span class="n">code</span> <span class="o">&gt;=</span> <span class="mi">300</span><span class="p">:</span>
@@ -469,11 +474,11 @@ The method will raise exceptions for any errors that occur during the request it
         <li class="right" >
           <a href="tiefilerepexample.html" title="Threat Intelligence Exchange (TIE) File Reputation Sample"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>

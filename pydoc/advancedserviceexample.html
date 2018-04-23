@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Advanced Service Sample &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>Advanced Service Sample &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="advancedeventsexample.html" title="Advanced Events Sample"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -45,23 +45,23 @@
   <div class="section" id="advanced-service-sample">
 <h1>Advanced Service Sample<a class="headerlink" href="#advanced-service-sample" title="Permalink to this headline">¶</a></h1>
 <p>Prior to running this sample make sure you have completed the samples configuration step (<a class="reference internal" href="sampleconfig.html"><span class="doc">Samples Configuration</span></a>).</p>
-<p>This sample differs from the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a> by breaking the “service provider” and “service invoker”
+<p>This sample differs from the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a> by breaking the &quot;service provider&quot; and &quot;service invoker&quot;
 functionality into two distinct scripts. When executed, each of these scripts will contain a unique instance of
 a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a>.</p>
 <div class="section" id="service-provider">
 <h2>Service Provider<a class="headerlink" href="#service-provider" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to start the “service provider”. This script will remain running and receive
-<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages from the “service invoker”.</p>
-<p>To start the “service provider”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_provider_sample.py</span></code> script as follows:</p>
+<p>The first step is to start the &quot;service provider&quot;. This script will remain running and receive
+<a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages from the &quot;service invoker&quot;.</p>
+<p>To start the &quot;service provider&quot;, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_provider_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_provider_sample.py
+c:\dxlclient-python-sdk-4.1.0.184&gt;python sample\advanced\service_provider_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
+2015-12-30 10:25:32,168 __main__ - INFO - Service Provider - Load DXL config from: c:dxlclient-python-sdk-4.1.0.184\sample/dxlclient.config
 2015-12-30 10:25:32,170 __main__ - INFO - Service Provider - Creating DXL Client
 2015-12-30 10:25:32,187 __main__ - INFO - Service Provider - Connecting to Broker
 2015-12-30 10:25:32,187 dxlclient.client - INFO - Waiting for broker list...
@@ -79,7 +79,7 @@ c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_provider_sam
 </pre>
 </div></blockquote>
 <p>The provider will remain running until <code class="docutils literal notranslate"><span class="pre">9</span></code> is entered to quit.</p>
-<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages received by the “service invoker” will be displayed in the output.</p>
+<p>Any <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> messages received by the &quot;service invoker&quot; will be displayed in the output.</p>
 <p>The code for the provider is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a>:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses to our Asynchronous Requests</span>
@@ -126,18 +126,18 @@ method of the <a class="reference internal" href="dxlclient.client.html#dxlclien
 </div>
 <div class="section" id="service-invoker">
 <h2>Service Invoker<a class="headerlink" href="#service-invoker" title="Permalink to this headline">¶</a></h2>
-<p>The next step is to start the “service invoker”. This script must be executed in a separate command prompt (or shell),
-leaving the “service provider” running.</p>
-<p>To start the “service invoker”, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_invoker_sample.py</span></code> script as follows:</p>
+<p>The next step is to start the &quot;service invoker&quot;. This script must be executed in a separate command prompt (or shell),
+leaving the &quot;service provider&quot; running.</p>
+<p>To start the &quot;service invoker&quot;, execute the <code class="docutils literal notranslate"><span class="pre">sample\advanced\service_invoker_sample.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_invoker_sample.py
+c:\dxlclient-python-sdk-4.1.0.184&gt;python sample\advanced\service_invoker_sample.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
 <blockquote>
 <div><pre class="literal-block">
-2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-4.0.0.418\sample/dxlclient.config
+2015-12-30 10:43:33,627 __main__ - INFO - Service Invoker - Load DXL config from: c:\dxlclient-python-sdk-4.1.0.184\sample/dxlclient.config
 2015-12-30 10:43:33,628 __main__ - INFO - Service Invoker - Creating DXL Client
 2015-12-30 10:43:33,644 __main__ - INFO - Service Invoker - Connecting to Broker
 2015-12-30 10:43:33,645 dxlclient.client - INFO - Waiting for broker list...
@@ -156,7 +156,7 @@ c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_invoker_samp
 </div></blockquote>
 <p>To publish a synchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
 <p>To publish an asynchronous <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message, enter <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
-<p>Information similar to the following should appear in the “service provider” output indicating that the
+<p>Information similar to the following should appear in the &quot;service provider&quot; output indicating that the
 <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Request" title="dxlclient.message.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Request</span></code></a> message was properly received and that a corresponding
 <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message was sent:</p>
 <blockquote>
@@ -169,7 +169,7 @@ c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_invoker_samp
 </pre></div>
 </div>
 </div></blockquote>
-<p>Information similar to the following should appear in the “service invoker” output indicating that the
+<p>Information similar to the following should appear in the &quot;service invoker&quot; output indicating that the
 <a class="reference internal" href="dxlclient.message.html#dxlclient.message.Response" title="dxlclient.message.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.message.Response</span></code></a> message was properly received:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">2015</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">30</span> <span class="mi">10</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">838</span> <span class="n">dxlclient</span><span class="o">.</span><span class="n">client</span> <span class="o">-</span> <span class="n">INFO</span> <span class="o">-</span> <span class="n">Message</span> <span class="n">received</span> <span class="k">for</span> <span class="n">topic</span> <span class="o">/</span><span class="n">mcafee</span><span class="o">/</span><span class="n">client</span><span class="o">/</span><span class="p">{</span><span class="mi">9</span><span class="n">ee95507</span><span class="o">-</span><span class="mi">0</span><span class="n">c73</span><span class="o">-</span><span class="mi">4696</span><span class="o">-</span><span class="n">a628</span><span class="o">-</span><span class="mi">6</span><span class="n">a89e2a79194</span><span class="p">}</span>
@@ -181,26 +181,36 @@ c:\dxlclient-python-sdk-4.0.0.418&gt;python sample\advanced\service_invoker_samp
 </div></blockquote>
 <p>The code for making <em>synchronous requests</em> is very similar to what is being used in the <a class="reference internal" href="basicserviceexample.html"><span class="doc">Basic Service Sample</span></a>:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Synchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="s2">&quot;Service Invoker - Creating Synchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 
 <span class="c1"># Encode string payload as UTF-8</span>
-<span class="n">request</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Synchronous Request Payload - Request ID: &quot;</span> <span class="o">+</span>
-                   <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+<span class="n">request</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> \
+    <span class="p">(</span><span class="s2">&quot;Sample Synchronous Request Payload - Request ID: &quot;</span> <span class="o">+</span>
+     <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
 <span class="c1"># Send Synchronous Request with default timeout and wait for Response</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Sending Synchronous Request to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="s2">&quot;Service Invoker - Sending Synchronous Request to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sync_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
 
 <span class="c1"># Check that the Response is not an Error Response, then extract</span>
 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
-    <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Synchronous Response received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
-                <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="c1"># Extract information from Response payload, in this sample</span>
+    <span class="c1"># we expect it is UTF-8 encoded</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Service Invoker - Synchronous Response received:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+        <span class="s2">&quot;   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Synchronous Error Response received:</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Service Invoker - Synchronous Error Response received:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+        <span class="s2">&quot;   Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -213,27 +223,41 @@ message is checked to ensure it is not an error, and its payload is displayed.</
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Response callback class to handle DXL Responses from a Service to our Asynchronous Requests</span>
 <span class="k">class</span> <span class="nc">MyResponseCallback</span><span class="p">(</span><span class="n">ResponseCallback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="c1"># Check that the Response is not an Error Response, then extract</span>
+        <span class="c1"># Check that the Response is not an Error Response,</span>
+        <span class="c1"># then extract</span>
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">message_type</span> <span class="o">!=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MESSAGE_TYPE_ERROR</span><span class="p">:</span>
-            <span class="c1"># Extract information from Response payload, in this sample we expect it is UTF-8 encoded</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Asynchronous Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
-                        <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="c1"># Extract information from Response payload, in this</span>
+            <span class="c1"># sample we expect it is UTF-8 encoded</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Service Invoker - &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Asynchronous Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Payload: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Asynchronous Error Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
-                        <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Service Invoker - &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Asynchronous Error Response received:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;Topic: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Error: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">destination_topic</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">request_message_id</span><span class="p">,</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
 
 <span class="c1"># Create the Request</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Creating Asynchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="s2">&quot;Service Invoker - &quot;</span> <span class="o">+</span>
+    <span class="s2">&quot;Creating Asynchronous Request for topic </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 
 <span class="c1"># Encode string payload as UTF-8</span>
 <span class="n">request</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="s1">&#39;Sample Asynchronous Request Payload&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
 <span class="c1">#Send Asynchronous Request with a timeout of 5 seconds</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Service Invoker - Sending Asynchronous Request:</span><span class="se">\n</span><span class="s2">   Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="s2">&quot;Service Invoker - Sending Asynchronous Request:</span><span class="se">\n</span><span class="s2">   &quot;</span> <span class="o">+</span>
+    <span class="s2">&quot;Request ID: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">   Topic: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">SERVICE_TOPIC</span><span class="p">)</span>
 <span class="n">client</span><span class="o">.</span><span class="n">async_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">MyResponseCallback</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -308,11 +332,11 @@ from the service provider.</p>
         <li class="right" >
           <a href="advancedeventsexample.html" title="Advanced Events Sample"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>

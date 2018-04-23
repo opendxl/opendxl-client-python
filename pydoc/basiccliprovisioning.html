@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Command Line Provisioning (Basic) &#8212; DXL Python SDK 4.0.0.418 documentation</title>
+    <title>Command Line Provisioning (Basic) &#8212; DXL Python SDK 4.1.0.184 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="provisioningoverview.html" title="Provisioning Overview"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,13 +44,13 @@
             
   <div class="section" id="command-line-provisioning-basic">
 <h1>Command Line Provisioning (Basic)<a class="headerlink" href="#command-line-provisioning-basic" title="Permalink to this headline">¶</a></h1>
-<p id="basiccliprovisioning">The OpenDXL Python Client’s command line interface supports the
+<p id="basiccliprovisioning">The OpenDXL Python Client's command line interface supports the
 <code class="docutils literal notranslate"><span class="pre">provisionconfig</span></code> operation which generates the information necessary for
 a client to connect to a DXL fabric (certificates, keys, and broker
 information).</p>
 <p>As part of the provisioning process, a remote call will be made to a
 provisioning server (ePO or OpenDXL Broker) which contains the
-Certificate Authority (CA) that will sign the client’s certificate.</p>
+Certificate Authority (CA) that will sign the client's certificate.</p>
 <p><cite>NOTE: ePO-managed environments must have 4.0 (or newer) versions of
 DXL ePO extensions installed.</cite></p>
 <p>Here is an example usage of <code class="docutils literal notranslate"><span class="pre">provisionconfig</span></code> operation:</p>
@@ -64,10 +64,10 @@ operation.</li>
 <li><code class="docutils literal notranslate"><span class="pre">myserver</span></code> is the host name or IP address of the server (ePO or OpenDXL
 Broker) that will be used to provision the client.</li>
 <li><code class="docutils literal notranslate"><span class="pre">client1</span></code> is the value for the Common Name (CN) attribute stored in the
-subject of the client’s certificate.</li>
+subject of the client's certificate.</li>
 </ul>
 <p><cite>NOTE:</cite> If a non-standard port (not 8443) is being used for ePO or the
-management interface of the OpenDXL Broker, an additional “port” argument
+management interface of the OpenDXL Broker, an additional &quot;port&quot; argument
 must be specified. For example <code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">443</span></code> could be specified as part of the
 provision operation to connect to the server on port 443.</p>
 <p>When prompted, provide credentials for the OpenDXL Broker Management Console
@@ -143,11 +143,11 @@ specified via command line options:</p>
         <li class="right" >
           <a href="provisioningoverview.html" title="Provisioning Overview"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.0.0.418 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, McAfee Inc..
+        &#169; Copyright 2018, McAfee Inc..
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
