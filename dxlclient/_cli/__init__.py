@@ -48,6 +48,11 @@ def _add_subcommand_argparsers(parser):
     """
     subparsers = parser.add_subparsers(title="subcommands")
 
+    # Adding these lines to force argparser to validate the presence of a
+    # subcommand in Python 3. See https://bugs.python.org/issue9253#msg186387.
+    subparsers.required = True
+    subparsers.dest = 'subcommand'
+
     for subcommand_class in _SUBCOMMAND_CLASSES:
         subcommand = subcommand_class()
         subcommand_parser = subparsers.add_parser(subcommand.name,
