@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-# Copyright (c) 2018 McAfee Inc. - All Rights Reserved.
+# Copyright (c) 2018 McAfee LLC - All Rights Reserved.
 ################################################################################
 
 """ Abstraction layer for Python 2 / 3 compatibility. """
