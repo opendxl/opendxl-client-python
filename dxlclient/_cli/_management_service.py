@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
-# Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
+# Copyright (c) 2018 McAfee LLC - All Rights Reserved.
 ###############################################################################
 
 """Helpers for making requests to a Management Service for CLI subcommands"""

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-# Copyright (c) 2017 McAfee Inc. - All Rights Reserved.
+# Copyright (c) 2018 McAfee LLC - All Rights Reserved.
 ################################################################################
 
 """ Classes for the different exceptions that the dxlclient APIs can raise. """
