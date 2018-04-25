@@ -92,13 +92,17 @@ def cli_run():
     """
     parser = _create_argparser()
     _add_subcommand_argparsers(parser)
-    args = parser.parse_args(sys.argv[1:])
 
-    verbosity_level = 0 if args.silent else args.verbose+1
+    input_args = sys.argv[1:]
+    if not input_args:
+        input_args = ["-h"]
+    parsed_args = parser.parse_args(input_args)
+
+    verbosity_level = 0 if parsed_args.silent else parsed_args.verbose+1
     logging.basicConfig(level=_get_log_level(verbosity_level),
                         format=_get_log_formatter(verbosity_level))
     try:
-        args.func(args)
+        parsed_args.func(parsed_args)
     except Exception as ex:  # pylint: disable=broad-except
         logger.error("Command failed. Message: %s", ex)
         if verbosity_level >= 2:
