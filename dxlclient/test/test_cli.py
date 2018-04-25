@@ -160,6 +160,7 @@ class CliTest(unittest.TestCase):
         patch.stopall()
 
     @parameterized.expand([
+        ([],),
         ("-h",),
         ("--help",)
     ])
