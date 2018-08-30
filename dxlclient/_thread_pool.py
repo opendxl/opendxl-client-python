@@ -51,8 +51,7 @@ class ThreadPoolWorker(Thread):
                 if func is None:
                     # Exit the thread
                     return
-                else:
-                    func(*args, **kargs)
+                func(*args, **kargs)
             except Exception:  # pylint: disable=broad-except
                 logger.exception("Error in worker thread")
             del func

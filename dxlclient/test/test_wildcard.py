@@ -35,10 +35,9 @@ def topic_splitter(topic):
     splitted = topic.split("/")
     if topic[-1] != "#":
         return "/".join(splitted[:-1]) + "/#"
-    else:
-        if len(topic) == 2:
-            return "#"
-        return "/".join(splitted[:-2]) + "/#"
+    if len(topic) == 2:
+        return "#"
+    return "/".join(splitted[:-2]) + "/#"
 
 class WilcardPerformanceTest(BaseClientTest):
 

@@ -12,7 +12,7 @@ Test cases for the CallbackManager class
 from __future__ import absolute_import
 import unittest
 
-import dxlclient.callbacks as callbacks
+from dxlclient import callbacks
 import dxlclient._callback_manager as callback_manager
 
 # pylint: disable=missing-docstring

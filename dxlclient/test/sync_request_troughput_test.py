@@ -129,7 +129,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
         output += "Median response time: " + str(median_response_time)
         return output
 
-    def execute_t(self, client_factory):
+    def execute_t(self, client_factory):  # pylint: disable=too-many-statements
 
         with client_factory() as server_client:
             test_service = TestService(server_client, 1)

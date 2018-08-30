@@ -121,11 +121,9 @@ class DxlClientConfigTest(unittest.TestCase):
         def connect_to_broker_slow():
             semaphore.acquire()
             time.sleep(0.1)
-            return
 
         def connect_to_broker_fast():
             semaphore.release()
-            return
 
         slow_broker._connect_to_broker = connect_to_broker_slow
         fast_broker._connect_to_broker = connect_to_broker_fast
@@ -328,7 +326,7 @@ class DxlClientTest(unittest.TestCase):
 
     def test_client_raises_exception_on_connect_when_already_connecting(self):
         self.client._client.connect.side_effect = Exception("An exception!")
-        self.client._thread = threading.Thread()
+        self.client._thread = threading.Thread(target=None)
         self.assertEqual(self.client.connected, False)
         with self.assertRaises(DxlException):
             self.client.connect()
