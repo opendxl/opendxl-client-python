@@ -56,8 +56,9 @@ class _ObjectTracker(object):
         if self._enabled:
             with self._lock:
                 self._obj_count += 1
-                self._logger.debug("Constructed: " + obj.__module__ + "." + obj.__class__.__name__ \
-                                   + " objCount=" + str(self._obj_count))
+                self._logger.debug(
+                    "Constructed: %s.%s objCount=%d",
+                    obj.__module__, obj.__class__.__name__, self._obj_count)
 
     def obj_destructed(self, obj):
         """
@@ -68,8 +69,9 @@ class _ObjectTracker(object):
         if self._enabled:
             with self._lock:
                 self._obj_count -= 1
-                self._logger.debug("Destructed: " + obj.__module__ + "." + obj.__class__.__name__ \
-                                   + " objCount=" + str(self._obj_count))
+                self._logger.debug(
+                    "Destructed: %s.%s objCount=%d",
+                    obj.__module__, obj.__class__.__name__, self._obj_count)
 
     @property
     def obj_count(self):

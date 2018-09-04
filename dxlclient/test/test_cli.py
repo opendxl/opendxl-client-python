@@ -246,11 +246,12 @@ class CliTest(unittest.TestCase):
 
     def test_generatecsr_with_subject_alt_names(self):
         with _TempDir("gencsr_sans") as temp_dir, \
-                patch("sys.argv", command_args([
-                    "generatecsr",
-                    temp_dir,
-                    "myclient",
-                    "-s", "host1.com", "host2.com"])):
+                patch("sys.argv",
+                      command_args([
+                          "generatecsr",
+                          temp_dir,
+                          "myclient",
+                          "-s", "host1.com", "host2.com"])):
             cli_run()
 
             csr_file = os.path.join(temp_dir, "client.csr")

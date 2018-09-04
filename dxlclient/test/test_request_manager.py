@@ -12,7 +12,7 @@ Test cases for the RequestManager class
 from __future__ import absolute_import
 import unittest
 
-import dxlclient.exceptions as exceptions
+from dxlclient import exceptions
 from dxlclient.callbacks import ResponseCallback
 from dxlclient import RequestManager
 from dxlclient import Request

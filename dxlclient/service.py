@@ -660,8 +660,11 @@ class _ServiceManager(RequestCallback):
                 try:
                     service_handler.send_unregister_service_event()
                 except Exception as ex: # pylint: disable=broad-except
-                    logger.error("Error sending unregister service event for " +
-                                 service_handler.service_type + " (" + service_handler.instance_id + "): " + str(ex))
+                    logger.error(
+                        "Error sending unregister service event for %s (%s): %s",
+                        service_handler.service_type,
+                        service_handler.instance_id,
+                        ex)
 
             # Remove the service handler from a copy of self.services. This
             # avoids causing issues with any readers using the current value of
@@ -733,17 +736,21 @@ class _ServiceManager(RequestCallback):
                     try:
                         service_handler.send_unregister_service_event()
                     except Exception as ex: # pylint: disable=broad-except
-                        logger.error("Error sending unregister service event for " +
-                                     service_handler.service_type + " (" +
-                                     service_handler.instance_id + "): " + str(ex))
+                        logger.error(
+                            "Error sending unregister service event for %s (%s): %s",
+                            service_handler.service_type,
+                            service_handler.instance_id,
+                            ex)
                 else:
                     services[service_id] = service_handler
                     try:
                         service_handler.start_timer()
                     except Exception as ex: # pylint: disable=broad-except
-                        logger.error("Failed to start timer thread for service " +
-                                     service_handler.service_type + " (" +
-                                     service_handler.instance_id + "): " + str(ex))
+                        logger.error(
+                            "Failed to start timer thread for service %s (%s): %s",
+                            service_handler.service_type,
+                            service_handler.instance_id,
+                            ex)
             self.services = services
 
     def on_disconnect(self):
@@ -760,7 +767,9 @@ class _ServiceManager(RequestCallback):
                     try:
                         service_handler.send_unregister_service_event()
                     except Exception as ex: # pylint: disable=broad-except
-                        logger.error("Error sending unregister service event for " +
-                                     service_handler.service_type + " (" +
-                                     service_handler.instance_id + "): " + str(ex))
+                        logger.error(
+                            "Error sending unregister service event for %s (%s): %s",
+                            service_handler.service_type,
+                            service_handler.instance_id,
+                            ex)
                 service_handler.stop_timer()

@@ -91,7 +91,7 @@ class EventThroughputRunner(BaseClientTest):
         self.execute_t(self.create_client)
         # print self.get_statistics()
 
-    def execute_t(self, client_factory):
+    def execute_t(self, client_factory):  # pylint: disable=too-many-statements
         start = time.time()
         with client_factory() as send_client:
             send_client.connect()

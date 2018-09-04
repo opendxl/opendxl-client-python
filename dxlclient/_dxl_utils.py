@@ -42,10 +42,9 @@ class DxlUtils(object):
         splitted = topic.split("/")
         if topic[-1] != "#":
             return "/".join(splitted[:-1]) + "/#"
-        else:
-            if len(topic) == 2:
-                return "#"
-            return "/".join(splitted[:-2]) + "/#"
+        if len(topic) == 2:
+            return "#"
+        return "/".join(splitted[:-2]) + "/#"
 
     @staticmethod
     def _get_wildcards(topic):

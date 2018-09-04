@@ -68,8 +68,7 @@ def get_tie_file_reputation(client, md5_hex, sha1_hex):
     # Return a dictionary corresponding to the response payload
     if res.message_type != Message.MESSAGE_TYPE_ERROR:
         return json.loads(res.payload.decode(encoding="UTF-8"))
-    else:
-        raise Exception("Error: " + res.error_message + " (" + str(res.error_code) + ")")
+    raise Exception("Error: " + res.error_message + " (" + str(res.error_code) + ")")
 
 # Create the client
 with DxlClient(config) as client:
