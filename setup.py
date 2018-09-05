@@ -95,7 +95,7 @@ setup(
         "configobj",
         "msgpack>=0.5",
         "oscrypto",
-        "paho-mqtt==1.3",
+        "paho-mqtt>=1.3",
         "requests"
     ],
 
