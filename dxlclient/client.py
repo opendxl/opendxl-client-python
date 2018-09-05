@@ -69,6 +69,7 @@ def _on_connect(client, userdata, flags, rc): # pylint: disable=invalid-name
     t.daemon = True
     t.start()
 
+
 def _on_connect_run(client, userdata, rc): # pylint: disable=invalid-name
     """
     Worker method that is invoked when the client connects to the broker.
@@ -91,17 +92,16 @@ def _on_connect_run(client, userdata, rc): # pylint: disable=invalid-name
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         with self._subscriptions_lock:
-            with self._packets_awaiting_ack_condition:
-                for subscription in self._subscriptions:
-                    try:
-                        logger.debug("Subscribing to %s", subscription)
-                        result, mid = client.subscribe(subscription)
-                        self._wait_packet_acked(result, mid,
-                                                "subscription to " +
-                                                subscription)
-                    except Exception as ex: # pylint: disable=broad-except
-                        logger.error("Error during subscribe: %s", str(ex))
-                        logger.debug(traceback.format_exc())
+            for subscription in self._subscriptions:
+                try:
+                    logger.debug("Subscribing to %s", subscription)
+                    result, mid = client.subscribe(subscription)
+                    self._wait_for_packet_ack(result, mid,
+                                              "subscription to " +
+                                              subscription)
+                except Exception as ex: # pylint: disable=broad-except
+                    logger.error("Error during subscribe: %s", str(ex))
+                    logger.debug(traceback.format_exc())
 
         if self._service_manager:
             self._service_manager.on_connect()
@@ -119,12 +119,6 @@ def _on_disconnect(client, userdata, rc): # pylint: disable=invalid-name
     :param rc: The result code
     :return: None
     """
-    if not isinstance(userdata, DxlClient):
-        raise ValueError("User data object not specified")
-
-    self = userdata
-    self._reset_packets_awaiting_ack()
-
     t = threading.Thread(target=_on_disconnect_run, args=[client, userdata, rc])
     t.daemon = True
     t.start()
@@ -454,8 +448,8 @@ class DxlClient(_BaseObject):
         # The condition associated with the client configuration
         self._connect_wait_condition = threading.Condition(self._connect_wait_lock)
 
-        self._packets_awaiting_ack = set()
-        self._packets_awaiting_ack_condition = threading.Condition()
+        self._acked_packets = set()
+        self._wait_packet_ack_condition = threading.Condition()
 
     def __del__(self):
         """destructor"""
@@ -597,25 +591,23 @@ class DxlClient(_BaseObject):
             logger.warning("Trying to disconnect a disconnected client.")
 
     def _disconnect(self):
-        self._reset_packets_awaiting_ack()
         if self._service_manager:
             self._service_manager.on_disconnect()
 
         logger.debug("Waiting for thread pool completion...")
         self._thread_pool.wait_completion()
 
-        with self._packets_awaiting_ack_condition:
-            for subscription in self._subscriptions:
-                if self.connected:
-                    try:
-                        logger.debug("Unsubscribing from %s", subscription)
-                        result, mid = self._client.unsubscribe(subscription)
-                        self._wait_packet_acked(result, mid,
-                                                "unsubscription to " +
-                                                subscription)
-                    except Exception as ex:  # pylint: disable=broad-except
-                        logger.error("Error during unsubscribe: %s", str(ex))
-                        logger.debug(traceback.format_exc())
+        for subscription in self._subscriptions:
+            if self.connected:
+                try:
+                    logger.debug("Unsubscribing from %s", subscription)
+                    result, mid = self._client.unsubscribe(subscription)
+                    self._wait_for_packet_ack(result, mid,
+                                              "unsubscription to " +
+                                              subscription)
+                except Exception as ex:  # pylint: disable=broad-except
+                    logger.error("Error during unsubscribe: %s", str(ex))
+                    logger.debug(traceback.format_exc())
 
         # In case of a reconnect after connection loss, the event loop will
         # not be stopped and the client will not be forcefully disconnected.
@@ -853,10 +845,9 @@ class DxlClient(_BaseObject):
             if topic not in self._subscriptions:
                 self._subscriptions.add(topic)
                 if self.connected:
-                    with self._packets_awaiting_ack_condition:
-                        result, mid = self._client.subscribe(topic)
-                        self._wait_packet_acked(result, mid,
-                                                "subscription to " + topic)
+                    result, mid = self._client.subscribe(topic)
+                    self._wait_for_packet_ack(result, mid,
+                                              "subscription to " + topic)
         finally:
             logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
@@ -874,21 +865,22 @@ class DxlClient(_BaseObject):
         try:
             if topic in self._subscriptions:
                 if self.connected:
-                    with self._packets_awaiting_ack_condition:
-                        result, mid = self._client.unsubscribe(topic)
-                        self._wait_packet_acked(result, mid,
-                                                "unsubscription to " + topic)
+                    result, mid = self._client.unsubscribe(topic)
+                    self._wait_for_packet_ack(result, mid,
+                                              "unsubscription to " + topic)
         finally:
             if topic in self._subscriptions:
                 self._subscriptions.remove(topic)
             logger.debug("%s(): Releasing Subscriptions lock.", DxlUtils.func_name())
             self._subscriptions_lock.release()
 
-    def _wait_packet_acked(self, result, mid, description):
+    def _wait_for_packet_ack(self, result, mid, description):
         """
         Wait until an ack packet is delivered for an MQTT message or the broker
-        connection is dropped.
-
+        connection is dropped. This should only be called once for a specific
+        packet. If this function is called additional times for a specific
+        packet, the function will pause until the amount of time in
+        MAX_PACKET_ACK_WAIT is reached and then throw a WaitTimeoutException.
         :param result: Result delivered by MQTT for the attempt to send the
             original packet. If the Result is anything other than
             MQTT_ERR_SUCCESS this function will assume that the original packet
@@ -901,24 +893,23 @@ class DxlClient(_BaseObject):
         :raise WaitTimeoutException: if the ack packet is not received before
             a timeout is reached.
         """
-        with self._packets_awaiting_ack_condition:
+        with self._wait_packet_ack_condition:
             if result == mqtt.MQTT_ERR_SUCCESS:
                 start = time.time()
-                self._packets_awaiting_ack.add(mid)
                 try:
                     time_remaining = self._MAX_PACKET_ACK_WAIT
-                    while mid in self._packets_awaiting_ack and \
+                    while mid not in self._acked_packets and \
                             time_remaining > 0:
-                        self._packets_awaiting_ack_condition.wait(
+                        self._wait_packet_ack_condition.wait(
                             time_remaining)
                         time_remaining = start - time.time() + \
                                          self._MAX_PACKET_ACK_WAIT
-                        if mid in self._packets_awaiting_ack:
-                            raise WaitTimeoutException(
-                                "Timeout waiting for " + description)
+                    if mid not in self._acked_packets:
+                        raise WaitTimeoutException("Timeout waiting for " +
+                                                   description)
                 finally:
-                    if mid in self._packets_awaiting_ack:
-                        self._packets_awaiting_ack.remove(mid)
+                    if mid in self._acked_packets:
+                        self._acked_packets.remove(mid)
 
     def _on_packet_ack(self, mid):
         """
@@ -927,21 +918,9 @@ class DxlClient(_BaseObject):
         :param mid: The message id of the MQTT packet which corresponds to the
             ack packet.
         """
-        with self._packets_awaiting_ack_condition:
-            if mid in self._packets_awaiting_ack:
-                self._packets_awaiting_ack.remove(mid)
-                self._packets_awaiting_ack_condition.notify_all()
-
-    def _reset_packets_awaiting_ack(self):
-        """
-        Remove any pending ack packets. This is typically done as part of a
-        client disconnect - since the broker would no longer be able to ack
-        packets once the connection goes down.
-        """
-        with self._packets_awaiting_ack_condition:
-            if self._packets_awaiting_ack:
-                self._packets_awaiting_ack = set()
-                self._packets_awaiting_ack_condition.notify_all()
+        with self._wait_packet_ack_condition:
+            self._acked_packets.add(mid)
+            self._wait_packet_ack_condition.notify_all()
 
     @property
     def subscriptions(self):
