@@ -97,7 +97,7 @@ setup(
         "oscrypto",
         "paho-mqtt>=1.3",
         "requests",
-        "ccfi"  # avoids oscrypto error: "oscrypto._ffi.FFIEngineError: Error initializing ctypes"
+        "cffi"  # avoids oscrypto error: "oscrypto._ffi.FFIEngineError: Error initializing ctypes"
     ],
 
     tests_require=TEST_REQUIREMENTS,
