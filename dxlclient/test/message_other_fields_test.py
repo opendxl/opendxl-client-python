@@ -58,5 +58,11 @@ class MessageOtherFieldsTest(BaseClientTest):
                     self.event_received_condition.wait(self.MAX_WAIT)
 
             self.assertIsNotNone(self.event_received)
-            self.assertEqual(event.other_fields,
-                             self.event_received.other_fields)
+            self.assertIsNotNone(self.event_received.other_fields)
+            for i in range(self.OTHER_FIELDS_COUNT):
+                self.assertEqual(
+                    event.other_fields["key" + str(i)],
+                    self.event_received.other_fields.get("key" + str(i), ""))
+            self.assertEqual(event.other_fields["key_as_bytes"],
+                             self.event_received.other_fields.get(
+                                 "key_as_bytes", ""))
