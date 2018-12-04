@@ -8,7 +8,6 @@
 from __future__ import absolute_import
 import json
 import logging
-import weakref
 from threading import Timer, Condition, RLock
 import time
 
@@ -69,10 +68,6 @@ class ServiceRegistrationInfo(_BaseObject):
 
         # Register the service with the fabric (wait up to 10 seconds for registration to complete)
         dxl_client.register_service_sync(info, 10)
-
-    **NOTE:** A service is only considered "active" if there are references to the
-    :class:`ServiceRegistrationInfo` instance. If no references to the info object exist, it will be
-    destructed, and the service will be automatically *unregistered* from the fabric.
 
     The following demonstrates a client that is invoking the service in the example above:
 
@@ -343,8 +338,8 @@ class _ServiceRegistrationHandler(_BaseObject):
         self.metadata = service.metadata.copy()
         # The Time-To-Live (TTL) grace period of the service registration (default: 10 minutes)
         self.ttl_grace_period = 10
-        # The service registration info (weak reference) */
-        self.service_weak_reference = weakref.ref(service)
+        # The service registration info */
+        self.service = service
         # The internal client reference */
         self.client = client
         # The request callback manager */
@@ -358,7 +353,7 @@ class _ServiceRegistrationHandler(_BaseObject):
         self._destroy_lock = RLock()
         self._destroyed = False
 
-        service_ref = self.get_service()
+        service_ref = self.service
         if not service_ref:
             raise DxlException("Service no longer valid")
 
@@ -379,7 +374,7 @@ class _ServiceRegistrationHandler(_BaseObject):
         """
         with self._destroy_lock:
             if not self._destroyed:
-                info = self.service_weak_reference()
+                info = self.service
                 if info:
                     for channel, callbacks in iter_dict_items(info._callbacks_by_topic):
                         for callback in callbacks:
@@ -387,22 +382,6 @@ class _ServiceRegistrationHandler(_BaseObject):
                     info._destroy(unregister)
                 self.client = None
                 self._destroyed = True
-
-    def get_service(self):
-        """
-        Returns the service registration info.
-
-        :return The service registration info.
-        """
-        return self.service_weak_reference()
-
-    def is_invalid_reference(self):
-        """
-        Returns true if the service weak reference is invalid.
-
-        :return True if the service weak reference is invalid, otherwise false.
-        """
-        return self.get_service() and None
 
     def send_register_service_request(self):
         """
@@ -415,11 +394,11 @@ class _ServiceRegistrationHandler(_BaseObject):
         with self.lock:
             req = Request(destination_topic=_ServiceManager.DXL_SERVICE_REGISTER_REQUEST_CHANNEL)
             req.payload = self.json_register_service()
-            req.destination_tenant_guids = self.get_service().destination_tenant_guids
+            req.destination_tenant_guids = self.service.destination_tenant_guids
             response = self.client.sync_request(req, timeout=10)
             if response.message_type != Message.MESSAGE_TYPE_ERROR:
                 self.update_register_time()
-                info = self.get_service()
+                info = self.service
                 if info:
                     info._notify_registration_succeeded()
             else:
@@ -452,7 +431,7 @@ class _ServiceRegistrationHandler(_BaseObject):
                         "TTL expired, unregister service event omitted for " +
                         self.service_type + " (" + self.instance_id +
                         ")")
-            info = self.get_service()
+            info = self.service
             if info:
                 info._notify_unregistration_succeeded()
 
@@ -496,7 +475,7 @@ class _ServiceRegistrationHandler(_BaseObject):
             with self.lock:
                 # Send unregister event if service marked for deletion or is no
                 # longer valid
-                if self.deleted or self.is_invalid_reference():
+                if self.deleted:
                     self.mark_for_deletion()
                     self.send_unregister_service_event()
                     self.ttl_timer.cancel()
@@ -732,7 +711,7 @@ class _ServiceManager(RequestCallback):
             services = {}
             for service_id in self.services:
                 service_handler = self.services[service_id]
-                if service_handler.is_deleted() or service_handler.is_invalid_reference():
+                if service_handler.is_deleted():
                     try:
                         service_handler.send_unregister_service_event()
                     except Exception as ex: # pylint: disable=broad-except
