@@ -133,5 +133,11 @@ setup(
     cmdclass={
         'ci': CiCommand,
         'lint': LintCommand
+    },
+
+    entry_points={
+        'console_scripts': [
+          'dxlclient = dxlclient._cli:cli_run'
+        ],
     }
 )
