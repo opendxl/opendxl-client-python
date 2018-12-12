@@ -137,7 +137,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-          'dxlclient = dxlclient._cli:cli_run'
+            'dxlclient = dxlclient._cli:cli_run'
         ],
     }
 )
