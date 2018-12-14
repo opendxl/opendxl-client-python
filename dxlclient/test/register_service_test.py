@@ -5,13 +5,11 @@ from __future__ import print_function
 import time
 import logging
 import threading
-import gc
 import json
 from nose.plugins.attrib import attr
-from dxlclient import DxlException, ErrorResponse, EventCallback, Request
+from dxlclient import DxlException, EventCallback, Request
 from dxlclient import RequestCallback, Response, ServiceRegistrationInfo
 from dxlclient.service import _ServiceManager
-from dxlclient.exceptions import WaitTimeoutException
 from .base_test import BaseClientTest
 
 
