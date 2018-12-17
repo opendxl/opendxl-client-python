@@ -6,13 +6,15 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>dxlclient.service module &#8212; DXL Python SDK 4.1.0.184 documentation</title>
+    <title>dxlclient.service module &#8212; OpenDXL Python SDK 5.0.0.568 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Samples Configuration" href="sampleconfig.html" />
@@ -33,7 +35,7 @@
         <li class="right" >
           <a href="dxlclient.message.html" title="dxlclient.message module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.0.0.568 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -88,9 +90,6 @@ scalability and fault-tolerance.</p>
 <span class="n">dxl_client</span><span class="o">.</span><span class="n">register_service_sync</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>NOTE:</strong> A service is only considered &quot;active&quot; if there are references to the
-<a class="reference internal" href="#dxlclient.service.ServiceRegistrationInfo" title="dxlclient.service.ServiceRegistrationInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ServiceRegistrationInfo</span></code></a> instance. If no references to the info object exist, it will be
-destructed, and the service will be automatically <em>unregistered</em> from the fabric.</p>
 <p>The following demonstrates a client that is invoking the service in the example above:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dxlclient.message</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Message</span>
 
@@ -253,13 +252,13 @@ DXL fabric (defaults to 60 minutes)</p>
         <li class="right" >
           <a href="dxlclient.message.html" title="dxlclient.message module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">DXL Python SDK 4.1.0.184 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.0.0.568 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, McAfee Inc..
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+        &#169; Copyright 2018, McAfee LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
