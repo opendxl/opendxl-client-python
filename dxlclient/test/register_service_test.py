@@ -5,13 +5,11 @@ from __future__ import print_function
 import time
 import logging
 import threading
-import gc
 import json
 from nose.plugins.attrib import attr
-from dxlclient import DxlException, ErrorResponse, EventCallback, Request
+from dxlclient import DxlException, EventCallback, Request
 from dxlclient import RequestCallback, Response, ServiceRegistrationInfo
 from dxlclient.service import _ServiceManager
-from dxlclient.exceptions import WaitTimeoutException
 from .base_test import BaseClientTest
 
 
@@ -259,94 +257,3 @@ class RegisterServiceClientTest(BaseClientTest):
 
             self.assertEqual(expected_second_service_response_payload,
                              actual_second_service_response_payload)
-
-    @attr('system')
-    def test_register_service_weak_reference_before_connect(self):
-
-        with self.create_client() as client:
-            self.add_client_callbacks(client)
-
-            client.register_service_async(self.info)
-
-            service_id = self.info.service_id
-            self.assertTrue(self.service_ref_valid(client, service_id))
-
-            # Deleted the service registration
-            self.info = 1
-
-            # Enforce garbage collection
-            gc.collect()
-
-            # Weak reference should freed after a few seconds
-            self.assertTrue(self.wait_for_service_reference_to_be_freed(
-                client, service_id))
-
-            client.connect()
-            self.assertTrue(client.connected)
-
-        self.assertEqual(0, self.info_registrations)
-        self.assertEqual(0, self.info_unregistrations)
-
-    @attr('system')
-    def test_register_service_weak_reference_after_connect(self):
-
-        with self.create_client() as client:
-            self.add_client_callbacks(client)
-            client.register_service_async(self.info)
-
-            client.connect()
-
-            self.assertTrue(self.wait_info_registered())
-
-            # Deleted the service registration
-            self.info = 1
-
-            # Enforce garbage collection
-            gc.collect()
-
-            # Service should be implicitly unregistered from the broker
-            # as the weak reference to the service is cleaned up.
-            self.assertTrue(self.wait_info_not_registered())
-
-        self.assertEqual(1, self.info_registrations)
-
-    @attr('system')
-    def test_register_service_weak_reference_after_connect_and_send_request(
-            self):
-
-        with self.create_client() as client:
-            self.add_client_callbacks(client)
-
-            client.register_service_async(self.info)
-            client.connect()
-
-            service_id = self.info.service_id
-            self.assertTrue(self.wait_info_registered())
-
-            # Deleted the service registration
-            self.info = 1
-
-            # Enforce garbage collection
-            gc.collect()
-
-            # Service should be implicitly unregistered from the broker
-            # as the weak reference to the service is cleaned up.
-            self.assertTrue(self.wait_info_not_registered())
-
-            # Sending an request should result in a WaitTimeoutException since
-            # the destroy() method of ServiceRegistrationInfo will unregister
-            # the service
-            request = Request(
-                "/mcafee/service/JTI/file/reputation/" + service_id)
-            request.payload = "Test"
-
-            try:
-                response = client.sync_request(request, 2)
-                # Depending upon the timing, the broker can respond with 404 or the request might timeout
-                # self.assertIsInstance(response, ErrorResponse, "response is instance of ErrorResponse")
-                self.assertTrue(isinstance(response, ErrorResponse),
-                                response.__class__)
-            except WaitTimeoutException as ex:
-                self.assertIn(request.message_id, str(ex))
-
-        self.assertEqual(1, self.info_registrations)

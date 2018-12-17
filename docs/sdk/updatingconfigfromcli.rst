@@ -22,7 +22,7 @@ Basic Example
 
 For example::
 
-    python -m dxlclient updateconfig config myserver
+    dxlclient updateconfig config myserver
 
 For this example, ``config`` is the name of the directory in which the
 ``dxlclient.config`` file resides and ``myserver`` is the hostname or
@@ -43,7 +43,7 @@ should be displayed::
 To avoid the username and password prompts, supply the appropriate
 command line options (``-u`` and ``-p``)::
 
-    python -m dxlclient updateconfig config myserver -u myuser -p mypass
+    dxlclient updateconfig config myserver -u myuser -p mypass
 
 Additional Options
 ******************
@@ -56,7 +56,7 @@ A custom port can be specified via the ``-t`` option.
 
 For example::
 
-    python -m dxlclient updateconfig config myserver -t 443
+    dxlclient updateconfig config myserver -t 443
 
 If the management server's CA certificate is stored in a local CA truststore
 file -- one or more PEM-formatted certificates concatenated together into a
@@ -66,4 +66,4 @@ negotiation by supplying the ``-e`` option.
 
 The name of the truststore file should be supplied along with the option::
 
-    python -m dxlclient updateconfig config myserver -e config/ca-bundle.crt
+    dxlclient updateconfig config myserver -e config/ca-bundle.crt

@@ -16,14 +16,14 @@ the CSR subject.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 --country US --state-or-province Oregon --locality Hillsboro --organization Engineering --organizational-unit "DXL Team" --email-address dxl@mcafee.com
+    dxlclient provisionconfig config myserver client1 --country US --state-or-province Oregon --locality Hillsboro --organization Engineering --organizational-unit "DXL Team" --email-address dxl@mcafee.com
 
 By default, the CSR does not include any Subject Alternative Names. To include
 one or more entries of type ``DNS Name``, provide the ``-s`` option.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 -s client1.myorg.com client1.myorg.net
+    dxlclient provisionconfig config myserver client1 -s client1.myorg.com client1.myorg.net
 
 .. _encrypting-private-key-label:
 
@@ -35,7 +35,7 @@ optionally be encrypted with a passphrase.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 --passphrase
+    dxlclient provisionconfig config myserver client1 --passphrase
 
 If the passphrase is specified with no trailing option (as above), the
 provision operation prompts for the passphrase to be used::
@@ -47,7 +47,7 @@ following the ``--passphrase`` argument, in which case no prompt is displayed.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 --passphrase itsasecret
+    dxlclient provisionconfig config myserver client1 --passphrase itsasecret
 
 
 `NOTE:` If the private key is encrypted, the passphrase used to encrypt it
@@ -69,7 +69,7 @@ A custom port can be specified via the ``-t`` option.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 -t 443
+    dxlclient provisionconfig config myserver client1 -t 443
 
 The provision operation stores each of the certificate artifacts (private key, CSR,
 certificate, etc.) with a base name of ``client`` by default. To use an
@@ -77,7 +77,7 @@ alternative base name for the stored files, use the ``-f`` option.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver client1 -f theclient
+    dxlclient provisionconfig config myserver client1 -f theclient
 
 The output of the command above should appear similar to the following::
 
@@ -95,7 +95,7 @@ negotiation by supplying the ``-e`` option.
 
 The name of the truststore file should be supplied along with the option::
 
-    python -m dxlclient config myserver -e config/ca-bundle.crt
+    dxlclient config myserver -e config/ca-bundle.crt
 
 Generating the CSR Separately from Signing the Certificate
 **********************************************************
@@ -110,7 +110,7 @@ key without sending the CSR to the server.
 
 For example::
 
-    python -m dxlclient generatecsr config client1
+    dxlclient generatecsr config client1
 
 The output of the command above should appear similar to the following::
 
@@ -132,7 +132,7 @@ CSR file.
 
 For example::
 
-    python -m dxlclient provisionconfig config myserver -r config/client.csr
+    dxlclient provisionconfig config myserver -r config/client.csr
 
 In this case, the command line output shows that the certificate and
 configuration-related files received from the server are stored but no
