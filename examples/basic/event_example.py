@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 EVENT_TOPIC = "/isecg/sample/basicevent"
 
 # The total number of events to send
-TOTAL_EVENTS = 1000
+TOTAL_EVENTS = 2
 
 # Condition/lock used to protect changes to counter
 event_count_condition = Condition()

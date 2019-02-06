@@ -630,12 +630,19 @@ class ProvisionDxlClientSubcommand(Subcommand):  # pylint: disable=no-init
                 3, len(data_responses), data_responses))
 
         brokers = self._brokers_for_config(data_responses[2].splitlines())
+
+        websocket_brokers = []
+
+        if len(data_responses) > 3:
+            websocket_brokers = self._brokers_for_config(data_responses[3].splitlines())
+
         config_file = os.path.join(args.config_dir, _DXL_CONFIG_FILE_NAME)
         logger.info("Saving DXL config file to %s", config_file)
         dxlconfig = DxlClientConfig(_CA_BUNDLE_FILE_NAME,
                                     _cert_filename(args.file_prefix),
                                     pk_filename,
-                                    brokers)
+                                    brokers,
+                                    websocket_brokers)
         dxlconfig.write(config_file)
 
         self._save_pem(data_responses[0], "ca bundle",
@@ -766,6 +773,11 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
                                      broker["guid"],
                                      broker["ipAddress"],
                                      broker["port"]) for broker in brokers]
+            websocket_brokers = json.loads(broker_response)["webSocketBrokers"]
+            config.websocket_brokers = [Broker(broker["hostName"],
+                                     broker["guid"],
+                                     broker["ipAddress"],
+                                     broker["port"]) for broker in websocket_brokers]
         except Exception as ex:
             logger.error("Failed to process broker list. Message: %s", ex)
             raise

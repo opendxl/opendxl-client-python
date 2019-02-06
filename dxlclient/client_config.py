@@ -110,6 +110,7 @@ class DxlClientConfig(_BaseObject):
     _PRIVATE_KEY_SETTING = u"PrivateKey"
 
     _BROKERS_SECTION = u"Brokers"
+    _BROKERS_WEBSOCKETS_SECTION = u"BrokersWebSockets"
 
     _GENERAL_SECTION = u"General"
     _CLIENT_ID_SETTING = u"ClientId"
@@ -124,6 +125,7 @@ class DxlClientConfig(_BaseObject):
           (_PRIVATE_KEY_SETTING, "Private key file", _REQUIRED)),
          _REQUIRED),
         (_BROKERS_SECTION, (), _REQUIRED),
+        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED),
         (_GENERAL_SECTION, ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),),
          _NOT_REQUIRED))
 
@@ -143,16 +145,21 @@ class DxlClientConfig(_BaseObject):
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers):
         """
         Constructor parameters:
 
         :param broker_ca_bundle: The file name of a bundle containing the broker CA certificates in PEM format
         :param cert_file: The file name of the client certificate in PEM format
         :param private_key: The file name of the client private key in PEM format
-        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers comprising the
-            DXL fabric. When invoking the :func:`dxlclient.client.DxlClient.connect` method, the
-            :class:`dxlclient.client.DxlClient` will attempt to connect to the closest broker.
+        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+            DXL fabric supporting standard MQTT connections. When invoking the
+            :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+            connect to the closest broker.
+        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+            DXL fabric supporting DXL connections over WebSockets. When invoking the
+            :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+            connect to the closest broker.
         """
         super(DxlClientConfig, self).__init__()
 
@@ -168,6 +175,8 @@ class DxlClientConfig(_BaseObject):
         self.private_key = private_key
         # The list of brokers
         self._brokers = brokers
+        # The list of WebSocket brokers
+        self._websocket_brokers = websocket_brokers
 
         # Common initialization which needs to be done whether an object is
         # created via :meth:`__init__` or :meth:`_init_from_config_file` is
@@ -360,15 +369,30 @@ class DxlClientConfig(_BaseObject):
     @property
     def brokers(self):
         """
-        A list of :class:`dxlclient.broker.Broker` objects representing brokers comprising the
-        DXL fabric. When invoking the :func:`dxlclient.client.DxlClient.connect` method, the
-        :class:`dxlclient.client.DxlClient` will attempt to connect to the closest broker.
+        A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+        DXL fabric supporting standard MQTT connections. When invoking the
+        :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+        connect to the closest broker.
         """
         return self._brokers
 
     @brokers.setter
     def brokers(self, brokers):
         self._brokers = brokers
+
+    @property
+    def websocket_brokers(self):
+        """
+        A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+        DXL fabric supporting DXL connections over WebSockets. When invoking the
+        :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+        connect to the closest broker.
+        """
+        return self._websocket_brokers
+
+    @websocket_brokers.setter
+    def websocket_brokers(self, websocket_brokers):
+        self._websocket_brokers = websocket_brokers
 
     @property
     def incoming_message_queue_size(self):
@@ -604,6 +628,14 @@ class DxlClientConfig(_BaseObject):
         self._brokers = _get_brokers(self._get_value_from_config(
             self._BROKERS_SECTION))
 
+        websocket_broker_list = self._get_value_from_config(self._BROKERS_WEBSOCKETS_SECTION)
+        if websocket_broker_list is None:
+            websocket_broker_list = {}
+            self._set_value_to_config(self._BROKERS_WEBSOCKETS_SECTION, websocket_broker_list)
+
+        self._websocket_brokers = _get_brokers(self._get_value_from_config(
+            self._BROKERS_WEBSOCKETS_SECTION))
+
         self._init_common()
 
         client_id_from_config = self._get_value_from_config(
@@ -655,15 +687,19 @@ class DxlClientConfig(_BaseObject):
                 cert_file_path = file_path
         return cert_file_path
 
-    def _update_broker_config_model(self):
+    def _update_broker_config_models(self):
         """
         Set the contents of :meth:`brokers` into the configobj model,
         converting the list of :class:`dxlclient.broker.Broker` objects into a
         `dict` matching the format needed for the dxlclient config file.
         """
-        brokers = self.brokers
+        self._update_broker_config_model( self.brokers, self._BROKERS_SECTION )
+        self._update_broker_config_model( self.websocket_brokers, self._BROKERS_WEBSOCKETS_SECTION )
+
+    def _update_broker_config_model(self, brokers, config_section):
+
         if brokers is None:
-            self._set_value_to_config(self._BROKERS_SECTION, None)
+            self._set_value_to_config(config_section, None)
         else:
             brokers_for_config = OrderedDict()
             # A `unique_id` is not required for the in-memory representation of
@@ -681,21 +717,23 @@ class DxlClientConfig(_BaseObject):
             # code preserves the `configobj` model objects which already
             # exist for the brokers being set.
             current_brokers = self._get_value_from_config(
-                self._BROKERS_SECTION)
-            brokers_to_delete = []
-            for current_broker_key in current_brokers.keys():
-                if current_broker_key not in brokers_for_config:
-                    brokers_to_delete.append(current_broker_key)
+                config_section)
+            if current_brokers is not None:
+                brokers_to_delete = []
 
-            # `configobj` model entries not present in the brokers to be set
-            # are deleted - along with any associated comments.
-            for broker_to_delete in brokers_to_delete:
-                del current_brokers[broker_to_delete]
+                for current_broker_key in current_brokers.keys():
+                    if current_broker_key not in brokers_for_config:
+                        brokers_to_delete.append(current_broker_key)
 
-            # The `merge` updates the values for pre-existing keys and adds in
-            # new key/value pairs which are not already present in the config
-            # model.
-            current_brokers.merge(brokers_for_config)
+                # `configobj` model entries not present in the brokers to be set
+                # are deleted - along with any associated comments.
+                for broker_to_delete in brokers_to_delete:
+                    del current_brokers[broker_to_delete]
+
+                # The `merge` updates the values for pre-existing keys and adds in
+                # new key/value pairs which are not already present in the config
+                # model.
+                current_brokers.merge(brokers_for_config)
 
     def write(self, file_path):
         """
@@ -742,7 +780,7 @@ class DxlClientConfig(_BaseObject):
             will be made to create any directories in the path which may not
             exist before writing the file.
         """
-        self._update_broker_config_model()
+        self._update_broker_config_models()
         DxlUtils.makedirs(path.dirname(file_path))
         self._config.filename = file_path
         self._config.write()
