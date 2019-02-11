@@ -177,7 +177,7 @@ class Broker(_BaseObject):
         broker.port = port
         broker.unique_id = UuidGenerator.generate_id_as_string()
 
-        if protocol and protocol.lower() not in [Broker._SSL_PROTOCOL.lower(),Broker._WSS_PROTOCOL.lower()]:
+        if protocol and protocol.lower() not in [Broker._SSL_PROTOCOL.lower(), Broker._WSS_PROTOCOL.lower()]:
             raise MalformedBrokerUriException("Unknown protocol: " + protocol)
 
         return broker

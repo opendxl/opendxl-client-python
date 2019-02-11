@@ -775,9 +775,9 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
                                      broker["port"]) for broker in brokers]
             websocket_brokers = json.loads(broker_response)["webSocketBrokers"]
             config.websocket_brokers = [Broker(broker["hostName"],
-                                     broker["guid"],
-                                     broker["ipAddress"],
-                                     broker["port"]) for broker in websocket_brokers]
+                                               broker["guid"],
+                                               broker["ipAddress"],
+                                               broker["port"]) for broker in websocket_brokers]
         except Exception as ex:
             logger.error("Failed to process broker list. Message: %s", ex)
             raise

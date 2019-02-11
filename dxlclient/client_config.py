@@ -381,8 +381,7 @@ class DxlClientConfig(_BaseObject):
         """
         if self.use_websockets:
             return self.websocket_brokers
-        else:
-            return self._brokers
+        return self._brokers
 
     @brokers.setter
     def brokers(self, brokers):
@@ -721,8 +720,8 @@ class DxlClientConfig(_BaseObject):
         converting the list of :class:`dxlclient.broker.Broker` objects into a
         `dict` matching the format needed for the dxlclient config file.
         """
-        self._update_broker_config_model( self._brokers, self._BROKERS_SECTION )
-        self._update_broker_config_model( self._websocket_brokers, self._BROKERS_WEBSOCKETS_SECTION )
+        self._update_broker_config_model(self._brokers, self._BROKERS_SECTION)
+        self._update_broker_config_model(self._websocket_brokers, self._BROKERS_WEBSOCKETS_SECTION)
 
     def _update_broker_config_model(self, brokers, config_section):
 
