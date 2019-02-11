@@ -14,8 +14,9 @@ The ``updateconfig`` operation performs the following:
   at the file referenced by the ``BrokerCertChain`` setting in the ``[Certs]``
   section of the ``dxlclient.config`` file.
 
-* Retrieves the latest broker information and updates the ``[Brokers]``
-  section of the ``dxlclient.config`` file with that information.
+* Retrieves the latest broker information and updates the ``[Brokers]`` and
+  ``[BrokersWebSockets]`` sections of the ``dxlclient.config`` file with
+  that information.
 
 Basic Example
 *************

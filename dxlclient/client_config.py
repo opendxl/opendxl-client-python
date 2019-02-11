@@ -110,9 +110,11 @@ class DxlClientConfig(_BaseObject):
     _PRIVATE_KEY_SETTING = u"PrivateKey"
 
     _BROKERS_SECTION = u"Brokers"
+    _BROKERS_WEBSOCKETS_SECTION = u"BrokersWebSockets"
 
     _GENERAL_SECTION = u"General"
     _CLIENT_ID_SETTING = u"ClientId"
+    _USE_WEBSOCKETS_SETTING = u"useWebSockets"
 
     _REQUIRED = True
     _NOT_REQUIRED = False
@@ -124,7 +126,10 @@ class DxlClientConfig(_BaseObject):
           (_PRIVATE_KEY_SETTING, "Private key file", _REQUIRED)),
          _REQUIRED),
         (_BROKERS_SECTION, (), _REQUIRED),
-        (_GENERAL_SECTION, ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),),
+        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED),
+        (_GENERAL_SECTION,
+         ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),
+          (_USE_WEBSOCKETS_SETTING, "Use WebSockets", _NOT_REQUIRED)),
          _NOT_REQUIRED))
 
     # The default number of times to retry during connect, default -1 (infinite)
@@ -143,16 +148,21 @@ class DxlClientConfig(_BaseObject):
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers):
         """
         Constructor parameters:
 
         :param broker_ca_bundle: The file name of a bundle containing the broker CA certificates in PEM format
         :param cert_file: The file name of the client certificate in PEM format
         :param private_key: The file name of the client private key in PEM format
-        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers comprising the
-            DXL fabric. When invoking the :func:`dxlclient.client.DxlClient.connect` method, the
-            :class:`dxlclient.client.DxlClient` will attempt to connect to the closest broker.
+        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+            DXL fabric supporting standard MQTT connections. When invoking the
+            :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+            connect to the closest broker.
+        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+            DXL fabric supporting DXL connections over WebSockets. When invoking the
+            :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+            connect to the closest broker.
         """
         super(DxlClientConfig, self).__init__()
 
@@ -168,6 +178,10 @@ class DxlClientConfig(_BaseObject):
         self.private_key = private_key
         # The list of brokers
         self._brokers = brokers
+        # The list of WebSocket brokers
+        self._websocket_brokers = websocket_brokers
+        # Whether to use WebSockets or regular MQTT over tcp
+        self._use_websockets = False
 
         # Common initialization which needs to be done whether an object is
         # created via :meth:`__init__` or :meth:`_init_from_config_file` is
@@ -360,15 +374,44 @@ class DxlClientConfig(_BaseObject):
     @property
     def brokers(self):
         """
-        A list of :class:`dxlclient.broker.Broker` objects representing brokers comprising the
-        DXL fabric. When invoking the :func:`dxlclient.client.DxlClient.connect` method, the
-        :class:`dxlclient.client.DxlClient` will attempt to connect to the closest broker.
+        A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+        DXL fabric. Brokers returned is dependent on the use_websockets flag. When invoking the
+        :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+        connect to the closest broker.
         """
-        return self._brokers
+        if self.use_websockets:
+            return self.websocket_brokers
+        else:
+            return self._brokers
 
     @brokers.setter
     def brokers(self, brokers):
         self._brokers = brokers
+
+    @property
+    def websocket_brokers(self):
+        """
+        A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+        DXL fabric supporting DXL connections over WebSockets. When invoking the
+        :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
+        connect to the closest broker.
+        """
+        return self._websocket_brokers
+
+    @websocket_brokers.setter
+    def websocket_brokers(self, websocket_brokers):
+        self._websocket_brokers = websocket_brokers
+
+    @property
+    def use_websockets(self):
+        """
+        Whether or not the client will use WebSockets. If false MQTT over tcp will be used.
+        """
+        return self._use_websockets
+
+    @use_websockets.setter
+    def use_websockets(self, use_websockets):
+        self._use_websockets = use_websockets
 
     @property
     def incoming_message_queue_size(self):
@@ -521,7 +564,7 @@ class DxlClientConfig(_BaseObject):
         """
         threads = []
 
-        for broker in self._brokers:
+        for broker in self.brokers:
             # pylint: disable=invalid-name
             t = threading.Thread(target=self._get_sorted_broker_list_worker, args=[broker])
             threads.append(t)
@@ -531,7 +574,7 @@ class DxlClientConfig(_BaseObject):
         for t in threads:
             t.join()
 
-        return sorted(self._brokers, key=lambda b: (b._response_time is None, b._response_time))
+        return sorted(self.brokers, key=lambda b: (b._response_time is None, b._response_time))
 
     def _get_fastest_broker_worker(self, broker):
         """Calculate the fastest (smallest response time) broker."""
@@ -544,7 +587,7 @@ class DxlClientConfig(_BaseObject):
 
         :returns: {@code dxlclient.broker.Broker}: Fastest broker.
         """
-        brokers = self._brokers
+        brokers = self.brokers
         self._queue = Queue()
 
         for broker in brokers:
@@ -604,12 +647,25 @@ class DxlClientConfig(_BaseObject):
         self._brokers = _get_brokers(self._get_value_from_config(
             self._BROKERS_SECTION))
 
+        websocket_broker_list = self._get_value_from_config(self._BROKERS_WEBSOCKETS_SECTION)
+        if websocket_broker_list is None:
+            websocket_broker_list = {}
+            self._set_value_to_config(self._BROKERS_WEBSOCKETS_SECTION, websocket_broker_list)
+
+        self._websocket_brokers = _get_brokers(self._get_value_from_config(
+            self._BROKERS_WEBSOCKETS_SECTION))
+
         self._init_common()
 
         client_id_from_config = self._get_value_from_config(
             self._CLIENT_ID_SETTING)
         if client_id_from_config:
             self._client_id = client_id_from_config
+
+        if self._get_value_from_config(self._USE_WEBSOCKETS_SETTING):
+            self._use_websockets = self._config.get(self._GENERAL_SECTION).as_bool(self._USE_WEBSOCKETS_SETTING)
+        else:
+            self._use_websockets = True if self._websocket_brokers and not self._brokers else False
 
     @staticmethod
     def create_dxl_config_from_file(dxl_config_file):
@@ -629,6 +685,10 @@ class DxlClientConfig(_BaseObject):
             [Brokers]
             mybroker=mybroker;8883;mybroker.mcafee.com;192.168.1.12
             mybroker2=mybroker2;8883;mybroker2.mcafee.com;192.168.1.13
+
+            [BrokersWebSockets]
+            mybroker=mybroker;443;mybroker.mcafee.com;192.168.1.12
+            mybroker2=mybroker2;443;mybroker2.mcafee.com;192.168.1.13
 
         The configuration file can be loaded as follows:
 
@@ -655,15 +715,19 @@ class DxlClientConfig(_BaseObject):
                 cert_file_path = file_path
         return cert_file_path
 
-    def _update_broker_config_model(self):
+    def _update_broker_config_models(self):
         """
         Set the contents of :meth:`brokers` into the configobj model,
         converting the list of :class:`dxlclient.broker.Broker` objects into a
         `dict` matching the format needed for the dxlclient config file.
         """
-        brokers = self.brokers
+        self._update_broker_config_model( self._brokers, self._BROKERS_SECTION )
+        self._update_broker_config_model( self._websocket_brokers, self._BROKERS_WEBSOCKETS_SECTION )
+
+    def _update_broker_config_model(self, brokers, config_section):
+
         if brokers is None:
-            self._set_value_to_config(self._BROKERS_SECTION, None)
+            self._set_value_to_config(config_section, None)
         else:
             brokers_for_config = OrderedDict()
             # A `unique_id` is not required for the in-memory representation of
@@ -681,21 +745,23 @@ class DxlClientConfig(_BaseObject):
             # code preserves the `configobj` model objects which already
             # exist for the brokers being set.
             current_brokers = self._get_value_from_config(
-                self._BROKERS_SECTION)
-            brokers_to_delete = []
-            for current_broker_key in current_brokers.keys():
-                if current_broker_key not in brokers_for_config:
-                    brokers_to_delete.append(current_broker_key)
+                config_section)
+            if current_brokers is not None:
+                brokers_to_delete = []
 
-            # `configobj` model entries not present in the brokers to be set
-            # are deleted - along with any associated comments.
-            for broker_to_delete in brokers_to_delete:
-                del current_brokers[broker_to_delete]
+                for current_broker_key in current_brokers.keys():
+                    if current_broker_key not in brokers_for_config:
+                        brokers_to_delete.append(current_broker_key)
 
-            # The `merge` updates the values for pre-existing keys and adds in
-            # new key/value pairs which are not already present in the config
-            # model.
-            current_brokers.merge(brokers_for_config)
+                # `configobj` model entries not present in the brokers to be set
+                # are deleted - along with any associated comments.
+                for broker_to_delete in brokers_to_delete:
+                    del current_brokers[broker_to_delete]
+
+                # The `merge` updates the values for pre-existing keys and adds in
+                # new key/value pairs which are not already present in the config
+                # model.
+                current_brokers.merge(brokers_for_config)
 
     def write(self, file_path):
         """
@@ -714,6 +780,10 @@ class DxlClientConfig(_BaseObject):
             [Brokers]
             mybroker=mybroker;8883;mybroker.mcafee.com;192.168.1.12
             mybroker2=mybroker2;8883;mybroker2.mcafee.com;192.168.1.13
+
+            [BrokersWebSockets]
+            mybroker=mybroker;443;mybroker.mcafee.com;192.168.1.12
+            mybroker2=mybroker2;443;mybroker2.mcafee.com;192.168.1.13
 
         The configuration could be loaded and changed as follows:
 
@@ -738,11 +808,15 @@ class DxlClientConfig(_BaseObject):
             mybroker=mybroker;8883;mybroker.mcafee.com;192.168.1.12
             mybroker2=mybroker2;8883;mybroker2.mcafee.com;192.168.1.13
 
+            [BrokersWebSockets]
+            mybroker=mybroker;443;mybroker.mcafee.com;192.168.1.12
+            mybroker2=mybroker2;443;mybroker2.mcafee.com;192.168.1.13
+
         :param file_path: File at which to write the configuration. An attempt
             will be made to create any directories in the path which may not
             exist before writing the file.
         """
-        self._update_broker_config_model()
+        self._update_broker_config_models()
         DxlUtils.makedirs(path.dirname(file_path))
         self._config.filename = file_path
         self._config.write()

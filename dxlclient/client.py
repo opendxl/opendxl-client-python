@@ -391,7 +391,8 @@ class DxlClient(_BaseObject):
         self._client = mqtt.Client(client_id=self._config._client_id,
                                    clean_session=True,
                                    userdata=self,
-                                   protocol=mqtt.MQTTv31)
+                                   protocol=mqtt.MQTTv31,
+                                   transport="websockets" if config.use_websockets else "tcp")
 
         # The MQTT client connect callback
         self._client.on_connect = _on_connect
@@ -725,7 +726,7 @@ class DxlClient(_BaseObject):
         try:
             while not self._thread_terminate and not self._config.brokers:
                 self._config_lock_condition.wait(self._wait_for_policy_delay)
-                if self._config.brokers:
+                if not self._config.brokers:
                     logger.debug("No broker defined. Waiting for broker list...")
         finally:
             self._config_lock.release()
