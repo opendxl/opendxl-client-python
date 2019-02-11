@@ -148,7 +148,7 @@ class DxlClientConfig(_BaseObject):
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers = None):
         """
         Constructor parameters:
 
