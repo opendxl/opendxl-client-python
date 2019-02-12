@@ -241,6 +241,9 @@ class DxlClientConfigTest(unittest.TestCase):
             "PrivateKey = myprivatekey.pem",
             "{}[Brokers]".format(os.linesep),
             "myid1 = myid1;8001;myhost1;10.10.100.1",
+            "myid2 = myid2;8002;myhost2;10.10.100.2{}".format(os.linesep),
+            "[BrokersWebSockets]",
+            "myid1 = myid1;8001;myhost1;10.10.100.1",
             "myid2 = myid2;8002;myhost2;10.10.100.2{}".format(os.linesep)])
         byte_stream = self.CapturedBytesIO()
         with patch.object(builtins, 'open',
@@ -249,6 +252,10 @@ class DxlClientConfigTest(unittest.TestCase):
                 "mycabundle.pem",
                 "mycertfile.pem",
                 "myprivatekey.pem",
+                [Broker("myhost1", "myid1", "10.10.100.1",
+                        8001),
+                 Broker("myhost2", "myid2", "10.10.100.2",
+                        8002)],
                 [Broker("myhost1", "myid1", "10.10.100.1",
                         8001),
                  Broker("myhost2", "myid2", "10.10.100.2",
@@ -269,7 +276,8 @@ class DxlClientConfigTest(unittest.TestCase):
             "# broker 7",
             "myid7 = myid7;8007;myhost7;10.10.100.7",
             "# broker 8",
-            "myid8 = myid8;8008;myhost8;10.10.100.8{}".format(os.linesep)])
+            "myid8 = myid8;8008;myhost8;10.10.100.8{}".format(os.linesep),
+            "[BrokersWebSockets]".format(os.linesep)])
 
         expected_data_after_mods = os.linesep.join([
             "# mycerts",
@@ -281,7 +289,8 @@ class DxlClientConfigTest(unittest.TestCase):
             "{}[Brokers]".format(os.linesep),
             "# broker 8",
             "myid8 = myid8;8008;myhost8;10.10.100.8",
-            "myid9 = myid9;8009;myhost9;10.10.100.9{}".format(os.linesep)])
+            "myid9 = myid9;8009;myhost9;10.10.100.9{}".format(os.linesep),
+            "[BrokersWebSockets]{}".format(os.linesep)])
 
         with patch.object(builtins, 'open',
                           return_value=io.BytesIO(initial_data.encode())), \

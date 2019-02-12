@@ -535,6 +535,7 @@ class CliTest(unittest.TestCase):
             # config file should be preserved after the update.
             updated_brokers = make_broker_dict(4)
             del updated_brokers["brokers"][0]
+            updated_brokers["webSocketBrokers"] = updated_brokers["brokers"]
             expected_brokers = make_broker_lines(4)
             del expected_brokers[0]
             expected_broker_lines = "# This is broker 2\n{}".format(
@@ -699,7 +700,12 @@ def make_broker_dict(brokers=3):
                      "ipAddress": "10.10.100.{}".format(i),
                      "port": "888{}".format(i)}
                     for i in range(1, brokers+1)],
-        "certVersion": 0
+        "certVersion": 0,
+        "webSocketBrokers": [{"guid": "{{{}}}".format(uuid.UUID(int=i)),
+                     "hostName": "broker{}".format(i),
+                     "ipAddress": "10.10.100.{}".format(i),
+                     "port": "888{}".format(i)}
+                    for i in range(1, brokers + 1)],
     }
 
 
@@ -732,7 +738,14 @@ def make_config(basic_config_lines=None, broker_lines=None):
         broker_lines = broker_lines_for_config_file(
             make_broker_lines(2))
 
-    return "\n".join(basic_config_lines + [broker_lines]).encode("utf8")
+    return "\n".join(basic_config_lines + [broker_lines] + [get_web_socket_section(broker_lines)]).encode("utf8")
+
+
+def get_web_socket_section(broker_lines=None):
+    if not broker_lines:
+        broker_lines = broker_lines_for_config_file(
+            make_broker_lines(2))
+    return "\n".join(["[BrokersWebSockets]"] + [broker_lines])
 
 
 def flattened_broker_lines(broker_lines,
@@ -783,7 +796,7 @@ def get_mock_provision_response_func(ca_bundle=None,
         brokers = broker_lines_for_server_response(make_broker_lines())
 
     def mock_provision_response(request, _):
-        return make_ok_response(",".join((ca_bundle, client_cert, brokers)),
+        return make_ok_response(",".join((ca_bundle, client_cert, brokers, brokers)),
                                 request)
     return mock_provision_response
 
