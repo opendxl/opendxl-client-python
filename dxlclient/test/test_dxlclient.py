@@ -277,7 +277,7 @@ class DxlClientConfigTest(unittest.TestCase):
             "myid7 = myid7;8007;myhost7;10.10.100.7",
             "# broker 8",
             "myid8 = myid8;8008;myhost8;10.10.100.8{}".format(os.linesep),
-            "[BrokersWebSockets]".format(os.linesep)])
+            "[BrokersWebSockets]{}".format(os.linesep)])
 
         expected_data_after_mods = os.linesep.join([
             "# mycerts",

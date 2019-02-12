@@ -702,10 +702,10 @@ def make_broker_dict(brokers=3):
                     for i in range(1, brokers+1)],
         "certVersion": 0,
         "webSocketBrokers": [{"guid": "{{{}}}".format(uuid.UUID(int=i)),
-                     "hostName": "broker{}".format(i),
-                     "ipAddress": "10.10.100.{}".format(i),
-                     "port": "888{}".format(i)}
-                    for i in range(1, brokers + 1)],
+                              "hostName": "broker{}".format(i),
+                              "ipAddress": "10.10.100.{}".format(i),
+                              "port": "888{}".format(i)}
+                             for i in range(1, brokers + 1)],
     }
 
 
