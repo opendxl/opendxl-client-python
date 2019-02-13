@@ -664,7 +664,7 @@ class DxlClientConfig(_BaseObject):
         if self._get_value_from_config(self._USE_WEBSOCKETS_SETTING):
             self._use_websockets = self._config.get(self._GENERAL_SECTION).as_bool(self._USE_WEBSOCKETS_SETTING)
         else:
-            self._use_websockets = True if self._websocket_brokers and not self._brokers else False
+            self._use_websockets = bool(self._websocket_brokers and not self._brokers)
 
     @staticmethod
     def create_dxl_config_from_file(dxl_config_file):
