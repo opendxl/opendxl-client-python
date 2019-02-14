@@ -120,17 +120,17 @@ class DxlClientConfig(_BaseObject):
     _NOT_REQUIRED = False
 
     _SETTINGS = (
+        (_GENERAL_SECTION,
+         ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),
+          (_USE_WEBSOCKETS_SETTING, "Use WebSockets", _NOT_REQUIRED)),
+         _REQUIRED),
         (_CERTS_SECTION,
          ((_BROKER_CERT_CHAIN_SETTING, "Broker CA bundle", _REQUIRED),
           (_CERT_FILE_SETTING, "Certificate file", _REQUIRED),
           (_PRIVATE_KEY_SETTING, "Private key file", _REQUIRED)),
          _REQUIRED),
         (_BROKERS_SECTION, (), _REQUIRED),
-        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED),
-        (_GENERAL_SECTION,
-         ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),
-          (_USE_WEBSOCKETS_SETTING, "Use WebSockets", _NOT_REQUIRED)),
-         _NOT_REQUIRED))
+        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED))
 
     # The default number of times to retry during connect, default -1 (infinite)
     _DEFAULT_CONNECT_RETRIES = -1
@@ -159,10 +159,8 @@ class DxlClientConfig(_BaseObject):
             DXL fabric supporting standard MQTT connections. When invoking the
             :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
             connect to the closest broker.
-        :param brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
-            DXL fabric supporting DXL connections over WebSockets. When invoking the
-            :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
-            connect to the closest broker.
+        :param websocket_brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
+            DXL fabric supporting DXL connections over WebSockets.
         """
         super(DxlClientConfig, self).__init__()
 
@@ -391,9 +389,7 @@ class DxlClientConfig(_BaseObject):
     def websocket_brokers(self):
         """
         A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
-        DXL fabric supporting DXL connections over WebSockets. When invoking the
-        :func:`dxlclient.client.DxlClient.connect` method, the :class:`dxlclient.client.DxlClient` will attempt to
-        connect to the closest broker.
+        DXL fabric supporting DXL connections over WebSockets.
         """
         return self._websocket_brokers
 
@@ -404,13 +400,15 @@ class DxlClientConfig(_BaseObject):
     @property
     def use_websockets(self):
         """
-        Whether or not the client will use WebSockets. If false MQTT over tcp will be used.
+        Whether or not the client will use WebSockets. If false MQTT over tcp will be used. If only WebSocket brokers
+        are specified this will default to true.
         """
         return self._use_websockets
 
     @use_websockets.setter
     def use_websockets(self, use_websockets):
         self._use_websockets = use_websockets
+        self._set_value_to_config(self._USE_WEBSOCKETS_SETTING, use_websockets)
 
     @property
     def incoming_message_queue_size(self):
@@ -675,6 +673,9 @@ class DxlClientConfig(_BaseObject):
         correspondence with the :class:`DxlClientConfig` constructor.
 
         .. code-block:: ini
+
+            [General]
+            useWebSocketBrokers=no
 
             [Certs]
             BrokerCertChain=c:\\\\certs\\\\brokercerts.crt
