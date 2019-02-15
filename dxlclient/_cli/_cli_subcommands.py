@@ -645,14 +645,16 @@ class ProvisionDxlClientSubcommand(Subcommand):  # pylint: disable=no-init
                                     websocket_brokers)
         dxlconfig.use_websockets = False
 
+        dxlconfig._config.comments[DxlClientConfig._GENERAL_SECTION].insert(0, '')
+
         dxlconfig.write(config_file)
 
         # comment out the useWebSockets setting
-        with open(config_file) as f:
-            config_contents = f.read().replace('useWebSockets', '#useWebSockets')
+        with open(config_file) as conf_file:
+            config_contents = conf_file.read().replace('useWebSockets', '#useWebSockets')
 
-        with open(config_file, "w") as f:
-            f.write(config_contents)
+        with open(config_file, "w") as conf_file:
+            conf_file.write(config_contents)
 
         self._save_pem(data_responses[0], "ca bundle",
                        os.path.join(args.config_dir,

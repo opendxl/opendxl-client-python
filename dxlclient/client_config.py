@@ -123,7 +123,7 @@ class DxlClientConfig(_BaseObject):
         (_GENERAL_SECTION,
          ((_CLIENT_ID_SETTING, "Client Id", _NOT_REQUIRED),
           (_USE_WEBSOCKETS_SETTING, "Use WebSockets", _NOT_REQUIRED)),
-         _REQUIRED),
+         _NOT_REQUIRED),
         (_CERTS_SECTION,
          ((_BROKER_CERT_CHAIN_SETTING, "Broker CA bundle", _REQUIRED),
           (_CERT_FILE_SETTING, "Certificate file", _REQUIRED),
