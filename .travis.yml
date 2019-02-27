@@ -22,7 +22,6 @@ before_install:
   - docker pull opendxl/opendxl-broker
   - docker run -d -p 127.0.0.1:8883:8883 -p 127.0.0.1:8443:8443 opendxl/opendxl-broker
   - docker ps -a
-  - python -m pip install --upgrade pip
 
 install:
   - pip install .[test]
