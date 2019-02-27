@@ -112,5 +112,5 @@ def cli_run():
         logger.error("Command failed. Message: %s", ex)
         if verbosity_level >= 2:
             raise
-        else:
-            sys.exit(1)
+
+        sys.exit(1)
