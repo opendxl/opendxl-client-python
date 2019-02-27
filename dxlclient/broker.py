@@ -196,17 +196,17 @@ class Broker(_BaseObject):
 
         if len(elements) < 2:
             raise MalformedBrokerUriException("Missing elements")
+
+        if Broker._is_port_number(elements[0]):
+            self.unique_id = None
+            self.port = elements[0]
+            self.host_name = elements[1]
+            self.ip_address = self._get_array_element_or_none(elements, 2)
         else:
-            if Broker._is_port_number(elements[0]):
-                self.unique_id = None
-                self.port = elements[0]
-                self.host_name = elements[1]
-                self.ip_address = self._get_array_element_or_none(elements, 2)
-            else:
-                self.unique_id = elements[0]
-                self.port = elements[1]
-                self.host_name = self._get_array_element_or_none(elements, 2)
-                self.ip_address = self._get_array_element_or_none(elements, 3)
+            self.unique_id = elements[0]
+            self.port = elements[1]
+            self.host_name = self._get_array_element_or_none(elements, 2)
+            self.ip_address = self._get_array_element_or_none(elements, 3)
 
     def _to_broker_string(self):
         """
