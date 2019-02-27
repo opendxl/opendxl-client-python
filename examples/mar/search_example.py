@@ -65,8 +65,8 @@ def execute_mar_search_api(client, payload_dict):
         else:
             raise Exception("Error: unable to find response code")
         return resp_dict
-    else:
-        raise Exception("Error: " + res.error_message + " (" + str(res.error_code) + ")")
+
+    raise Exception("Error: " + res.error_message + " (" + str(res.error_code) + ")")
 
 # Create the client
 with DxlClient(config) as client:
