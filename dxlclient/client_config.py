@@ -13,13 +13,13 @@ from collections import OrderedDict
 import logging
 from os import path
 import threading
-
+import socket
 from configobj import ConfigObj
 
 from dxlclient import _BaseObject, DxlUtils
 from dxlclient.broker import Broker
 from dxlclient._uuid_generator import UuidGenerator
-from dxlclient.exceptions import BrokerListError
+from dxlclient.exceptions import BrokerListError, InvalidProxyAddressError, InvalidProxyPortError
 
 from ._compat import Queue
 
@@ -64,6 +64,38 @@ def _get_brokers(broker_list_json):
         return _get_brokers_from_list(broker_list_json)
     except Exception as broker_error:
         raise BrokerListError("Broker list is not a valid JSON: " + str(broker_error))
+
+
+def _is_proxy_address_valid_ipv4_or_hostname(address):
+    """
+    Returns True if the proxy address is a valid ipv4
+    :param address:
+    :return:
+    """
+    if address is None:
+        return False
+    try:
+        if socket.gethostbyname(address) == address or socket.gethostbyname(address) != address:
+            return True
+    except socket.gaierror as proxy_address_error:
+        raise InvalidProxyAddressError("Proxy address is not valid: " + str(proxy_address_error))
+
+
+def _is_proxy_port_valid(port):
+    """
+    Returns True if a proxy port is valid
+    :param port:
+    :return:
+    """
+    if port is None:
+        return False
+    try:
+        if 1 <= int(port) <= 65535:
+            return True
+        else:
+            raise ValueError
+    except ValueError as proxy_port_error:
+        raise InvalidProxyPortError("Proxy port is not valid: " + str(proxy_port_error))
 
 ################################################################################
 #
@@ -116,6 +148,12 @@ class DxlClientConfig(_BaseObject):
     _CLIENT_ID_SETTING = u"ClientId"
     _USE_WEBSOCKETS_SETTING = u"useWebSockets"
 
+    _PROXY_SECTION = u"Proxy"
+    _PROXY_ADDRESS_SETTING = u"Address"
+    _PROXY_PORT_SETTING = u"Port"
+    _PROXY_USERNAME_SETTING = u"User"
+    _PROXY_PASSWORD_SETTING = u"Password"
+
     _REQUIRED = True
     _NOT_REQUIRED = False
 
@@ -130,7 +168,13 @@ class DxlClientConfig(_BaseObject):
           (_PRIVATE_KEY_SETTING, "Private key file", _REQUIRED)),
          _REQUIRED),
         (_BROKERS_SECTION, (), _REQUIRED),
-        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED))
+        (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED),
+        (_PROXY_SECTION,
+         ((_PROXY_ADDRESS_SETTING, "Address", _REQUIRED),
+          (_PROXY_PORT_SETTING, "Port", _REQUIRED),
+          (_PROXY_USERNAME_SETTING, "User", _NOT_REQUIRED),
+          (_PROXY_PASSWORD_SETTING, "Password", _NOT_REQUIRED)),
+         _NOT_REQUIRED))
 
     # The default number of times to retry during connect, default -1 (infinite)
     _DEFAULT_CONNECT_RETRIES = -1
@@ -148,7 +192,8 @@ class DxlClientConfig(_BaseObject):
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None, proxy_addr=None,
+                 proxy_port=None, proxy_username=None, proxy_password=None):
         """
         Constructor parameters:
 
@@ -161,6 +206,10 @@ class DxlClientConfig(_BaseObject):
             connect to the closest broker.
         :param websocket_brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
             DXL fabric supporting DXL connections over WebSockets.
+        :param proxy_addr: Address for HTTP proxy
+        :param proxy_port: Port for HTTP proxy
+        :param proxy_username: Username for HTTP proxy
+        :param proxy_password: Password for HTTP proxy
         """
         super(DxlClientConfig, self).__init__()
 
@@ -178,6 +227,15 @@ class DxlClientConfig(_BaseObject):
         self._brokers = brokers
         # The list of WebSocket brokers
         self._websocket_brokers = websocket_brokers
+        # Proxy address
+        self._proxy_address = proxy_addr
+        # Proxy port
+        self._proxy_port = proxy_port
+        # Proxy username
+        self._proxy_username = proxy_username
+        # Proxy password
+        self._proxy_password = proxy_password
+
         # Whether to use WebSockets or regular MQTT over tcp
         self._use_websockets = False
 
@@ -411,6 +469,38 @@ class DxlClientConfig(_BaseObject):
         self._set_value_to_config(self._USE_WEBSOCKETS_SETTING, use_websockets)
 
     @property
+    def proxy_address(self):
+        """
+        The address of web socket proxy
+        :return:
+        """
+        return self._get_value_from_config(self._PROXY_ADDRESS_SETTING)
+
+    @property
+    def proxy_port(self):
+        """
+        The port of web socket proxy
+        :return:
+        """
+        return self._get_value_from_config(self._PROXY_PORT_SETTING)
+
+    @property
+    def proxy_username(self):
+        """
+        The username of web socket proxy
+        :return:
+        """
+        return self._get_value_from_config(self._PROXY_USERNAME_SETTING)
+
+    @property
+    def proxy_password(self):
+        """
+        The password of web socket proxy
+        :return:
+        """
+        return self._get_value_from_config(self._PROXY_PASSWORD_SETTING)
+
+    @property
     def incoming_message_queue_size(self):
         """
         The queue size for incoming messages (will block when queue is full).
@@ -552,6 +642,21 @@ class DxlClientConfig(_BaseObject):
     def _get_sorted_broker_list_worker(broker):
         """Returns a sorted list of the brokers in this config."""
         broker._connect_to_broker()
+
+    def _get_http_proxy(self):
+        """
+        Returns the web socket http proxy as a dictionary in this config if present otherwise returns None
+        :return:
+        """
+        proxy = None
+        proxy_address = self.proxy_address
+        proxy_port = self.proxy_port
+        if _is_proxy_address_valid_ipv4_or_hostname(proxy_address) and _is_proxy_port_valid(proxy_port):
+            proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
+                     'proxy_addr': self.proxy_address, 'proxy_username': self.proxy_username,
+                     'proxy_rdns': True, 'proxy_type': 3}  # proxy_type '3' is for HTTP
+
+        return proxy
 
     def _get_sorted_broker_list(self):
         """

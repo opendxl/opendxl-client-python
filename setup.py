@@ -84,7 +84,11 @@ setup(
     # Packages
     packages=[
         "dxlclient",
-        "dxlclient._cli"
+        "dxlclient._cli",
+        "paho_mqtt_dxl",
+        "paho_mqtt_dxl.src",
+        "paho_mqtt_dxl.src.paho",
+        "paho_mqtt_dxl.src.paho.mqtt"
     ],
 
     # Include additional files into the package
@@ -96,7 +100,8 @@ setup(
         "msgpack>=0.5",
         "oscrypto",
         "paho-mqtt>=1.3",
-        "requests"
+        "requests",
+        "PySocks>=1.6.8"
     ],
 
     tests_require=TEST_REQUIREMENTS,

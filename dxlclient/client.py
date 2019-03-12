@@ -29,6 +29,7 @@ from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
 from ._dxl_utils import DxlUtils
+from paho_mqtt_dxl.src.paho.mqtt import client as mqtt_dxl
 
 __all__ = [
     # Callbacks
@@ -386,13 +387,21 @@ class DxlClient(_BaseObject):
         self._subscriptions = set()
         # The lock for the current list of subscriptions
         self._subscriptions_lock = threading.RLock()
-
-        # The underlying MQTT client instance
-        self._client = mqtt.Client(client_id=self._config._client_id,
-                                   clean_session=True,
-                                   userdata=self,
-                                   protocol=mqtt.MQTTv31,
-                                   transport="websockets" if config.use_websockets else "tcp")
+        # HTTP Proxy for connecting through web sockets
+        self._proxy = self._config._get_http_proxy()
+        # The underlying MQTT client instance. Use mqtt_dxl while using HTTP Proxy for connecting through web sockets
+        if self._proxy is not None and config.use_websockets:
+            self._client = mqtt_dxl.Client(client_id=self._config._client_id,
+                                           clean_session=True,
+                                           userdata=self,
+                                           protocol=mqtt.MQTTv31,
+                                           transport="websockets" if config.use_websockets else "tcp")
+        else:
+            self._client = mqtt.Client(client_id=self._config._client_id,
+                                       clean_session=True,
+                                       userdata=self,
+                                       protocol=mqtt.MQTTv31,
+                                       transport="websockets" if config.use_websockets else "tcp")
 
         # The MQTT client connect callback
         self._client.on_connect = _on_connect
@@ -662,10 +671,17 @@ class DxlClient(_BaseObject):
                 try:
                     if broker._response_from_ip_address:
                         logger.info("Trying to connect to broker %s...", broker.to_string())
-                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
+                        # If HTTP proxy for websocket is present, connect using proxy
+                        if self._proxy is not None and self.config.use_websockets:
+                            self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
+                        else:
+                            self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
                     else:
                         logger.info("Trying to connect to broker %s...", broker.to_string())
-                        self._client.connect(broker.host_name, broker.port, keep_alive_interval)
+                        if self._proxy is not None and self.config.use_websockets:
+                            self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
+                        else:
+                            self._client.connect(broker.host_name, broker.port, keep_alive_interval)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
