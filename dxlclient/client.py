@@ -29,7 +29,7 @@ from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
 from ._dxl_utils import DxlUtils
-from paho_mqtt_dxl.src.paho.mqtt import client as mqtt_dxl
+from pahoproxy import client as mqtt_dxl
 
 __all__ = [
     # Callbacks

@@ -81,14 +81,13 @@ setup(
 
     keywords=['opendxl', 'dxl', 'mcafee', 'client'],
 
+    package_dir={'pahoproxy': 'paho_mqtt_dxl/src/paho/mqtt'},
+
     # Packages
     packages=[
         "dxlclient",
         "dxlclient._cli",
-        "paho_mqtt_dxl",
-        "paho_mqtt_dxl.src",
-        "paho_mqtt_dxl.src.paho",
-        "paho_mqtt_dxl.src.paho.mqtt"
+        "pahoproxy"
     ],
 
     # Include additional files into the package
