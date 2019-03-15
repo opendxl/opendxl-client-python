@@ -28,8 +28,8 @@ from dxlclient._thread_pool import ThreadPool
 from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
-from ._dxl_utils import DxlUtils
 from pahoproxy import client as mqtt_dxl
+from ._dxl_utils import DxlUtils
 
 __all__ = [
     # Callbacks
@@ -390,19 +390,7 @@ class DxlClient(_BaseObject):
         # HTTP Proxy for connecting through web sockets
         self._proxy = self._config._get_http_proxy()
         # The underlying MQTT client instance. Use mqtt_dxl while using HTTP Proxy for connecting through web sockets
-        if self._proxy is not None and config.use_websockets:
-            self._client = mqtt_dxl.Client(client_id=self._config._client_id,
-                                           clean_session=True,
-                                           userdata=self,
-                                           protocol=mqtt.MQTTv31,
-                                           transport="websockets" if config.use_websockets else "tcp")
-        else:
-            self._client = mqtt.Client(client_id=self._config._client_id,
-                                       clean_session=True,
-                                       userdata=self,
-                                       protocol=mqtt.MQTTv31,
-                                       transport="websockets" if config.use_websockets else "tcp")
-
+        self._client = self.get_mqtt_client()
         # The MQTT client connect callback
         self._client.on_connect = _on_connect
         # The MQTT client disconnect callback
@@ -1271,3 +1259,21 @@ class DxlClient(_BaseObject):
 
             self._service_manager.remove_service(service_req_info.service_id)
             service_req_info._wait_for_unregistration(timeout=timeout)
+
+    def get_mqtt_client(self):
+        """
+        Returns the mqtt client instance based on if web socket proxy is enabled or not
+        :return: MQTT client instance
+        """
+        if self._proxy is not None and self.config.use_websockets:
+            return mqtt_dxl.Client(client_id=self._config._client_id,
+                                   clean_session=True,
+                                   userdata=self,
+                                   protocol=mqtt.MQTTv31,
+                                   transport="websockets" if self.config.use_websockets else "tcp")
+
+        return mqtt.Client(client_id=self._config._client_id,
+                           clean_session=True,
+                           userdata=self,
+                           protocol=mqtt.MQTTv31,
+                           transport="websockets" if self.config.use_websockets else "tcp")

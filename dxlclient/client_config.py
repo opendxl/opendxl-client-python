@@ -192,8 +192,7 @@ class DxlClientConfig(_BaseObject):
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None, proxy_addr=None,
-                 proxy_port=None, proxy_username=None, proxy_password=None):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None):
         """
         Constructor parameters:
 
@@ -227,15 +226,6 @@ class DxlClientConfig(_BaseObject):
         self._brokers = brokers
         # The list of WebSocket brokers
         self._websocket_brokers = websocket_brokers
-        # Proxy address
-        self._proxy_address = proxy_addr
-        # Proxy port
-        self._proxy_port = proxy_port
-        # Proxy username
-        self._proxy_username = proxy_username
-        # Proxy password
-        self._proxy_password = proxy_password
-
         # Whether to use WebSockets or regular MQTT over tcp
         self._use_websockets = False
 
