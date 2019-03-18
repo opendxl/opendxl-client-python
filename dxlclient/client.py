@@ -17,7 +17,7 @@ import random
 import time
 
 import paho.mqtt.client as mqtt
-
+from pahoproxy import client as mqtt_dxl
 from dxlclient import _BaseObject
 from dxlclient.client_config import DxlClientConfig
 import dxlclient._callback_manager as callback_manager
@@ -28,7 +28,6 @@ from dxlclient._thread_pool import ThreadPool
 from dxlclient.exceptions import WaitTimeoutException
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
-from pahoproxy import client as mqtt_dxl
 from ._dxl_utils import DxlUtils
 
 __all__ = [
@@ -388,7 +387,9 @@ class DxlClient(_BaseObject):
         # The lock for the current list of subscriptions
         self._subscriptions_lock = threading.RLock()
         # HTTP Proxy for connecting through web sockets
-        self._proxy = self._config._get_http_proxy()
+        self._proxy = None
+        if self.config.use_websockets:
+            self._proxy = self._config._get_http_proxy()
         # The underlying MQTT client instance. Use mqtt_dxl while using HTTP Proxy for connecting through web sockets
         self._client = self.get_mqtt_client()
         # The MQTT client connect callback
@@ -660,13 +661,13 @@ class DxlClient(_BaseObject):
                     if broker._response_from_ip_address:
                         logger.info("Trying to connect to broker %s...", broker.to_string())
                         # If HTTP proxy for websocket is present, connect using proxy
-                        if self._proxy is not None and self.config.use_websockets:
+                        if self._proxy is not None:
                             self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
                         else:
                             self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
                     else:
                         logger.info("Trying to connect to broker %s...", broker.to_string())
-                        if self._proxy is not None and self.config.use_websockets:
+                        if self._proxy is not None:
                             self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
                         else:
                             self._client.connect(broker.host_name, broker.port, keep_alive_interval)
@@ -1265,15 +1266,14 @@ class DxlClient(_BaseObject):
         Returns the mqtt client instance based on if web socket proxy is enabled or not
         :return: MQTT client instance
         """
-        if self._proxy is not None and self.config.use_websockets:
-            return mqtt_dxl.Client(client_id=self._config._client_id,
-                                   clean_session=True,
-                                   userdata=self,
-                                   protocol=mqtt.MQTTv31,
-                                   transport="websockets" if self.config.use_websockets else "tcp")
+        if self._proxy is not None:
+            mqtt_client = mqtt_dxl
+        else:
+            mqtt_client = mqtt
 
-        return mqtt.Client(client_id=self._config._client_id,
-                           clean_session=True,
-                           userdata=self,
-                           protocol=mqtt.MQTTv31,
-                           transport="websockets" if self.config.use_websockets else "tcp")
+        return mqtt_client.Client(client_id=self._config._client_id,
+                                  clean_session=True,
+                                  userdata=self,
+                                  protocol=mqtt.MQTTv31,
+                                  transport="websockets" if self.config.use_websockets else "tcp")
+

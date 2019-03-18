@@ -66,33 +66,25 @@ def _get_brokers(broker_list_json):
         raise BrokerListError("Broker list is not a valid JSON: " + str(broker_error))
 
 
-def _is_proxy_address_valid_ipv4_or_hostname(address):
+def validate_proxy_address(address):
     """
-    Returns True if the proxy address is a valid ipv4
+    validates the proxy address
     :param address:
-    :return:
     """
-    if address is None:
-        return False
     try:
-        if socket.gethostbyname(address) == address or socket.gethostbyname(address) != address:
-            return True
+        if not (socket.gethostbyname(address) == address or socket.gethostbyname(address) != address):
+            raise socket.gaierror
     except socket.gaierror as proxy_address_error:
         raise InvalidProxyAddressError("Proxy address is not valid: " + str(proxy_address_error))
 
 
-def _is_proxy_port_valid(port):
+def validate_proxy_port(port):
     """
-    Returns True if a proxy port is valid
+    validates the proxy port
     :param port:
-    :return:
     """
-    if port is None:
-        return False
     try:
-        if 1 <= int(port) <= 65535:
-            return True
-        else:
+        if not 1 <= int(port) <= 65535:
             raise ValueError
     except ValueError as proxy_port_error:
         raise InvalidProxyPortError("Proxy port is not valid: " + str(proxy_port_error))
@@ -638,13 +630,16 @@ class DxlClientConfig(_BaseObject):
         Returns the web socket http proxy as a dictionary in this config if present otherwise returns None
         :return:
         """
-        proxy = None
+
         proxy_address = self.proxy_address
         proxy_port = self.proxy_port
-        if _is_proxy_address_valid_ipv4_or_hostname(proxy_address) and _is_proxy_port_valid(proxy_port):
-            proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
-                     'proxy_addr': self.proxy_address, 'proxy_username': self.proxy_username,
-                     'proxy_rdns': True, 'proxy_type': 3}  # proxy_type '3' is for HTTP
+        if proxy_address is None or proxy_port is None:
+            return None
+        validate_proxy_address(proxy_address)
+        validate_proxy_port(proxy_port)
+        proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
+                 'proxy_addr': self.proxy_address, 'proxy_username': self.proxy_username,
+                 'proxy_rdns': True, 'proxy_type': 3}  # proxy_type '3' is for HTTP
 
         return proxy
 
