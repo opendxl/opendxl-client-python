@@ -542,7 +542,8 @@ class CliTest(unittest.TestCase):
             expected_broker_lines = "# This is broker 2\n{}".format(
                 broker_lines_for_config_file(expected_brokers))
             expected_config_content = make_config(base_config_lines,
-                                                  expected_broker_lines)
+                                                  expected_broker_lines,
+                                                  add_general=False)
 
             ca_bundle_file = os.path.join(temp_dir, "mycabundle.pem")
             DxlUtils.save_to_file(ca_bundle_file, "old ca")
@@ -745,8 +746,8 @@ def make_config(basic_config_lines=None, broker_lines=None, add_general=True):
     return "\n".join(basic_config_lines +
                      [broker_lines] +
                      [get_web_socket_section(broker_lines)] +
-                     ["[General]",
-                      "#useWebSockets = False\n"] if add_general else []).encode("utf8")
+                     (["[General]",
+                       "#useWebSockets = False\n"] if add_general else [])).encode("utf8")
 
 
 def get_web_socket_section(broker_lines=None):
