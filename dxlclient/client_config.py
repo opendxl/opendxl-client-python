@@ -87,7 +87,8 @@ def validate_proxy_port(port):
         if not 1 <= int(port) <= 65535:
             raise ValueError
     except ValueError as proxy_port_error:
-        raise InvalidProxyPortError("Proxy port is not valid: " + str(proxy_port_error))
+        raise InvalidProxyPortError("Proxy port is not valid. Port number must be an integer "
+                                    "between 1-65535: " + str(proxy_port_error))
 
 ################################################################################
 #
@@ -633,7 +634,7 @@ class DxlClientConfig(_BaseObject):
 
         proxy_address = self.proxy_address
         proxy_port = self.proxy_port
-        if proxy_address is None or proxy_port is None:
+        if not self.use_websockets or proxy_address is None or proxy_port is None:
             return None
         validate_proxy_address(proxy_address)
         validate_proxy_port(proxy_port)

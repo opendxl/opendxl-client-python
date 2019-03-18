@@ -387,26 +387,10 @@ class DxlClient(_BaseObject):
         # The lock for the current list of subscriptions
         self._subscriptions_lock = threading.RLock()
         # HTTP Proxy for connecting through web sockets
-        self._proxy = None
-        if self.config.use_websockets:
-            self._proxy = self._config._get_http_proxy()
+        self._proxy = self._config._get_http_proxy()
         # The underlying MQTT client instance. Use mqtt_dxl while using HTTP Proxy for connecting through web sockets
-        self._client = self.get_mqtt_client()
-        # The MQTT client connect callback
-        self._client.on_connect = _on_connect
-        # The MQTT client disconnect callback
-        self._client.on_disconnect = _on_disconnect
-        # The MQTT client message callback
-        self._client.on_message = _on_message
-        # The MQTT client topic subscription callback
-        self._client.on_subscribe = _on_subscribe
-        # The MQTT client topic unsubscription callback
-        self._client.on_unsubscribe = _on_unsubscribe
-
-        # The MQTT client log callback
-        if logger.isEnabledFor(logging.DEBUG):
-            self._client.on_log = _on_log
-
+        self._client = self._get_mqtt_client()
+        self._set_mqtt_client_callbacks()
         # pylint: disable=no-member
         # The MQTT client TLS configuration
         self._client.tls_set(config.broker_ca_bundle,
@@ -659,18 +643,9 @@ class DxlClient(_BaseObject):
             if broker._response_time is not None:
                 try:
                     if broker._response_from_ip_address:
-                        logger.info("Trying to connect to broker %s...", broker.to_string())
-                        # If HTTP proxy for websocket is present, connect using proxy
-                        if self._proxy is not None:
-                            self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
-                        else:
-                            self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
+                        self.connect_to_broker(broker, keep_alive_interval, broker.ip_address)
                     else:
-                        logger.info("Trying to connect to broker %s...", broker.to_string())
-                        if self._proxy is not None:
-                            self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
-                        else:
-                            self._client.connect(broker.host_name, broker.port, keep_alive_interval)
+                        self.connect_to_broker(broker, keep_alive_interval, broker.host_name)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -1261,7 +1236,7 @@ class DxlClient(_BaseObject):
             self._service_manager.remove_service(service_req_info.service_id)
             service_req_info._wait_for_unregistration(timeout=timeout)
 
-    def get_mqtt_client(self):
+    def _get_mqtt_client(self):
         """
         Returns the mqtt client instance based on if web socket proxy is enabled or not
         :return: MQTT client instance
@@ -1277,3 +1252,34 @@ class DxlClient(_BaseObject):
                                   protocol=mqtt.MQTTv31,
                                   transport="websockets" if self.config.use_websockets else "tcp")
 
+    def connect_to_broker(self, broker, keep_alive_interval, ip_or_hostname):
+        """
+        Connect using broker ip or hostname
+        :param broker: Broker reference
+        :param keep_alive_interval: Keep alive interval
+        :param ip_or_hostname: Broker ip or hostname
+        """
+        logger.info("Trying to connect to broker %s...", broker.to_string())
+        # If HTTP proxy for websocket is present, connect using proxy
+        if self._proxy is not None:
+            self._client.connect(ip_or_hostname, broker.port, keep_alive_interval, **self._proxy)
+        else:
+            self._client.connect(ip_or_hostname, broker.port, keep_alive_interval)
+
+    def _set_mqtt_client_callbacks(self):
+        """
+        sets the callback methods for mqtt client
+        """
+        # The MQTT client connect callback
+        self._client.on_connect = _on_connect
+        # The MQTT client disconnect callback
+        self._client.on_disconnect = _on_disconnect
+        # The MQTT client message callback
+        self._client.on_message = _on_message
+        # The MQTT client topic subscription callback
+        self._client.on_subscribe = _on_subscribe
+        # The MQTT client topic unsubscription callback
+        self._client.on_unsubscribe = _on_unsubscribe
+        # The MQTT client log callback
+        if logger.isEnabledFor(logging.DEBUG):
+            self._client.on_log = _on_log
