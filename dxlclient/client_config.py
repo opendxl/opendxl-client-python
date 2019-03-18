@@ -163,8 +163,8 @@ class DxlClientConfig(_BaseObject):
         (_BROKERS_SECTION, (), _REQUIRED),
         (_BROKERS_WEBSOCKETS_SECTION, (), _REQUIRED),
         (_PROXY_SECTION,
-         ((_PROXY_ADDRESS_SETTING, "Address", _REQUIRED),
-          (_PROXY_PORT_SETTING, "Port", _REQUIRED),
+         ((_PROXY_ADDRESS_SETTING, "Address", _NOT_REQUIRED),
+          (_PROXY_PORT_SETTING, "Port", _NOT_REQUIRED),
           (_PROXY_USERNAME_SETTING, "User", _NOT_REQUIRED),
           (_PROXY_PASSWORD_SETTING, "Password", _NOT_REQUIRED)),
          _NOT_REQUIRED))
@@ -198,10 +198,6 @@ class DxlClientConfig(_BaseObject):
             connect to the closest broker.
         :param websocket_brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
             DXL fabric supporting DXL connections over WebSockets.
-        :param proxy_addr: Address for HTTP proxy
-        :param proxy_port: Port for HTTP proxy
-        :param proxy_username: Username for HTTP proxy
-        :param proxy_password: Password for HTTP proxy
         """
         super(DxlClientConfig, self).__init__()
 
