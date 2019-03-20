@@ -390,6 +390,7 @@ class DxlClient(_BaseObject):
         self._proxy = self._config._get_http_proxy()
         # The underlying MQTT client instance. Use mqtt_dxl while using HTTP Proxy for connecting through web sockets
         self._client = self._get_mqtt_client()
+        # Set the callback methods for MQTT client
         self._set_mqtt_client_callbacks()
         # pylint: disable=no-member
         # The MQTT client TLS configuration
@@ -1268,7 +1269,7 @@ class DxlClient(_BaseObject):
 
     def _set_mqtt_client_callbacks(self):
         """
-        sets the callback methods for mqtt client
+        Sets the callbacks for MQTT client
         """
         # The MQTT client connect callback
         self._client.on_connect = _on_connect

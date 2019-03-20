@@ -38,5 +38,5 @@ class InvalidProxyAddressError(Exception):
 
 class InvalidProxyPortError(Exception):
     """
-     Exception raised when a specified HTTP proxy port is invalid
+     Exception raised when specified HTTP proxy port is invalid
     """

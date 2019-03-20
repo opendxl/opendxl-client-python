@@ -66,10 +66,10 @@ def _get_brokers(broker_list_json):
         raise BrokerListError("Broker list is not a valid JSON: " + str(broker_error))
 
 
-def validate_proxy_address(address):
+def _validate_proxy_address(address):
     """
-    validates the proxy address
-    :param address:
+    Validates HTTP proxy address
+    :param address: HTTP proxy address
     """
     try:
         if not (socket.gethostbyname(address) == address or socket.gethostbyname(address) != address):
@@ -78,10 +78,10 @@ def validate_proxy_address(address):
         raise InvalidProxyAddressError("Proxy address is not valid: " + str(proxy_address_error))
 
 
-def validate_proxy_port(port):
+def _validate_proxy_port(port):
     """
-    validates the proxy port
-    :param port:
+    Validates HTTP proxy port
+    :param port: HTTP proxy port
     """
     try:
         if not 1 <= int(port) <= 65535:
@@ -141,7 +141,9 @@ class DxlClientConfig(_BaseObject):
     _CLIENT_ID_SETTING = u"ClientId"
     _USE_WEBSOCKETS_SETTING = u"useWebSockets"
 
+    # HTTP Proxy Section
     _PROXY_SECTION = u"Proxy"
+    # HTTP Proxy Settings
     _PROXY_ADDRESS_SETTING = u"Address"
     _PROXY_PORT_SETTING = u"Port"
     _PROXY_USERNAME_SETTING = u"User"
@@ -450,32 +452,28 @@ class DxlClientConfig(_BaseObject):
     @property
     def proxy_address(self):
         """
-        The address of web socket proxy
-        :return:
+        Get address of web socket proxy
         """
         return self._get_value_from_config(self._PROXY_ADDRESS_SETTING)
 
     @property
     def proxy_port(self):
         """
-        The port of web socket proxy
-        :return:
+        Get port of web socket proxy
         """
         return self._get_value_from_config(self._PROXY_PORT_SETTING)
 
     @property
     def proxy_username(self):
         """
-        The username of web socket proxy
-        :return:
+        Get username of web socket proxy
         """
         return self._get_value_from_config(self._PROXY_USERNAME_SETTING)
 
     @property
     def proxy_password(self):
         """
-        The password of web socket proxy
-        :return:
+        Get password of web socket proxy
         """
         return self._get_value_from_config(self._PROXY_PASSWORD_SETTING)
 
@@ -624,16 +622,16 @@ class DxlClientConfig(_BaseObject):
 
     def _get_http_proxy(self):
         """
-        Returns the web socket http proxy as a dictionary in this config if present otherwise returns None
-        :return:
+        Returns the web socket http proxy as a dictionary if present in the config
+        :return: HTTP Proxy dictionary
         """
 
         proxy_address = self.proxy_address
         proxy_port = self.proxy_port
         if not self.use_websockets or proxy_address is None or proxy_port is None:
             return None
-        validate_proxy_address(proxy_address)
-        validate_proxy_port(proxy_port)
+        _validate_proxy_address(proxy_address)
+        _validate_proxy_port(proxy_port)
         proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
                  'proxy_addr': self.proxy_address, 'proxy_username': self.proxy_username,
                  'proxy_rdns': True, 'proxy_type': 3}  # proxy_type '3' is for HTTP
