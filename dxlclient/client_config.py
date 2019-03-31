@@ -186,8 +186,12 @@ class DxlClientConfig(_BaseObject):
     _DEFAULT_RECONNECT_DELAY_RANDOM = 0.25
     # Whether to attempt to reconnect when disconnected
     _DEFAULT_RECONNECT_WHEN_DISCONNECTED = True
+    # Default proxy type is 3 i.e HTTP
+    _DEFAULT_PROXY_TYPE = 3
+    # Default proxy rdns setting is set to True
+    _DEFAULT_PROXY_RDNS = True
 
-    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None):
+    def __init__(self, broker_ca_bundle, cert_file, private_key, brokers, websocket_brokers=None, **proxy_args):
         """
         Constructor parameters:
 
@@ -200,6 +204,7 @@ class DxlClientConfig(_BaseObject):
             connect to the closest broker.
         :param websocket_brokers: A list of :class:`dxlclient.broker.Broker` objects representing brokers on the
             DXL fabric supporting DXL connections over WebSockets.
+        :param proxy_args: Websocket proxy arguments
         """
         super(DxlClientConfig, self).__init__()
 
@@ -219,6 +224,13 @@ class DxlClientConfig(_BaseObject):
         self._websocket_brokers = websocket_brokers
         # Whether to use WebSockets or regular MQTT over tcp
         self._use_websockets = False
+        # Proxy settings
+        self._proxy_type = None
+        self._proxy_rdns = None
+        self._proxy_addr = proxy_args.get("proxy_addr", None)
+        self._proxy_port = proxy_args.get("proxy_port", None)
+        self._proxy_username = proxy_args.get("proxy_username", None)
+        self._proxy_password = proxy_args.get("proxy_password", None)
 
         # Common initialization which needs to be done whether an object is
         # created via :meth:`__init__` or :meth:`_init_from_config_file` is
@@ -308,6 +320,9 @@ class DxlClientConfig(_BaseObject):
         self._incoming_message_queue_size = 1000
         # The incoming thread pool size
         self._incoming_message_thread_pool_size = 1
+        # Default proxy settings for rdns and proxy type
+        self._proxy_type = self._DEFAULT_PROXY_TYPE
+        self._proxy_rdns = self._DEFAULT_PROXY_RDNS
 
     def _get_value_from_config(self, section_or_setting_name):
         """
@@ -450,32 +465,94 @@ class DxlClientConfig(_BaseObject):
         self._set_value_to_config(self._USE_WEBSOCKETS_SETTING, use_websockets)
 
     @property
-    def proxy_address(self):
+    def proxy_addr(self):
         """
-        Get address of web socket proxy
+        Get proxy address
         """
-        return self._get_value_from_config(self._PROXY_ADDRESS_SETTING)
+        return self._proxy_addr
+
+    @proxy_addr.setter
+    def proxy_addr(self, proxy_addr):
+        """
+        Set proxy address
+        :param proxy_addr: Proxy address
+        """
+        self._proxy_addr = proxy_addr
 
     @property
     def proxy_port(self):
         """
-        Get port of web socket proxy
+        Get proxy port
         """
-        return self._get_value_from_config(self._PROXY_PORT_SETTING)
+        return self._proxy_port
+
+    @proxy_port.setter
+    def proxy_port(self, proxy_port):
+        """
+        Set Proxy Port
+        :param proxy_port: Proxy Port
+        """
+        self._proxy_port = proxy_port
 
     @property
     def proxy_username(self):
         """
-        Get username of web socket proxy
+        Get proxy username
         """
-        return self._get_value_from_config(self._PROXY_USERNAME_SETTING)
+        return self._proxy_username
+
+    @proxy_username.setter
+    def proxy_username(self, proxy_username):
+        """
+        Set Proxy Username
+        :param proxy_username: Proxy username
+        """
+        self._proxy_username = proxy_username
 
     @property
     def proxy_password(self):
         """
-        Get password of web socket proxy
+        Get proxy password
         """
-        return self._get_value_from_config(self._PROXY_PASSWORD_SETTING)
+        return self._proxy_password
+
+    @proxy_password.setter
+    def proxy_password(self, proxy_password):
+        """
+        Set proxy username
+        :param proxy_password: Proxy password
+        """
+        self._proxy_password = proxy_password
+
+    @property
+    def proxy_type(self):
+        """
+        Get Type of Proxy. Defaults to 3 (HTTP)
+        """
+        return self._proxy_type
+
+    @proxy_type.setter
+    def proxy_type(self, proxy_type):
+        """
+        Sets the proxy type
+        :param proxy_type: Proxy Type
+        """
+        self._proxy_type = proxy_type
+
+    @property
+    def proxy_rdns(self):
+        """
+        Returns Proxy rdns enabled or not. Defaults to True
+        """
+        return self._proxy_rdns
+
+    @proxy_rdns.setter
+    def proxy_rdns(self, proxy_rdns):
+        """
+        Sets the Proxy rdns
+        :param proxy_rdns: Proxy rdns
+        """
+        self._proxy_rdns = proxy_rdns
 
     @property
     def incoming_message_queue_size(self):
@@ -625,16 +702,16 @@ class DxlClientConfig(_BaseObject):
         Returns the web socket http proxy as a dictionary if present in the config
         :return: HTTP Proxy dictionary
         """
-
-        proxy_address = self.proxy_address
-        proxy_port = self.proxy_port
+        proxy = {}
+        proxy_address = self.proxy_addr
+        proxy_port = self._proxy_port
         if not self.use_websockets or proxy_address is None or proxy_port is None:
-            return None
+            return proxy
         _validate_proxy_address(proxy_address)
         _validate_proxy_port(proxy_port)
-        proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
-                 'proxy_addr': self.proxy_address, 'proxy_username': self.proxy_username,
-                 'proxy_rdns': True, 'proxy_type': 3}  # proxy_type '3' is for HTTP
+        proxy = {'proxy_password': self._proxy_password, 'proxy_port': int(proxy_port),
+                 'proxy_addr': proxy_address, 'proxy_username': self._proxy_username,
+                 'proxy_rdns': self._proxy_rdns, 'proxy_type': self._proxy_type}
 
         return proxy
 
@@ -748,6 +825,12 @@ class DxlClientConfig(_BaseObject):
             self._use_websockets = self._config.get(self._GENERAL_SECTION).as_bool(self._USE_WEBSOCKETS_SETTING)
         else:
             self._use_websockets = bool(self._websocket_brokers and not self._brokers)
+
+        # Get Proxy Settings from Config file
+        self._proxy_addr = self._get_value_from_config(self._PROXY_ADDRESS_SETTING)
+        self._proxy_port = self._get_value_from_config(self._PROXY_PORT_SETTING)
+        self._proxy_username = self._get_value_from_config(self._PROXY_USERNAME_SETTING)
+        self._proxy_password = self._get_value_from_config(self._PROXY_PASSWORD_SETTING)
 
     @staticmethod
     def create_dxl_config_from_file(dxl_config_file):

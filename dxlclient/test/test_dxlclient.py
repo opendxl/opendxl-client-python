@@ -17,7 +17,7 @@ import threading
 import unittest
 
 # pylint: disable=wrong-import-position
-import paho.mqtt.client as mqtt
+import pahoproxy.client as mqtt
 from nose.plugins.attrib import attr
 from parameterized import parameterized
 from mock import Mock, patch
