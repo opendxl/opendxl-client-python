@@ -320,7 +320,7 @@ class DxlClientTest(unittest.TestCase):
                                       private_key=get_dxl_private_key(),
                                       brokers=[])
 
-        mqtt_client_patch = patch('paho.mqtt.client.Client')
+        mqtt_client_patch = patch('pahoproxy.client.Client')
         mqtt_client_patch.start()
 
         self.client = DxlClient(self.config)
