@@ -700,18 +700,18 @@ class DxlClientConfig(_BaseObject):
     def _get_http_proxy(self):
         """
         Returns the web socket http proxy as a dictionary if present in the config
-        :return: HTTP Proxy dictionary
+        :return: HTTP Proxy arguments dictionary.(Can be empty)
         """
         proxy = {}
-        proxy_address = self.proxy_addr
-        proxy_port = self._proxy_port
-        if not self.use_websockets or proxy_address is None or proxy_port is None:
+        proxy_addr = self.proxy_addr
+        proxy_port = self.proxy_port
+        if not self.use_websockets or proxy_addr is None or proxy_port is None:
             return proxy
-        _validate_proxy_address(proxy_address)
+        _validate_proxy_address(proxy_addr)
         _validate_proxy_port(proxy_port)
-        proxy = {'proxy_password': self._proxy_password, 'proxy_port': int(proxy_port),
-                 'proxy_addr': proxy_address, 'proxy_username': self._proxy_username,
-                 'proxy_rdns': self._proxy_rdns, 'proxy_type': self._proxy_type}
+        proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
+                 'proxy_addr': proxy_addr, 'proxy_username': self.proxy_username,
+                 'proxy_rdns': self.proxy_rdns, 'proxy_type': self.proxy_type}
 
         return proxy
 
