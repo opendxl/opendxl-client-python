@@ -647,7 +647,6 @@ class DxlClient(_BaseObject):
                     else:
                         self._connect_to_broker(broker, keep_alive_interval, broker.host_name)
                     self._current_broker = broker
-                    print "Connected to broker: " + broker.to_string()
                     break
                 except Exception as ex:  # pylint: disable=broad-except
                     logger.error("Failed to connect to broker %s: %s",
@@ -689,7 +688,6 @@ class DxlClient(_BaseObject):
                         latest_ex = ex
 
         if self._current_broker is not None:
-            print "Connected to broker: "+self._current_broker.unique_id
             logger.info("Connected to broker %s",
                         self._current_broker.unique_id)
         else:
@@ -1257,9 +1255,6 @@ class DxlClient(_BaseObject):
         :param ip_or_hostname: Broker ip or hostname
         """
         logger.info("Trying to connect to broker %s...", broker.to_string())
-        print "Trying to connect to broker: "+broker.to_string()
-        print "Checking if proxy present"
-        print "proxy :" + self._config._get_http_proxy()
         self._client.connect(ip_or_hostname, broker.port, keep_alive_interval, **self._proxy)
 
     def _set_mqtt_client_callbacks(self):

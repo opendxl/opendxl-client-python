@@ -12,16 +12,6 @@ from __future__ import print_function
 from threading import Condition
 import time
 import logging
-import socks
-try:
-    # Python 3
-    from urllib import request as urllib_dot_request
-    from urllib import parse as urllib_dot_parse
-except ImportError:
-    # Python 2
-    import urllib as urllib_dot_request
-    import urlparse as urllib_dot_parse
-
 from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
@@ -47,25 +37,6 @@ class AsyncFloodTest(BaseClientTest):
 
     @attr('system')
     def test_async_flood(self):
-        logger.info("In test_async_flood")
-        print("checking env proxy")
-        proxies = []
-        env_proxies = urllib_dot_request.getproxies()
-        for proxy in env_proxies.values():
-            parts = urllib_dot_parse.urlparse(proxy)
-            if parts.scheme == "http":
-                proxies.append({
-                    "proxy_type": socks.HTTP,
-                    "proxy_addr": parts.hostname,
-                    "proxy_port": parts.port
-                })
-            elif parts.scheme == "socks":
-                proxies.append({
-                    "proxy_type": socks.SOCKS5,
-                    "proxy_addr": parts.hostname,
-                    "proxy_port": parts.port
-                })
-        print(proxies)
         channel = UuidGenerator.generate_id_as_string()
         logger.info("channel: %s", channel)
         with self.create_client() as client:
