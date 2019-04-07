@@ -36,11 +36,11 @@ class AsyncFloodTest(BaseClientTest):
 
     @attr('system')
     def test_async_flood(self):
-
+        print("In test_async_flood")
         channel = UuidGenerator.generate_id_as_string()
-
+        print("channel: "+channel)
         with self.create_client() as client:
-
+            print("Connecting to client...")
             self.m_info = ServiceRegistrationInfo(client, channel)
             client.connect()
             client.subscribe(channel)
