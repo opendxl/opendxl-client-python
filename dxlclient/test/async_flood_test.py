@@ -11,13 +11,24 @@ from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
 import time
+import logging
+import socks
+try:
+    # Python 3
+    from urllib import request as urllib_dot_request
+    from urllib import parse as urllib_dot_parse
+except ImportError:
+    # Python 2
+    import urllib as urllib_dot_request
+    import urlparse as urllib_dot_parse
+
 from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 
 # pylint: disable=missing-docstring
-
+logger = logging.getLogger(__name__)
 
 @attr('system')
 class AsyncFloodTest(BaseClientTest):
@@ -36,13 +47,32 @@ class AsyncFloodTest(BaseClientTest):
 
     @attr('system')
     def test_async_flood(self):
-        print("In test_async_flood")
+        logger.info("In test_async_flood")
+        print("checking env proxy")
+        proxies = []
+        env_proxies = urllib_dot_request.getproxies()
+        for proxy in env_proxies.values():
+            parts = urllib_dot_parse.urlparse(proxy)
+            if parts.scheme == "http":
+                proxies.append({
+                    "proxy_type": socks.HTTP,
+                    "proxy_addr": parts.hostname,
+                    "proxy_port": parts.port
+                })
+            elif parts.scheme == "socks":
+                proxies.append({
+                    "proxy_type": socks.SOCKS5,
+                    "proxy_addr": parts.hostname,
+                    "proxy_port": parts.port
+                })
+        print(proxies)
         channel = UuidGenerator.generate_id_as_string()
-        print("channel: "+channel)
+        logger.info("channel: %s", channel)
         with self.create_client() as client:
-            print("Connecting to client...")
             self.m_info = ServiceRegistrationInfo(client, channel)
+            logger.info("Connecting MQTT Client")
             client.connect()
+            logger.info("Subscribing to channel: %s", channel)
             client.subscribe(channel)
 
             def my_request_callback(request):
