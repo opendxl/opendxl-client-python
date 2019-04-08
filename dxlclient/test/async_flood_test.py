@@ -11,15 +11,13 @@ from __future__ import absolute_import
 from __future__ import print_function
 from threading import Condition
 import time
-import logging
-import socks
 from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
 from dxlclient.test.base_test import BaseClientTest
 
 # pylint: disable=missing-docstring
-logger = logging.getLogger(__name__)
+
 
 @attr('system')
 class AsyncFloodTest(BaseClientTest):
@@ -38,19 +36,13 @@ class AsyncFloodTest(BaseClientTest):
 
     @attr('system')
     def test_async_flood(self):
+
         channel = UuidGenerator.generate_id_as_string()
-        print("In test_async_flood")
-        logger.info("In test_async_flood")
-        print("checking socks default proxy")
-        print(socks.get_default_proxy())
-        print("channel: " + channel)
-        logger.debug("channel: %s", channel)
-        print("In test_async_flood")
+
         with self.create_client() as client:
+
             self.m_info = ServiceRegistrationInfo(client, channel)
-            print("Connecting MQTT Client")
             client.connect()
-            print("Subscribing to channel: %s", channel)
             client.subscribe(channel)
 
             def my_request_callback(request):
