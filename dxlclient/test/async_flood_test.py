@@ -12,6 +12,7 @@ from __future__ import print_function
 from threading import Condition
 import time
 import logging
+import socks
 from nose.plugins.attrib import attr
 from dxlclient import ServiceRegistrationInfo, UuidGenerator
 from dxlclient import RequestCallback, Response, Message, ResponseCallback, Request
@@ -38,12 +39,18 @@ class AsyncFloodTest(BaseClientTest):
     @attr('system')
     def test_async_flood(self):
         channel = UuidGenerator.generate_id_as_string()
-        logger.info("channel: %s", channel)
+        print("In test_async_flood")
+        logger.info("In test_async_flood")
+        print("checking socks default proxy")
+        print(socks.get_default_proxy())
+        print("channel: " + channel)
+        logger.debug("channel: %s", channel)
+        print("In test_async_flood")
         with self.create_client() as client:
             self.m_info = ServiceRegistrationInfo(client, channel)
-            logger.info("Connecting MQTT Client")
+            print("Connecting MQTT Client")
             client.connect()
-            logger.info("Subscribing to channel: %s", channel)
+            print("Subscribing to channel: %s", channel)
             client.subscribe(channel)
 
             def my_request_callback(request):
