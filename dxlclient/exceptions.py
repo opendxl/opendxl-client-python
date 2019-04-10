@@ -30,13 +30,7 @@ class BrokerListError(Exception):
     pass
 
 
-class InvalidProxyAddressError(Exception):
+class InvalidProxyConfigurationError(Exception):
     """
-     Exception raised when specified HTTP proxy address is invalid
-    """
-
-
-class InvalidProxyPortError(Exception):
-    """
-     Exception raised when specified HTTP proxy port is invalid
+     Exception raised when specified HTTP proxy address or port is invalid
     """

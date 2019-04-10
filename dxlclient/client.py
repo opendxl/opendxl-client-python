@@ -642,10 +642,11 @@ class DxlClient(_BaseObject):
                 break
             if broker._response_time is not None:
                 try:
+                    logger.info("Trying to connect to broker %s...", broker.to_string())
                     if broker._response_from_ip_address:
-                        self._connect_to_broker(broker, keep_alive_interval, broker.ip_address)
+                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
                     else:
-                        self._connect_to_broker(broker, keep_alive_interval, broker.host_name)
+                        self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -1246,16 +1247,6 @@ class DxlClient(_BaseObject):
                            userdata=self,
                            protocol=mqtt.MQTTv311,
                            transport="websockets" if self.config.use_websockets else "tcp")
-
-    def _connect_to_broker(self, broker, keep_alive_interval, ip_or_hostname):
-        """
-        Connect using broker ip or hostname
-        :param broker: Broker reference
-        :param keep_alive_interval: Keep alive interval
-        :param ip_or_hostname: Broker ip or hostname
-        """
-        logger.info("Trying to connect to broker %s...", broker.to_string())
-        self._client.connect(ip_or_hostname, broker.port, keep_alive_interval, **self._proxy)
 
     def _set_mqtt_client_callbacks(self):
         """

@@ -19,7 +19,7 @@ from configobj import ConfigObj
 from dxlclient import _BaseObject, DxlUtils
 from dxlclient.broker import Broker
 from dxlclient._uuid_generator import UuidGenerator
-from dxlclient.exceptions import BrokerListError, InvalidProxyAddressError, InvalidProxyPortError
+from dxlclient.exceptions import BrokerListError, InvalidProxyConfigurationError
 
 from ._compat import Queue
 
@@ -75,7 +75,7 @@ def _validate_proxy_address(address):
         if not (socket.gethostbyname(address) == address or socket.gethostbyname(address) != address):
             raise socket.gaierror
     except socket.gaierror as proxy_address_error:
-        raise InvalidProxyAddressError("Proxy address is not valid: " + str(proxy_address_error))
+        raise InvalidProxyConfigurationError("Proxy address is not valid: " + str(proxy_address_error))
 
 
 def _validate_proxy_port(port):
@@ -87,8 +87,8 @@ def _validate_proxy_port(port):
         if not 1 <= int(port) <= 65535:
             raise ValueError
     except ValueError as proxy_port_error:
-        raise InvalidProxyPortError("Proxy port is not valid. Port number must be an integer "
-                                    "between 1-65535: " + str(proxy_port_error))
+        raise InvalidProxyConfigurationError("Proxy port is not valid. Port number must be an integer "
+                                             "between 1-65535: " + str(proxy_port_error))
 
 ################################################################################
 #
