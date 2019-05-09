@@ -36,6 +36,6 @@ script:
   - echo Running tests with MQTT  
   - python setup.py ci
   - sed -i -e "s/= False/= True/g" -e "s/;8883/;443/g" -e "s/Brokers/BrokersWebSockets/g" dxlclient/test/client_config.cfg
-  - cat clientconfig/dxlclient.config
+  - cat dxlclient/test/client_config.cfg
   - echo Running tests with WebSockets  
   - python setup.py ci
