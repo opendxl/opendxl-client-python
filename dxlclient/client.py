@@ -24,7 +24,7 @@ from dxlclient._request_manager import RequestManager
 from dxlclient.exceptions import DxlException
 from dxlclient.message import Message, Event, Request, Response, ErrorResponse
 from dxlclient._thread_pool import ThreadPool
-from dxlclient.exceptions import WaitTimeoutException
+from dxlclient.exceptions import WaitTimeoutException, NoBrokerSpecifiedError
 from dxlclient.service import _ServiceManager
 from dxlclient._uuid_generator import UuidGenerator
 from ._dxl_utils import DxlUtils
@@ -703,12 +703,12 @@ class DxlClient(_BaseObject):
             return DXL_ERR_INVALID
 
         logger.info("Waiting for broker list...")
+        if not self._config.brokers:
+            raise NoBrokerSpecifiedError('No broker specified. Please specify at least one broker.')
         self._config_lock.acquire()
         try:
             while not self._thread_terminate and not self._config.brokers:
                 self._config_lock_condition.wait(self._wait_for_policy_delay)
-                if not self._config.brokers:
-                    logger.debug("No broker defined. Waiting for broker list...")
         finally:
             self._config_lock.release()
 
