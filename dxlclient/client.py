@@ -16,8 +16,7 @@ import traceback
 import random
 import time
 
-import paho.mqtt.client as mqtt
-
+import pahoproxy.client as mqtt
 from dxlclient import _BaseObject
 from dxlclient.client_config import DxlClientConfig
 import dxlclient._callback_manager as callback_manager
@@ -386,29 +385,12 @@ class DxlClient(_BaseObject):
         self._subscriptions = set()
         # The lock for the current list of subscriptions
         self._subscriptions_lock = threading.RLock()
-
+        # HTTP Proxy for connecting through web sockets
+        self._proxy = self._config._get_http_proxy()
         # The underlying MQTT client instance
-        self._client = mqtt.Client(client_id=self._config._client_id,
-                                   clean_session=True,
-                                   userdata=self,
-                                   protocol=mqtt.MQTTv31,
-                                   transport="websockets" if config.use_websockets else "tcp")
-
-        # The MQTT client connect callback
-        self._client.on_connect = _on_connect
-        # The MQTT client disconnect callback
-        self._client.on_disconnect = _on_disconnect
-        # The MQTT client message callback
-        self._client.on_message = _on_message
-        # The MQTT client topic subscription callback
-        self._client.on_subscribe = _on_subscribe
-        # The MQTT client topic unsubscription callback
-        self._client.on_unsubscribe = _on_unsubscribe
-
-        # The MQTT client log callback
-        if logger.isEnabledFor(logging.DEBUG):
-            self._client.on_log = _on_log
-
+        self._client = self._get_mqtt_client()
+        # Set the callback methods for MQTT client
+        self._set_mqtt_client_callbacks()
         # pylint: disable=no-member
         # The MQTT client TLS configuration
         self._client.tls_set(config.broker_ca_bundle,
@@ -660,12 +642,11 @@ class DxlClient(_BaseObject):
                 break
             if broker._response_time is not None:
                 try:
+                    logger.info("Trying to connect to broker %s...", broker.to_string())
                     if broker._response_from_ip_address:
-                        logger.info("Trying to connect to broker %s...", broker.to_string())
-                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
+                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
                     else:
-                        logger.info("Trying to connect to broker %s...", broker.to_string())
-                        self._client.connect(broker.host_name, broker.port, keep_alive_interval)
+                        self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -1255,3 +1236,32 @@ class DxlClient(_BaseObject):
 
             self._service_manager.remove_service(service_req_info.service_id)
             service_req_info._wait_for_unregistration(timeout=timeout)
+
+    def _get_mqtt_client(self):
+        """
+        Returns the mqtt client instance
+        :return: MQTT client instance
+        """
+        return mqtt.Client(client_id=self._config._client_id,
+                           clean_session=True,
+                           userdata=self,
+                           protocol=mqtt.MQTTv311,
+                           transport="websockets" if self.config.use_websockets else "tcp")
+
+    def _set_mqtt_client_callbacks(self):
+        """
+        Sets the callbacks for MQTT client
+        """
+        # The MQTT client connect callback
+        self._client.on_connect = _on_connect
+        # The MQTT client disconnect callback
+        self._client.on_disconnect = _on_disconnect
+        # The MQTT client message callback
+        self._client.on_message = _on_message
+        # The MQTT client topic subscription callback
+        self._client.on_subscribe = _on_subscribe
+        # The MQTT client topic unsubscription callback
+        self._client.on_unsubscribe = _on_unsubscribe
+        # The MQTT client log callback
+        if logger.isEnabledFor(logging.DEBUG):
+            self._client.on_log = _on_log

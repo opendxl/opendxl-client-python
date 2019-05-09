@@ -50,6 +50,7 @@ class BaseClientTest(TestCase):
         config.incoming_message_thread_pool_size = incoming_message_thread_pool_size
 
         config.connect_retries = max_retries
+
         return TestDxlClient(config)
 
 if sys.version_info[0] > 2:

@@ -17,7 +17,7 @@ import threading
 import unittest
 
 # pylint: disable=wrong-import-position
-import paho.mqtt.client as mqtt
+import pahoproxy.client as mqtt
 from nose.plugins.attrib import attr
 from parameterized import parameterized
 from mock import Mock, patch
@@ -320,7 +320,7 @@ class DxlClientTest(unittest.TestCase):
                                       private_key=get_dxl_private_key(),
                                       brokers=[])
 
-        mqtt_client_patch = patch('paho.mqtt.client.Client')
+        mqtt_client_patch = patch('pahoproxy.client.Client')
         mqtt_client_patch.start()
 
         self.client = DxlClient(self.config)
