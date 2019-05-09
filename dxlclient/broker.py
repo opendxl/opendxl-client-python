@@ -41,6 +41,8 @@ class Broker(_BaseObject):
     """The SSL protocol identifier"""
     _SSL_PORT = 8883
     """The standard TLS port"""
+    _WSS_PROTOCOL = "wss"
+    """The WSS protocol identifier"""
 
     def __init__(self, host_name, unique_id=None, ip_address=None, port=_SSL_PORT):
         """
@@ -175,7 +177,7 @@ class Broker(_BaseObject):
         broker.port = port
         broker.unique_id = UuidGenerator.generate_id_as_string()
 
-        if protocol and protocol.lower() != Broker._SSL_PROTOCOL.lower():
+        if protocol and protocol.lower() not in [Broker._SSL_PROTOCOL.lower(), Broker._WSS_PROTOCOL.lower()]:
             raise MalformedBrokerUriException("Unknown protocol: " + protocol)
 
         return broker

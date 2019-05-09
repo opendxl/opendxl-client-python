@@ -630,13 +630,31 @@ class ProvisionDxlClientSubcommand(Subcommand):  # pylint: disable=no-init
                 3, len(data_responses), data_responses))
 
         brokers = self._brokers_for_config(data_responses[2].splitlines())
+
+        websocket_brokers = []
+
+        if len(data_responses) > 3:
+            websocket_brokers = self._brokers_for_config(data_responses[3].splitlines())
+
         config_file = os.path.join(args.config_dir, _DXL_CONFIG_FILE_NAME)
         logger.info("Saving DXL config file to %s", config_file)
         dxlconfig = DxlClientConfig(_CA_BUNDLE_FILE_NAME,
                                     _cert_filename(args.file_prefix),
                                     pk_filename,
-                                    brokers)
+                                    brokers,
+                                    websocket_brokers)
+        dxlconfig.use_websockets = False
+
+        dxlconfig._config.comments[DxlClientConfig._GENERAL_SECTION].insert(0, '')
+
         dxlconfig.write(config_file)
+
+        # comment out the useWebSockets setting
+        with open(config_file) as conf_file:
+            config_contents = conf_file.read().replace('useWebSockets', '#useWebSockets')
+
+        with open(config_file, "w") as conf_file:
+            conf_file.write(config_contents)
 
         self._save_pem(data_responses[0], "ca bundle",
                        os.path.join(args.config_dir,
@@ -688,6 +706,21 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
 
         {
             "brokers": [
+                {
+                    "guid": "{2c5b107c-7f51-11e7-0ebf-0800271cfa58}",
+                    "hostName": "broker1",
+                    "ipAddress": "10.10.100.100",
+                    "port": 8883
+                },
+                {
+                    "guid": "{e90335b2-8dc8-11e7-1bc3-0800270989e4}",
+                    "hostName": "broker2",
+                    "ipAddress": "10.10.100.101",
+                    "port": 8883
+                },
+                ...
+            ],
+            "brokersWebSockets": [
                 {
                     "guid": "{2c5b107c-7f51-11e7-0ebf-0800271cfa58}",
                     "hostName": "broker1",
@@ -761,11 +794,18 @@ class UpdateConfigSubcommand(Subcommand):  # pylint: disable=no-init
         """
         broker_response = svc.invoke_command(self._BROKER_LIST_COMMAND)
         try:
-            brokers = json.loads(broker_response)["brokers"]
+            response_dict = json.loads(broker_response)
+            brokers = response_dict["brokers"]
             config.brokers = [Broker(broker["hostName"],
                                      broker["guid"],
                                      broker["ipAddress"],
                                      broker["port"]) for broker in brokers]
+            websocket_brokers = response_dict.get("webSocketBrokers")
+            if websocket_brokers:
+                config.websocket_brokers = [Broker(broker["hostName"],
+                                                   broker["guid"],
+                                                   broker["ipAddress"],
+                                                   broker["port"]) for broker in websocket_brokers]
         except Exception as ex:
             logger.error("Failed to process broker list. Message: %s", ex)
             raise

@@ -525,7 +525,8 @@ class CliTest(unittest.TestCase):
                 ca_bundle_file="mycabundle.pem",
                 add_comments=True)
             base_config_content = make_config(base_config_lines,
-                                              base_broker_lines)
+                                              base_broker_lines,
+                                              add_general=False)
 
             # Before the broker config update is done, there should be entries
             # for broker1 and broker2. The updated config contains entries for
@@ -535,12 +536,14 @@ class CliTest(unittest.TestCase):
             # config file should be preserved after the update.
             updated_brokers = make_broker_dict(4)
             del updated_brokers["brokers"][0]
+            updated_brokers["webSocketBrokers"] = updated_brokers["brokers"]
             expected_brokers = make_broker_lines(4)
             del expected_brokers[0]
             expected_broker_lines = "# This is broker 2\n{}".format(
                 broker_lines_for_config_file(expected_brokers))
             expected_config_content = make_config(base_config_lines,
-                                                  expected_broker_lines)
+                                                  expected_broker_lines,
+                                                  add_general=False)
 
             ca_bundle_file = os.path.join(temp_dir, "mycabundle.pem")
             DxlUtils.save_to_file(ca_bundle_file, "old ca")
@@ -699,7 +702,12 @@ def make_broker_dict(brokers=3):
                      "ipAddress": "10.10.100.{}".format(i),
                      "port": "888{}".format(i)}
                     for i in range(1, brokers+1)],
-        "certVersion": 0
+        "certVersion": 0,
+        "webSocketBrokers": [{"guid": "{{{}}}".format(uuid.UUID(int=i)),
+                              "hostName": "broker{}".format(i),
+                              "ipAddress": "10.10.100.{}".format(i),
+                              "port": "888{}".format(i)}
+                             for i in range(1, brokers + 1)],
     }
 
 
@@ -707,7 +715,9 @@ def make_basic_config(client_prefix="client",
                       ca_bundle_file="ca-bundle.crt",
                       add_comments=False):
     if add_comments:
-        config = ["[Certs]",
+        config = ["[General]",
+                  "#useWebSockets = False\n",
+                  "[Certs]",
                   "# Truststore client uses to validate broker",
                   "BrokerCertChain = {}".format(ca_bundle_file),
                   "# Client's certificate",
@@ -715,7 +725,8 @@ def make_basic_config(client_prefix="client",
                   "# Client's private key",
                   "PrivateKey = {}.key".format(client_prefix),
                   "\n# Brokers client could connect to",
-                  "[Brokers]"]
+                  "[Brokers]",
+                 ]
     else:
         config = ["[Certs]",
                   "BrokerCertChain = {}".format(ca_bundle_file),
@@ -725,14 +736,25 @@ def make_basic_config(client_prefix="client",
     return config
 
 
-def make_config(basic_config_lines=None, broker_lines=None):
+def make_config(basic_config_lines=None, broker_lines=None, add_general=True):
     if not basic_config_lines:
         basic_config_lines = make_basic_config()
     if not broker_lines:
         broker_lines = broker_lines_for_config_file(
             make_broker_lines(2))
 
-    return "\n".join(basic_config_lines + [broker_lines]).encode("utf8")
+    return "\n".join(basic_config_lines +
+                     [broker_lines] +
+                     [get_web_socket_section(broker_lines)] +
+                     (["[General]",
+                       "#useWebSockets = False\n"] if add_general else [])).encode("utf8")
+
+
+def get_web_socket_section(broker_lines=None):
+    if not broker_lines:
+        broker_lines = broker_lines_for_config_file(
+            make_broker_lines(2))
+    return "\n".join(["[BrokersWebSockets]"] + [broker_lines])
 
 
 def flattened_broker_lines(broker_lines,
@@ -783,7 +805,7 @@ def get_mock_provision_response_func(ca_bundle=None,
         brokers = broker_lines_for_server_response(make_broker_lines())
 
     def mock_provision_response(request, _):
-        return make_ok_response(",".join((ca_bundle, client_cert, brokers)),
+        return make_ok_response(",".join((ca_bundle, client_cert, brokers, brokers)),
                                 request)
     return mock_provision_response
 

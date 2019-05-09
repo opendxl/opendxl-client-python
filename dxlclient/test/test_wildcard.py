@@ -208,7 +208,7 @@ class WilcardPerformanceTest(BaseClientTest):
 
 class WildcardTest(unittest.TestCase):
     def setUp(self):
-        mqtt_client_patch = patch('paho.mqtt.client.Client')
+        mqtt_client_patch = patch('pahoproxy.client.Client')
         mqtt_client_patch.start()
 
         self.config = DxlClientConfig(broker_ca_bundle=get_ca_bundle_pem(),

@@ -1,0 +1,4 @@
+[submodule "paho_mqtt_dxl"]
+	path = paho_mqtt_dxl
+	url = https://github.com/opendxl-community/paho.mqtt.python.git
+	branch = master
