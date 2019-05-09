@@ -58,10 +58,8 @@ def execute_mar_search_api(client, payload_dict):
                 if "body" in resp_dict and "applicationErrorList" in resp_dict["body"]:
                     error = resp_dict["body"]["applicationErrorList"][0]
                     raise Exception(error["message"] + ": " + str(error["code"]))
-
                 if "body" in resp_dict:
                     raise Exception(resp_dict["body"] + ": " + str(code))
-
                 raise Exception("Error: Received failure response code: " + str(code))
         else:
             raise Exception("Error: unable to find response code")
