@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>dxlclient.client_config module &#8212; OpenDXL Python SDK 5.0.0.568 documentation</title>
+    <title>dxlclient.client_config module &#8212; OpenDXL Python SDK 5.6.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,6 +14,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +36,7 @@
         <li class="right" >
           <a href="dxlclient.client.html" title="dxlclient.client module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.0.0.568 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" accesskey="U">dxlclient package</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +52,7 @@
 necessary to connect a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> to the DXL fabric.</p>
 <dl class="class">
 <dt id="dxlclient.client_config.DxlClientConfig">
-<em class="property">class </em><code class="descclassname">dxlclient.client_config.</code><code class="descname">DxlClientConfig</code><span class="sig-paren">(</span><em>broker_ca_bundle</em>, <em>cert_file</em>, <em>private_key</em>, <em>brokers</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">dxlclient.client_config.</code><code class="descname">DxlClientConfig</code><span class="sig-paren">(</span><em>broker_ca_bundle</em>, <em>cert_file</em>, <em>private_key</em>, <em>brokers</em>, <em>websocket_brokers=None</em>, <em>**proxy_args</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient._BaseObject</span></code></p>
 <p>The Data Exchange Layer (DXL) client configuration contains the information necessary to connect
 a <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> to the DXL fabric.</p>
@@ -86,9 +87,13 @@ to the fabric:</p>
 <li><strong>broker_ca_bundle</strong> -- The file name of a bundle containing the broker CA certificates in PEM format</li>
 <li><strong>cert_file</strong> -- The file name of the client certificate in PEM format</li>
 <li><strong>private_key</strong> -- The file name of the client private key in PEM format</li>
-<li><strong>brokers</strong> -- A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers comprising the
-DXL fabric. When invoking the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.connect" title="dxlclient.client.DxlClient.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.connect()</span></code></a> method, the
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> will attempt to connect to the closest broker.</li>
+<li><strong>brokers</strong> -- A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers on the
+DXL fabric supporting standard MQTT connections. When invoking the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.connect" title="dxlclient.client.DxlClient.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.connect()</span></code></a> method, the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> will attempt to
+connect to the closest broker.</li>
+<li><strong>websocket_brokers</strong> -- A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers on the
+DXL fabric supporting DXL connections over WebSockets.</li>
+<li><strong>proxy_args</strong> -- Websocket proxy arguments</li>
 </ul>
 </td>
 </tr>
@@ -104,9 +109,10 @@ format</p>
 <dl class="attribute">
 <dt id="dxlclient.client_config.DxlClientConfig.brokers">
 <code class="descname">brokers</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.brokers" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers comprising the
-DXL fabric. When invoking the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.connect" title="dxlclient.client.DxlClient.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.connect()</span></code></a> method, the
-<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> will attempt to connect to the closest broker.</p>
+<dd><p>A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers on the
+DXL fabric. Brokers returned is dependent on the use_websockets flag. When invoking the
+<a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient.connect" title="dxlclient.client.DxlClient.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient.connect()</span></code></a> method, the <a class="reference internal" href="dxlclient.client.html#dxlclient.client.DxlClient" title="dxlclient.client.DxlClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.client.DxlClient</span></code></a> will attempt to
+connect to the closest broker.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -130,7 +136,10 @@ establishes a connection</p>
 <dd><p>This method allows creation of a <a class="reference internal" href="#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DxlClientConfig</span></code></a> object from a
 specified configuration file. The information contained in the file has a one-to-one
 correspondence with the <a class="reference internal" href="#dxlclient.client_config.DxlClientConfig" title="dxlclient.client_config.DxlClientConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DxlClientConfig</span></code></a> constructor.</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[Certs]</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[General]</span>
+<span class="na">useWebSocketBrokers</span><span class="o">=</span><span class="s">no</span>
+
+<span class="k">[Certs]</span>
 <span class="na">BrokerCertChain</span><span class="o">=</span><span class="s">c:\\certs\\brokercerts.crt</span>
 <span class="na">CertFile</span><span class="o">=</span><span class="s">c:\\certs\\client.crt</span>
 <span class="na">PrivateKey</span><span class="o">=</span><span class="s">c:\\certs\\client.key</span>
@@ -138,6 +147,10 @@ correspondence with the <a class="reference internal" href="#dxlclient.client_co
 <span class="k">[Brokers]</span>
 <span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
 <span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
+
+<span class="k">[BrokersWebSockets]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;443;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;443;mybroker2.mcafee.com;192.168.1.13</span>
 </pre></div>
 </div>
 <p>The configuration file can be loaded as follows:</p>
@@ -188,6 +201,42 @@ messages to the <a class="reference internal" href="dxlclient.broker.html#dxlcli
 </dd></dl>
 
 <dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_addr">
+<code class="descname">proxy_addr</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get proxy address</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_password">
+<code class="descname">proxy_password</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get proxy password</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_port">
+<code class="descname">proxy_port</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get proxy port</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_rdns">
+<code class="descname">proxy_rdns</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_rdns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Proxy rdns enabled or not. Defaults to True</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_type">
+<code class="descname">proxy_type</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Type of Proxy. Defaults to 3 (HTTP)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.proxy_username">
+<code class="descname">proxy_username</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.proxy_username" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get proxy username</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="dxlclient.client_config.DxlClientConfig.reconnect_back_off_multiplier">
 <code class="descname">reconnect_back_off_multiplier</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.reconnect_back_off_multiplier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiples the current reconnect delay by this value on subsequent connect retries. For example, a current
@@ -224,6 +273,20 @@ The default value is 0.25</p>
 <p>Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.use_websockets">
+<code class="descname">use_websockets</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.use_websockets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the client will use WebSockets. If false MQTT over tcp will be used. If only WebSocket brokers
+are specified this will default to true.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dxlclient.client_config.DxlClientConfig.websocket_brokers">
+<code class="descname">websocket_brokers</code><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.websocket_brokers" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference internal" href="dxlclient.broker.html#dxlclient.broker.Broker" title="dxlclient.broker.Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">dxlclient.broker.Broker</span></code></a> objects representing brokers on the
+DXL fabric supporting DXL connections over WebSockets.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="dxlclient.client_config.DxlClientConfig.write">
 <code class="descname">write</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#dxlclient.client_config.DxlClientConfig.write" title="Permalink to this definition">¶</a></dt>
@@ -239,6 +302,10 @@ preserved. For example, the original file may have the following:</p>
 <span class="k">[Brokers]</span>
 <span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
 <span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
+
+<span class="k">[BrokersWebSockets]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;443;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;443;mybroker2.mcafee.com;192.168.1.13</span>
 </pre></div>
 </div>
 <p>The configuration could be loaded and changed as follows:</p>
@@ -258,6 +325,10 @@ preserved. For example, the original file may have the following:</p>
 <span class="k">[Brokers]</span>
 <span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;8883;mybroker.mcafee.com;192.168.1.12</span>
 <span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;8883;mybroker2.mcafee.com;192.168.1.13</span>
+
+<span class="k">[BrokersWebSockets]</span>
+<span class="na">mybroker</span><span class="o">=</span><span class="s">mybroker;443;mybroker.mcafee.com;192.168.1.12</span>
+<span class="na">mybroker2</span><span class="o">=</span><span class="s">mybroker2;443;mybroker2.mcafee.com;192.168.1.13</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -326,13 +397,13 @@ exist before writing the file.</td>
         <li class="right" >
           <a href="dxlclient.client.html" title="dxlclient.client module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.0.0.568 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="dxlclient.html" >dxlclient package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, McAfee LLC.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>
