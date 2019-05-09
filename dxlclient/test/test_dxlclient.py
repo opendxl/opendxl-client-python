@@ -640,6 +640,7 @@ class DxlClientSystemClientTest(BaseClientTest):
             broker = Broker("localhost", UuidGenerator.generate_id_as_string(),
                             "127.0.0.255", 58883)
             client._config.brokers = [broker]
+            client._config.websocket_brokers = [broker]
 
             with self.assertRaises(DxlException):
                 client.connect()
