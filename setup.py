@@ -100,7 +100,7 @@ setup(
         "msgpack>=0.5",
         "oscrypto",
         "requests",
-        "PySocks>=1.6.8"
+        "PySocks<1.7"
     ],
 
     tests_require=TEST_REQUIREMENTS,
