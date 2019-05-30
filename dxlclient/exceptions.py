@@ -34,3 +34,9 @@ class InvalidProxyConfigurationError(Exception):
     """
      Exception raised when specified HTTP proxy address or port is invalid
     """
+
+
+class NoBrokerSpecifiedError(Exception):
+    """
+     Exception raised when no brokers are specified
+    """
