@@ -716,7 +716,7 @@ def make_basic_config(client_prefix="client",
                       add_comments=False):
     if add_comments:
         config = ["[General]",
-                  "#useWebSockets = False\n",
+                  "#UseWebSockets = False\n",
                   "[Certs]",
                   "# Truststore client uses to validate broker",
                   "BrokerCertChain = {}".format(ca_bundle_file),
@@ -747,7 +747,7 @@ def make_config(basic_config_lines=None, broker_lines=None, add_general=True):
                      [broker_lines] +
                      [get_web_socket_section(broker_lines)] +
                      (["[General]",
-                       "#useWebSockets = False\n"] if add_general else [])).encode("utf8")
+                       "#UseWebSockets = False\n"] if add_general else [])).encode("utf8")
 
 
 def get_web_socket_section(broker_lines=None):

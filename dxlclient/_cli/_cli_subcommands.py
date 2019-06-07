@@ -649,9 +649,9 @@ class ProvisionDxlClientSubcommand(Subcommand):  # pylint: disable=no-init
 
         dxlconfig.write(config_file)
 
-        # comment out the useWebSockets setting
+        # comment out the UseWebSockets setting
         with open(config_file) as conf_file:
-            config_contents = conf_file.read().replace('useWebSockets', '#useWebSockets')
+            config_contents = conf_file.read().replace('UseWebSockets', '#UseWebSockets')
 
         with open(config_file, "w") as conf_file:
             conf_file.write(config_contents)
