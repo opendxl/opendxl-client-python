@@ -139,7 +139,7 @@ class DxlClientConfig(_BaseObject):
 
     _GENERAL_SECTION = u"General"
     _CLIENT_ID_SETTING = u"ClientId"
-    _USE_WEBSOCKETS_SETTING = u"useWebSockets"
+    _USE_WEBSOCKETS_SETTING = u"UseWebSockets"
 
     # HTTP Proxy Section
     _PROXY_SECTION = u"Proxy"
