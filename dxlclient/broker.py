@@ -12,8 +12,8 @@ import re
 import socket
 import datetime
 import logging
-import socks
 import traceback
+import socks
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
