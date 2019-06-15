@@ -640,9 +640,11 @@ class DxlClient(_BaseObject):
         proxy = self._proxy
         proxy_addr = proxy.get("proxy_addr", None)
         proxy_port = proxy.get("proxy_port", None)
-        proxy_available = True if proxy_addr is not None and proxy_port is not None else False
+        proxy_available = bool(proxy_addr is not None and proxy_port is not None)
+
         if not proxy_available:
             logger.debug("No proxy settings detected in DXL client config")
+
         for broker in brokers:
             if self._thread_terminate:
                 break
