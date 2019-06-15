@@ -278,7 +278,6 @@ class Broker(_BaseObject):
             logger.error("Failed to connect to broker (host name) %s: (ip address) %s %s",
                          self._host_name, self.ip_address, str(ex))
             logger.debug(traceback.format_exc())
-
         finally:
             if broker_s is not None:
                 broker_s.close()
