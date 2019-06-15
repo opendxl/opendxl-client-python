@@ -693,9 +693,13 @@ class DxlClientConfig(_BaseObject):
         self._reconnect_when_disconnected = reconnect
 
     @staticmethod
-    def _get_sorted_broker_list_worker(broker):
-        """Returns a sorted list of the brokers in this config."""
-        broker._connect_to_broker()
+    def _get_sorted_broker_list_worker(broker, proxy):
+        """
+        Returns a sorted list of the brokers in this config.
+        :param broker: DXL Broker
+        :param proxy: Proxy arguments dictionary
+        """
+        broker._connect_to_broker(**proxy)
 
     def _get_http_proxy(self):
         """
@@ -712,7 +716,7 @@ class DxlClientConfig(_BaseObject):
         proxy = {'proxy_password': self.proxy_password, 'proxy_port': int(proxy_port),
                  'proxy_addr': proxy_addr, 'proxy_username': self.proxy_username,
                  'proxy_rdns': self.proxy_rdns, 'proxy_type': self.proxy_type}
-
+        logger.debug("Proxy settings present in DXL client config: %s:%s", proxy_addr, proxy_port)
         return proxy
 
     def _get_sorted_broker_list(self):
@@ -722,10 +726,10 @@ class DxlClientConfig(_BaseObject):
         :returns: {@code list}: Sorted list of brokers.
         """
         threads = []
-
+        proxy = self._get_http_proxy()
         for broker in self.brokers:
             # pylint: disable=invalid-name
-            t = threading.Thread(target=self._get_sorted_broker_list_worker, args=[broker])
+            t = threading.Thread(target=self._get_sorted_broker_list_worker, args=[broker, proxy])
             threads.append(t)
             t.daemon = True
             t.start()
@@ -737,7 +741,8 @@ class DxlClientConfig(_BaseObject):
 
     def _get_fastest_broker_worker(self, broker):
         """Calculate the fastest (smallest response time) broker."""
-        broker._connect_to_broker()
+        proxy = self._get_http_proxy()
+        broker._connect_to_broker(**proxy)
         self._queue.put(broker)
 
     def _get_fastest_broker(self):

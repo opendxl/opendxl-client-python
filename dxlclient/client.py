@@ -636,17 +636,25 @@ class DxlClient(_BaseObject):
         self._reset_current_broker()
         keep_alive_interval = self.config.keep_alive_interval
         latest_ex = None
-
+        # Get proxy
+        proxy = self._proxy
+        proxy_addr = proxy.get("proxy_addr", None)
+        proxy_port = proxy.get("proxy_port", None)
+        proxy_available = True if proxy_addr is not None and proxy_port is not None else False
+        if not proxy_available:
+            logger.debug("No proxy settings detected in DXL client config")
         for broker in brokers:
             if self._thread_terminate:
                 break
             if broker._response_time is not None:
                 try:
+                    if proxy_available:
+                        logger.info("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
                     logger.info("Trying to connect to broker %s...", broker.to_string())
                     if broker._response_from_ip_address:
-                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **self._proxy)
+                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **proxy)
                     else:
-                        self._client.connect(broker.host_name, broker.port, keep_alive_interval, **self._proxy)
+                        self._client.connect(broker.host_name, broker.port, keep_alive_interval, **proxy)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -661,9 +669,11 @@ class DxlClient(_BaseObject):
                 if self._thread_terminate:
                     break
                 try:
+                    if proxy_available:
+                        logger.info("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
                     logger.info(
                         "Trying to connect to broker (host name) %s...", broker.to_string())
-                    self._client.connect(broker.host_name, broker.port, keep_alive_interval)
+                    self._client.connect(broker.host_name, broker.port, keep_alive_interval, **proxy)
                     self._current_broker = broker
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -676,10 +686,12 @@ class DxlClient(_BaseObject):
                     break
                 if self._current_broker is None and broker.ip_address:
                     try:
+                        if proxy_available:
+                            logger.info("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
                         logger.info(
                             "Trying to connect to broker (IP address) %s (%s:%d)...",
                             broker.unique_id, broker.ip_address, broker.port)
-                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval)
+                        self._client.connect(broker.ip_address, broker.port, keep_alive_interval, **proxy)
                         self._current_broker = broker
                         break
                     except Exception as ex:  # pylint: disable=broad-except

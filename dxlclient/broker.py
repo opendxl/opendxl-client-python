@@ -12,6 +12,8 @@ import re
 import socket
 import datetime
 import logging
+import socks
+import traceback
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
@@ -229,17 +231,25 @@ class Broker(_BaseObject):
             "{}{}".format(self._FIELD_SEPARATOR, self._ip_address)
             if self.ip_address else "")
 
-    def _connect_to_broker(self):
+    def _connect_to_broker(self, **proxy):
         """
         Attempts to connect to a broker.
         Upon success will set the response time and whether the response
         came from the IP address versus the hostname.
+        :param proxy Proxy arguments dictionary(Can be empty)
         :return: None
         """
         broker_s = None
+        proxy_addr = proxy.get("proxy_addr", None)
+        proxy_port = proxy.get("proxy_port", None)
         try:
             start = datetime.datetime.now()
-            broker_s = socket.create_connection((self._host_name, self._port), timeout=1.0)
+            if proxy_addr is not None and proxy_port is not None:
+                logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
+                broker_s = socks.create_connection((self._host_name, self._port), timeout=1.0, **proxy)
+            else:
+                logger.debug("No proxy settings detected in DXL client config")
+                broker_s = socket.create_connection((self._host_name, self._port), timeout=1.0)
             end = datetime.datetime.now()
             self._response_from_ip_address = False
             self._response_time = (end - start).total_seconds()
@@ -247,7 +257,12 @@ class Broker(_BaseObject):
             if self._ip_address:
                 try:
                     start = datetime.datetime.now()
-                    broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
+                    if proxy_addr is not None and proxy_port is not None:
+                        logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
+                        broker_s = socks.create_connection((self._ip_address, self._port), timeout=1.0, **proxy)
+                    else:
+                        logger.debug("No proxy settings detected in DXL client config")
+                        broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
                     end = datetime.datetime.now()
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
@@ -259,6 +274,11 @@ class Broker(_BaseObject):
                 logger.error(
                     "Socket could not be created. Error Code: %s. Message: %s.",
                     msg.errno, msg)
+        except Exception as ex:
+            logger.error("Failed to connect to broker (host name) %s: (ip address) %s %s",
+                         self._host_name, self.ip_address, str(ex))
+            logger.debug(traceback.format_exc())
+
         finally:
             if broker_s is not None:
                 broker_s.close()
