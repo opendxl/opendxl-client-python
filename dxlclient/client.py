@@ -643,7 +643,9 @@ class DxlClient(_BaseObject):
         proxy_available = bool(proxy_addr is not None and proxy_port is not None)
 
         if not proxy_available:
-            logger.debug("No proxy settings detected in DXL client config")
+            logger.debug("Not using proxy for connection.")
+            logger.debug("Please make sure Proxy section is added and UseWebSockets flag "
+                         "is set to True in client config file in order to use proxy.")
 
         for broker in brokers:
             if self._thread_terminate:
