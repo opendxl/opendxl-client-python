@@ -12,6 +12,7 @@ import re
 import socket
 import datetime
 import logging
+import socks
 
 from dxlclient import _BaseObject
 from dxlclient.exceptions import MalformedBrokerUriException
@@ -229,17 +230,26 @@ class Broker(_BaseObject):
             "{}{}".format(self._FIELD_SEPARATOR, self._ip_address)
             if self.ip_address else "")
 
-    def _connect_to_broker(self):
+    def _connect_to_broker(self, **proxy):
         """
         Attempts to connect to a broker.
         Upon success will set the response time and whether the response
         came from the IP address versus the hostname.
+        :param proxy Proxy arguments dictionary(Can be empty)
         :return: None
         """
         broker_s = None
+        proxy_addr = proxy.get("proxy_addr", None)
+        proxy_port = proxy.get("proxy_port", None)
+        proxy_available = bool(proxy_addr is not None and proxy_port is not None)
         try:
             start = datetime.datetime.now()
-            broker_s = socket.create_connection((self._host_name, self._port), timeout=1.0)
+            if proxy_available:
+                logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
+                broker_s = socks.create_connection((self._host_name, self._port), timeout=1.0, **proxy)
+            else:
+                logger.debug("Not using proxy for connection.")
+                broker_s = socket.create_connection((self._host_name, self._port), timeout=1.0)
             end = datetime.datetime.now()
             self._response_from_ip_address = False
             self._response_time = (end - start).total_seconds()
@@ -247,7 +257,12 @@ class Broker(_BaseObject):
             if self._ip_address:
                 try:
                     start = datetime.datetime.now()
-                    broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
+                    if proxy_available:
+                        logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
+                        broker_s = socks.create_connection((self._ip_address, self._port), timeout=1.0, **proxy)
+                    else:
+                        logger.debug("Not using proxy for connection.")
+                        broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
                     end = datetime.datetime.now()
                     self._response_from_ip_address = True
                     self._response_time = (end - start).total_seconds()
