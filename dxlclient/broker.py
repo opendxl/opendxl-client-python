@@ -241,15 +241,14 @@ class Broker(_BaseObject):
         broker_s = None
         proxy_addr = proxy.get("proxy_addr", None)
         proxy_port = proxy.get("proxy_port", None)
+        proxy_available = bool(proxy_addr is not None and proxy_port is not None)
         try:
             start = datetime.datetime.now()
-            if proxy_addr is not None and proxy_port is not None:
+            if proxy_available:
                 logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
                 broker_s = socks.create_connection((self._host_name, self._port), timeout=1.0, **proxy)
             else:
                 logger.debug("Not using proxy for connection.")
-                logger.debug("Please make sure Proxy section is added and UseWebSockets flag "
-                             "is set to True in client config file in order to use proxy.")
                 broker_s = socket.create_connection((self._host_name, self._port), timeout=1.0)
             end = datetime.datetime.now()
             self._response_from_ip_address = False
@@ -258,13 +257,11 @@ class Broker(_BaseObject):
             if self._ip_address:
                 try:
                     start = datetime.datetime.now()
-                    if proxy_addr is not None and proxy_port is not None:
+                    if proxy_available:
                         logger.debug("Using proxy for connection: %s:%s", proxy_addr, proxy_port)
                         broker_s = socks.create_connection((self._ip_address, self._port), timeout=1.0, **proxy)
                     else:
                         logger.debug("Not using proxy for connection.")
-                        logger.debug("Please make sure Proxy section is added and UseWebSockets flag "
-                                     "is set to True in client config file in order to use proxy.")
                         broker_s = socket.create_connection((self._ip_address, self._port), timeout=1.0)
                     end = datetime.datetime.now()
                     self._response_from_ip_address = True
