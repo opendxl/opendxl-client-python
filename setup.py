@@ -60,7 +60,8 @@ TEST_REQUIREMENTS = [
     "mock",
     "nose",
     "parameterized",
-    "pylint",
+    "astroid<2.3.0",
+    "pylint<=2.3.1",
     "requests-mock"
 ]
 
