@@ -126,16 +126,16 @@ ZERO = timedelta(0)
 class UTC(tzinfo):
     """UTC"""
 
-    def utcoffset(self, dt):
+    def utcoffset(self, _unused):
         return ZERO
 
-    def tzname(self, dt):
+    def tzname(self, _unused):
         return "UTC"
 
-    def dst(self, dt):
+    def dst(self, _unused):
         return ZERO
 
-utc = UTC()
+UTC = UTC()
 
 FAKE_CERTIFICATE = \
     pem.armor(u"CERTIFICATE",
@@ -148,10 +148,10 @@ FAKE_CERTIFICATE = \
                       "validity": {
                           "not_before": x509.Time(
                               name="utc_time",
-                              value=datetime.datetime(2000, 1, 1, 9, 47, 35, 249000, tzinfo=utc)),
+                              value=datetime.datetime(2000, 1, 1, 9, 47, 35, 249000, tzinfo=UTC)),
                           "not_after": x509.Time(
                               name="utc_time",
-                              value=datetime.datetime(2049, 12, 31, 9, 47, 35, 249000, tzinfo=utc))},
+                              value=datetime.datetime(2049, 12, 31, 9, 47, 35, 249000, tzinfo=UTC))},
                       "subject": _FAKE_SUBJECT,
                       "subject_public_key_info":
                           get_fake_public_key_asn1()}),
