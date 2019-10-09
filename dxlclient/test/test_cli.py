@@ -14,6 +14,8 @@ from __future__ import absolute_import
 from __future__ import print_function
 import base64
 import datetime
+from datetime import timedelta
+from datetime import tzinfo
 import getpass
 import json
 import os
@@ -117,6 +119,24 @@ _SIGNATURE_ALGORITHM = algos.SignedDigestAlgorithm({
     "algorithm": u"sha256_rsa"})
 _FAKE_SUBJECT = x509.Name.build({u"common_name": u"fake"})
 
+# for adding a timezone to datetime objects
+ZERO = timedelta(0)
+
+# A UTC class.
+class UTC(tzinfo):
+    """UTC"""
+
+    def utcoffset(self, _unused):
+        return ZERO
+
+    def tzname(self, _unused):
+        return "UTC"
+
+    def dst(self, _unused):
+        return ZERO
+
+UTC = UTC()
+
 FAKE_CERTIFICATE = \
     pem.armor(u"CERTIFICATE",
               x509.Certificate({
@@ -128,10 +148,10 @@ FAKE_CERTIFICATE = \
                       "validity": {
                           "not_before": x509.Time(
                               name="utc_time",
-                              value=datetime.datetime(2000, 1, 1)),
+                              value=datetime.datetime(2000, 1, 1, 9, 47, 35, 249000, tzinfo=UTC)),
                           "not_after": x509.Time(
                               name="utc_time",
-                              value=datetime.datetime(2049, 12, 31))},
+                              value=datetime.datetime(2049, 12, 31, 9, 47, 35, 249000, tzinfo=UTC))},
                       "subject": _FAKE_SUBJECT,
                       "subject_public_key_info":
                           get_fake_public_key_asn1()}),
