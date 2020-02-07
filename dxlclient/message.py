@@ -60,7 +60,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
     """
 
     # The message version
-    MESSAGE_VERSION = 2
+    MESSAGE_VERSION = 4
 
     MESSAGE_TYPE_REQUEST = 0
     """The numeric type identifier for the :class:`Request` message type"""
@@ -112,6 +112,12 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         self._source_tenant_guid = ""
         # The set of tenant GUIDs to deliver the message to
         self._destination_tenant_guids = []
+
+        ###########
+        # Version 3
+        ###########
+        # The instance identifier for the client that is the source of the message
+        self._source_client_instance_id = ""
 
     @property
     def version(self):
@@ -272,6 +278,13 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
             tenant_guids = []
         self._destination_tenant_guids = tenant_guids
 
+    @property
+    def source_client_instance_id(self):
+        """
+        The instance identifier of the DXL client that sent the message
+        """
+        return self._source_client_instance_id if self._source_client_instance_id else self.source_client_id
+
     def _pack_message_v1(self, packer, buf):
         """
         Packs the v1 message members to the `buffer`
@@ -321,6 +334,40 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         self._source_tenant_guid = self._unpack_next_unicode_string(unpacker)
         self._destination_tenant_guids = self._unpack_next_unicode_string_array(unpacker)
 
+    def _pack_message_v3(self, packer, buf):
+        """
+        Packs the v3 message members to the `buffer`
+
+        :param packer: The packer
+        :param buf: Object to which the bytes will be written
+        """
+        buf.write(packer.pack(self._source_client_instance_id))
+
+    def _unpack_message_v3(self, unpacker):
+        """
+        Unpacks the v3 members of the message from `unpacker`.
+
+        :param unpacker: The unpacker
+        """
+        self._source_client_instance_id = self._unpack_next_unicode_string(unpacker)
+
+    def _pack_message_v4(self, packer, buf):
+        """
+        Packs the v4 message members to the `buffer`. There are no general message v4 header fields.
+
+        :param packer: The packer
+        :param buf: Object to which the bytes will be written
+        """
+        pass
+
+    def _unpack_message_v4(self, unpacker):
+        """
+        Unpacks the v4 members of the message from `unpacker`. There are no general message v4 header fields.
+
+        :param unpacker: The unpacker
+        """
+        pass
+
     def _to_bytes(self):
         """
         Converts the message to an array of bytes and returns it.
@@ -339,6 +386,12 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         # Version 2
         if self._version > 1:
             self._pack_message_v2(packer, buf)
+        # Version 3
+        if self._version > 2:
+            self._pack_message_v3(packer, buf)
+        # Version 4
+        if self._version > 3:
+            self._pack_message_v4(packer, buf)
         return buf.getvalue()
 
     @staticmethod
@@ -376,6 +429,12 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
             # Version 2
             if message._version > 1:
                 message._unpack_message_v2(unpacker)
+            # Version 3
+            if message._version > 2:
+                message._unpack_message_v3(unpacker)
+            # Version 4
+            if message._version > 3:
+                message._unpack_message_v4(unpacker)
             return message
 
         raise DxlException("Unknown message type: " + message_type)
@@ -411,6 +470,8 @@ class Request(Message):
         self._reply_to_topic = None
         # The service id
         self._service_id = ""
+        # Whether this is a multi-service request
+        self._is_multi_service = False
 
     @property
     def message_type(self):
@@ -425,6 +486,17 @@ class Request(Message):
         The topic that the :class:`Response` to this :class:`Request` will be sent to
         """
         return self._reply_to_topic
+
+    @property
+    def is_multi_service(self):
+        """
+        Whether this request is a multi-service request
+        """
+        return self._is_multi_service
+
+    @is_multi_service.setter
+    def is_multi_service(self, is_multi_service):
+        self._is_multi_service = is_multi_service
 
     @reply_to_topic.setter
     def reply_to_topic(self, topic):
@@ -464,6 +536,19 @@ class Request(Message):
         self._reply_to_topic = self._unpack_next_unicode_string(unpacker)
         self._service_id = self._unpack_next_unicode_string(unpacker)
 
+    def _pack_message_v4(self, packer, buf):
+        super(Request, self)._pack_message_v4(packer, buf)
+        buf.write(packer.pack(1 if self._is_multi_service else 0))
+
+    def _unpack_message_v4(self, unpacker):
+        """
+        Creates a concrete message from `unpacker`.
+
+        :param unpacker: Unpacker object.
+        """
+        super(Request, self)._unpack_message_v4(unpacker)
+        self._is_multi_service = next(unpacker) == 1
+
 
 class Response(Message):
     """
@@ -489,7 +574,9 @@ class Response(Message):
             self._request_message_id = request.message_id
 
             self._service_id = request.service_id
-            if request.source_client_id:
+            if request.source_client_instance_id:
+                self.client_ids = [request.source_client_instance_id]
+            elif request.source_client_id:
                 self.client_ids = [request.source_client_id]
             if request.source_broker_id:
                 self.broker_ids = [request.source_broker_id]
@@ -652,3 +739,61 @@ class ErrorResponse(Response):
         super(ErrorResponse, self)._unpack_message(unpacker)
         self._error_code = next(unpacker)
         self._error_message = self._unpack_next_unicode_string(unpacker)
+
+
+class MultiServiceResponse(object):
+    """
+    :class:`MultiServiceResponse` is a compilation of :class:`Response` messages created by the client of all
+    responses to a given :class:`Request` message sent as a multi-service request using the
+    :func:`dxlclient.client.DxlClient.sync_multi_service_request` method of a client instance.
+    """
+
+    def __init__(self, initial_response, expected_count=0, received_responses=None):
+        """
+        Constructor parameters:
+
+        :param initial_response: The :class:`Response` message containing meta information from the broker
+        :param expected_count: The number of expected responses
+        :param received_responses: The array of :class:`Response` messages received from services
+        """
+        self._initial_response = initial_response
+        self._responses = received_responses
+        self._success = False
+        self._expected_count = expected_count
+
+        if self._responses and self._expected_count == len(self._responses):
+            error = False
+            for res in self._responses:
+                if res.message_type == Message.MESSAGE_TYPE_ERROR:
+                    error = True
+                    break
+            if not error:
+                self._success = True
+
+    @property
+    def initial_response(self):
+        """
+        The initial response from the broker
+        """
+        return self._initial_response
+
+    @property
+    def responses(self):
+        """
+        The array of response messages received from services
+        """
+        return self._responses
+
+    @property
+    def success(self):
+        """
+        Whether the request succeeded with all responses or failed to receive a response from any of the services
+        """
+        return self._success
+
+    @property
+    def expected_count(self):
+        """
+        The number of responses expected
+        """
+        return self._expected_count

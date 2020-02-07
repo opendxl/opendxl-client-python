@@ -15,14 +15,16 @@ import ssl
 import traceback
 import random
 import time
+import json
 
 import pahoproxy.client as mqtt
 from dxlclient import _BaseObject
 from dxlclient.client_config import DxlClientConfig
 import dxlclient._callback_manager as callback_manager
+from dxlclient.callbacks import ResponseCallback
 from dxlclient._request_manager import RequestManager
 from dxlclient.exceptions import DxlException
-from dxlclient.message import Message, Event, Request, Response, ErrorResponse
+from dxlclient.message import Message, Event, Request, Response, ErrorResponse, MultiServiceResponse
 from dxlclient._thread_pool import ThreadPool
 from dxlclient.exceptions import WaitTimeoutException, NoBrokerSpecifiedError
 from dxlclient.service import _ServiceManager
@@ -950,6 +952,33 @@ class DxlClient(_BaseObject):
 
         return self._request_manager.sync_request(request, timeout)
 
+    def sync_multi_service_request(self, request, timeout=_DEFAULT_WAIT):
+        """
+        Sends a :class:`dxlclient.message.Request` message to each unique remote DXL servicing the topic.
+
+        See module :mod:`dxlclient.service` for more information on DXL services.
+
+        :param request: The :class:`dxlclient.message.Request` message to send to a remote DXL service
+        :param timeout: The amount of time (in seconds) to wait for the :class:`dxlclient.message.Response`
+            to the requests. If the timeout is exceeded only the received responses will be returned.
+            Defaults to ``3600`` seconds (1 hour)
+        """
+        if threading.currentThread().name.startswith(self._message_pool_prefix):
+            raise DxlException("Synchronous requests may not be invoked while handling an incoming message. " +
+                               "The synchronous request must be made on a different thread.")
+        request.is_multi_service = True
+
+        multi_response_handler = _MultiServiceResponseHandler(request)
+        self.add_response_callback(None, multi_response_handler)
+        try:
+            start_time = time.time()
+            initial_response = self.sync_request(request, timeout)
+            if initial_response.message_type == Message.MESSAGE_TYPE_ERROR:
+                return MultiServiceResponse(initial_response)
+            return multi_response_handler.wait_for_responses(initial_response, timeout - (time.time() - start_time))
+        finally:
+            self.remove_response_callback(None, multi_response_handler)
+
     def async_request(self, request, response_callback=None):
         """
         Sends a :class:`dxlclient.message.Request` message to a remote DXL service asynchronously.
@@ -1279,3 +1308,46 @@ class DxlClient(_BaseObject):
         # The MQTT client log callback
         if logger.isEnabledFor(logging.DEBUG):
             self._client.on_log = _on_log
+
+
+class _MultiServiceResponseHandler(ResponseCallback):
+    """
+     Worker class that manages the handling of multi-service requests
+    """
+    def __init__(self, request):
+        super(_MultiServiceResponseHandler, self).__init__()
+        self._received_request_ids = []
+        self._received_responses = []
+        self._expected_request_ids = []
+        self._response_message_prefix = request.message_id + ":"
+        self._condition = threading.Condition()
+
+    def on_response(self, response):
+        if response.request_message_id.startswith(self._response_message_prefix):
+            with self._condition:
+                self._received_request_ids.append(response.request_message_id)
+                self._received_responses.append(response)
+                self._condition.notifyAll()
+
+    def wait_for_responses(self, initial_response, timeout):
+        """
+        Constructor parameters:
+
+        :param initial_response: the initial Response returned by the broker with the request meta information
+        :param timeout: the amount of time to wait before returning
+        :return: a :class:`dxlclient.message.MultiServiceResponse` containing the service responses
+        """
+        info = json.loads(initial_response.payload)
+
+        with self._condition:
+            self._expected_request_ids = info['requests'].keys()
+
+            start_time = time.time()
+            remaining_time = timeout
+
+            while not set(self._expected_request_ids).issubset(set(self._received_request_ids))\
+                    and remaining_time > 0:
+                self._condition.wait(remaining_time)
+                remaining_time = timeout - (time.time() - start_time)
+
+        return MultiServiceResponse(initial_response, len(self._expected_request_ids), self._received_responses)
