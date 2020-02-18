@@ -98,7 +98,7 @@ setup(
     install_requires=[
         "asn1crypto",
         "configobj",
-        "msgpack>=0.5",
+        "msgpack>=0.5,<1.0.0",
         "oscrypto",
         "requests",
         "PySocks<1.7"
