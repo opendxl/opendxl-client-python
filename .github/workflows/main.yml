@@ -1,0 +1,50 @@
+
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        submodules: recursive
+        
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}        
+                
+    - name: Install broker
+      run: |
+        docker pull opendxl/opendxl-broker
+        docker run -d -p 8883:8883 -p 8443:8443 -p 443:443 opendxl/opendxl-broker
+        docker ps -a
+              
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip	
+        pip install --upgrade pipenv  
+        pip install wheel
+        pip install .[test]
+        python setup.py install
+
+    - name: Execute CI
+      run: |
+        python -m dxlclient provisionconfig dxlclient/test 127.0.0.1 client -u admin -p password
+        cp dxlclient/test/dxlclient.config dxlclient/test/client_config.cfg
+        sed -i -e "s/127.0.0.1;127.0.0.1/127.0.0.1/g" -e "/local/d" -e "/docker/d" dxlclient/test/client_config.cfg
+        cat dxlclient/test/client_config.cfg
+        echo Running tests with MQTT  
+        python setup.py ci
+        sed -i -e "s/= False/= True/g" -e "s/;8883/;443/g" -e "s/Brokers/BrokersWebSockets/g" dxlclient/test/client_config.cfg
+        cat dxlclient/test/client_config.cfg
+        echo Running tests with WebSockets  
+        python setup.py ci
