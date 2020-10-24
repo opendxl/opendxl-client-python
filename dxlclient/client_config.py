@@ -805,7 +805,7 @@ class DxlClientConfig(_BaseObject):
             broker_list = {}
             self._set_value_to_config(self._BROKERS_SECTION, broker_list)
 
-        if len(broker_list) is 0:
+        if len(broker_list) == 0:
             logger.warning("Broker list is empty")
 
         self._brokers = _get_brokers(self._get_value_from_config(
