@@ -62,7 +62,7 @@ TEST_REQUIREMENTS = [
     "parameterized",
     'astroid<2.3.0; python_version == "2.7"',
     'astroid==2.3.3; python_version > "2.7"',
-    "pylint==2.3.1",
+    "pylint<=2.3.1",
     "requests-mock"
 ]
 
