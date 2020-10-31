@@ -499,7 +499,7 @@ class DxlClient(_BaseObject):
 
         # Wait for the connect thread to finish
         if self._thread is not None:
-            while self._thread.isAlive():
+            while self._thread.is_alive():
                 self._thread.join(1)
             self._thread = None
 
@@ -606,7 +606,7 @@ class DxlClient(_BaseObject):
             self._thread_terminate = True
             with self._connect_wait_lock:
                 self._connect_wait_condition.notifyAll()
-            while self._thread.isAlive():
+            while self._thread.is_alive():
                 self._thread.join(1)
             self._thread = None
             logger.debug("Thread terminated.")

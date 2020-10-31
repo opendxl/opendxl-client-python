@@ -192,7 +192,7 @@ class SyncRequestTroughputRunner(BaseClientTest):
                                         (count == (self.THREAD_COUNT * self.REQUEST_COUNT)):
                                     self.requests_end_time = time.time()
 
-                            if count % 100 is 0:
+                            if count % 100 == 0:
                                 print(str(count) + ", " + str(time.time() - self.requests_start_time))
 
                             # Calulate and track response times
