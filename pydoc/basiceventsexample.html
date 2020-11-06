@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Basic Events Sample &#8212; OpenDXL Python SDK 5.6.0.2 documentation</title>
+    <title>Basic Events Sample &#8212; OpenDXL Python SDK 5.6.0.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="sampleconfig.html" title="Samples Configuration"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -55,7 +55,7 @@ the callback.</p>
 <p>To run this sample execute the <code class="docutils literal notranslate"><span class="pre">sample\basic\event_example.py</span></code> script as follows:</p>
 <blockquote>
 <div><pre class="literal-block">
-c:\dxlclient-python-sdk-5.6.0.2&gt;python sample\basic\event_example.py
+c:\dxlclient-python-sdk-5.6.0.4&gt;python sample\basic\event_example.py
 </pre>
 </div></blockquote>
 <p>The output should appear similar to the following:</p>
@@ -93,7 +93,7 @@ subscribe (<a class="reference internal" href="dxlclient.client.html#dxlclient.c
     <span class="k">def</span> <span class="nf">on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">event_count_condition</span><span class="p">:</span>
             <span class="c1"># Print the payload for the received event</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Received event: &quot;</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Received event: &quot;</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
             <span class="c1"># Increment the count</span>
             <span class="n">event_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="c1"># Notify that the count was increment</span>
@@ -131,7 +131,7 @@ previously registered.</p>
         <span class="n">event_count_condition</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
 <span class="c1"># Print the elapsed time</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time (ms): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time (ms): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -187,7 +187,7 @@ previously registered.</p>
         <li class="right" >
           <a href="sampleconfig.html" title="Samples Configuration"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">OpenDXL Python SDK 5.6.0.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
