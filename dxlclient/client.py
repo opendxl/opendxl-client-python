@@ -605,7 +605,7 @@ class DxlClient(_BaseObject):
             logger.debug("Waiting for the thread to terminate...")
             self._thread_terminate = True
             with self._connect_wait_lock:
-                self._connect_wait_condition.notifyAll()
+                self._connect_wait_condition.notify_all()
             while self._thread.is_alive():
                 self._thread.join(1)
             self._thread = None
@@ -944,7 +944,7 @@ class DxlClient(_BaseObject):
             to the request. If the timeout is exceeded an exception will be raised. Defaults to ``3600``
             seconds (1 hour)
         """
-        if threading.currentThread().name.startswith(self._message_pool_prefix):
+        if threading.current_thread().name.startswith(self._message_pool_prefix):
             raise DxlException("Synchronous requests may not be invoked while handling an incoming message. " +
                                "The synchronous request must be made on a different thread.")
 
