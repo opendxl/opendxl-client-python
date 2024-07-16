@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-# Copyright (c) 2018 McAfee LLC - All Rights Reserved.
+# Copyright (c) 2024 Musarubra US LLC - All Rights Reserved.
 ################################################################################
 
 """ Product properties, used for packaging. """
 
-__version__ = "5.6.0.4"
+__version__ = "5.6.0.5"
 
 __product_id__ = "DXL_____1000"
 

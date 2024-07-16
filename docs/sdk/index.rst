@@ -118,3 +118,14 @@ Authorization
 	topicauthoverview
 	topicauthgroupcreation
 	topicauthgrouprestrictions
+
+Certificates
+------------
+
+.. toctree::
+	:maxdepth: 1
+
+	certcreation
+	epobrokercertsexport
+	epobrokerlistexport
+	epocaimport
