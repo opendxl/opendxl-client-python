@@ -34,8 +34,8 @@ else:
 from asn1crypto import csr, pem, x509, algos
 from mock import call, patch
 from parameterized import parameterized
-from oscrypto import asymmetric
 import requests_mock
+from oscrypto import asymmetric
 
 from dxlclient import DxlUtils
 from dxlclient._cli import cli_run
