@@ -56,12 +56,12 @@ class CiCommand(Command):
         self.run_command("test")
 
 TEST_REQUIREMENTS = [
-    'futures; python_version == "2.7"',
+    'futures; python_version == "3.7"',
     "mock",
     "nose",
     "parameterized",
-    'astroid<2.3.0; python_version == "2.7"',
-    'astroid==2.3.3; python_version > "2.7"',
+    'astroid<2.3.0; python_version == "3.7"',
+    'astroid==2.3.3; python_version > "3.7"',
     "pylint<=2.3.1",
     "requests-mock"
 ]
@@ -121,19 +121,14 @@ setup(
 
     long_description=open('README').read(),
 
-    python_requires='>=2.7.9,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+    python_requires='>=3.7',
 
     classifiers=[
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7"
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
 
     cmdclass={
