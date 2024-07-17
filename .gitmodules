@@ -2,3 +2,6 @@
 	path = paho_mqtt_dxl
 	url = https://github.com/opendxl-community/paho.mqtt.python.git
 	branch = master
+[submodule "oscrypto"]
+	path = oscrypto
+	url = https://github.com/wbond/oscrypto.git
