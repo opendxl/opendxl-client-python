@@ -96,11 +96,15 @@ setup(
     # Include additional files into the package
     include_package_data=True,
 
+    dependency_links=[
+        'https://github.com/wbond/oscrypto/tarball/1547f53#egg=oscrypto-1547f53'
+    ],
+
     install_requires=[
         "asn1crypto",
         "configobj",
         "msgpack>=0.5,<1.0.0",
-        "oscrypto @ git+https://github.com/wbond/oscrypto.git@1547f535001ba568b239b8797465536759c742a3",
+        "oscrypto",
         "requests",
         "PySocks<1.7"
     ],
