@@ -352,7 +352,7 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         """
         buf = BytesIO(raw)
         buf.seek(0)
-        unpacker = msgpack.Unpacker(buf)
+        unpacker = msgpack.Unpacker(buf, max_buffer_size=len(raw))
         version = next(unpacker)
         message_type = next(unpacker)
 
