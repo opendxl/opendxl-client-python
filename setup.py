@@ -95,7 +95,10 @@ setup(
         "dxlclient._cli",
         "pahoproxy",
         "oscrypto",
-        "oscrypto._openssl"
+        "oscrypto._openssl",
+        "oscrypto._mac",
+        "oscrypto._win",
+        "oscrypto._linux_bsd"
     ],
 
     # Include additional files into the package
