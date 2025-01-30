@@ -109,7 +109,7 @@ setup(
         "configobj",
         "msgpack>=0.5,<1.0.0",
         "requests",
-        "PySocks<1.7"
+        "PySocks"
     ],
 
     tests_require=TEST_REQUIREMENTS,
