@@ -398,7 +398,7 @@ class DxlClient(_BaseObject):
                              keyfile=config.private_key,
                              cert_reqs=ssl.CERT_REQUIRED,
                              tls_version=ssl.PROTOCOL_SSLv23,
-                             ciphers=None)
+                             ciphers='AES128-SHA256')
         # The MQTT client TLS configuration to bypass hostname validation
         self._client.tls_insecure_set(True)
 
