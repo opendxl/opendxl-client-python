@@ -6,8 +6,7 @@ Prerequisites
 
 * DXL Brokers (3.0.1 or later) deployed within an ePO managed environment
 * DXL Extensions (3.0.1 or later)
-* Python 2.7.9 or higher in the Python 2.x series or Python 3.4.0 or higher
-  in the Python 3.x series installed within a Windows or Linux environment.
+* Python 3.7 or higher installed within a Windows or Linux environment.
 * PIP (Included with Python 2.7.9 and later) - PIP is the preferred way to install the Python DXL Client SDK,
   but is not required (``setup.py install`` can be used as an alternative).
 * An OpenSSL version used by Python that supports TLSv1.2 (Version 1.0.1 or greater)
