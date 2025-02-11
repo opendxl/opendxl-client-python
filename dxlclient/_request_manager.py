@@ -229,7 +229,7 @@ class RequestManager(ResponseCallback):
                 if request_message_id in self.sync_wait_message_ids:
                     self.sync_wait_message_ids.remove(request_message_id)
                     self.sync_wait_message_responses[request_message_id] = response
-                    self.sync_wait_message_condition.notifyAll()
+                    self.sync_wait_message_condition.notify_all()
 
             # Check for asynchronous callbacks
             callback = self.unregister_async_callback(request_message_id)
