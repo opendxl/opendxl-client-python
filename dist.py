@@ -12,10 +12,10 @@ import re
 import subprocess
 
 # pylint: disable=no-name-in-module, import-error, missing-docstring
-from distutils.dir_util import copy_tree, remove_tree
-from distutils.file_util import copy_file, move_file
-from distutils.core import run_setup
-from distutils.archive_util import make_archive
+from setuptools._distutils.dir_util import copy_tree, remove_tree
+from setuptools._distutils.file_util import copy_file, move_file
+from setuptools._distutils.core import run_setup
+from setuptools._distutils.archive_util import make_archive
 
 from tempfile import mkstemp
 from shutil import move
