@@ -68,7 +68,7 @@ class MessagePayloadTest(BaseClientTest):
 
             with self.create_client() as request_client:
                 request_client.connect()
-                packer = msgpack.Packer()
+                packer = msgpack.Packer(use_bin_type=False)
 
                 # Send a request to the server with information contained
                 # in the payload
@@ -86,7 +86,7 @@ class MessagePayloadTest(BaseClientTest):
                         self.request_complete_condition.wait(self.MAX_WAIT)
 
                 self.assertIsNotNone(self.request_received)
-                unpacker = msgpack.Unpacker(file_like=BytesIO(request.payload))
+                unpacker = msgpack.Unpacker(file_like=BytesIO(request.payload), raw=True)
                 self.assertEqual(next(unpacker).decode('utf8'),
                                  self.TEST_STRING)
                 self.assertEqual(next(unpacker), self.TEST_BYTE)
