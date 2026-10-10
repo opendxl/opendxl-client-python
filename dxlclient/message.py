@@ -328,7 +328,9 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         :returns: {@code BytesIO} object.
         """
         buf = BytesIO()
-        packer = msgpack.Packer()
+        # Pack bytes with the legacy raw/str type (the msgpack 0.x default)
+        # so that the DXL wire format does not depend on the msgpack version.
+        packer = msgpack.Packer(use_bin_type=False)
         buf.write(packer.pack(self.version))
         buf.write(packer.pack(self.message_type))
         # Version 0
@@ -352,7 +354,9 @@ class Message(ABCMeta('ABC', (_BaseObject,), {'__slots__': ()})): # compatible m
         """
         buf = BytesIO(raw)
         buf.seek(0)
-        unpacker = msgpack.Unpacker(buf)
+        # Unpack raw/str values as bytes (the msgpack 0.x default). String
+        # fields are decoded explicitly; the payload is kept as bytes.
+        unpacker = msgpack.Unpacker(buf, raw=True)
         version = next(unpacker)
         message_type = next(unpacker)
 
